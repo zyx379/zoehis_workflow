@@ -60,8 +60,8 @@ git status   # 确认没有出现 onelink-* 下的大量文件
 
 git commit -m "[-]【通用】初始化 fj-common AI 配置仓（workflow/skill/rule/memory）"
 
-# 在 GitHub/GitLab 新建空仓库，例如：fj-common-ai-config
-git remote add origin git@github.com:<你的组织>/fj-common-ai-config.git
+# 在 GitHub/GitLab 新建空仓库，例如：zoehis_workflow
+git remote add origin git@github.com:<你的组织>/zoehis_workflow.git
 git branch -M master
 git push -u origin master
 ```
@@ -72,7 +72,7 @@ git push -u origin master
 # 1. 照旧克隆/更新 9 个业务子仓库到同一父目录
 # 2. 若整目录是从别处复制的，在 fj-common 根目录：
 cd d:\zoe_work_space\fj-common
-git clone git@github.com:<组织>/fj-common-ai-config.git .
+git clone git@github.com:<组织>/zoehis_workflow.git .
 # 若目录非空，改为 clone 到临时目录再复制 .cursor、docs、AGENTS.md、.gitignore
 
 git pull origin master
@@ -96,7 +96,7 @@ git pull origin master
 
 不想在 `fj-common` 根目录放 `.git` 时：
 
-1. GitHub 仓库 `fj-common-ai-config`，结构为：
+1. GitHub 仓库 `zoehis_workflow`，结构为：
 
    ```
    AGENTS.md
@@ -107,7 +107,7 @@ git pull origin master
 2. 每台机器用脚本拉取并覆盖到工作区根目录（PowerShell 示例）：
 
    ```powershell
-   $cfgRepo = "$env:USERPROFILE\fj-common-ai-config"
+   $cfgRepo = "$env:USERPROFILE\zoehis_workflow"
    $workspace = "d:\zoe_work_space\fj-common"
    git -C $cfgRepo pull
    Copy-Item -Recurse -Force "$cfgRepo\.cursor" "$workspace\.cursor"
@@ -174,4 +174,4 @@ git pull origin master
 
 ---
 
-*配置仓示例远程名：`fj-common-ai-config`（可按团队 GitLab 实际命名）*
+*配置仓远程名：`zoehis_workflow`（GitHub 开源仓库）*
