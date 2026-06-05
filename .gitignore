@@ -1,0 +1,26 @@
+# fj-common 根目录 Meta Git：只跟踪 AI 配置，不跟踪业务子仓库
+
+# 9 个独立 Git 子仓库（各自 pull/push）
+onelink-micro-charge-fj-common/
+onelink-micro-insurance-fj-ybcommon/
+onelink-micro-optimus-fj-common/
+onelink-micro-pres-fj-common/
+onelink-web-his-charge-fj-common/
+onelink-web-his-drug-fj-common/
+onelink-web-his-fj-component/
+onelink-web-outp-fj-common/
+onelink-web-pres-fj-common/
+
+# 本地工具 / IDE
+.codegraph/
+.idea/
+.trae/
+
+# 个人草稿（可选：若需共享草稿则删除本行）
+docs/prompt临时区
+
+# 系统与临时文件
+Thumbs.db
+Desktop.ini
+*.log
+.DS_Store

@@ -1,0 +1,48 @@
+---
+description: ZOEHIS HIS 业务规则，门诊/住院/收费/药库改动时必须遵守
+alwaysApply: true
+---
+
+# ZOEHIS 业务规则
+
+## 核心模式
+
+### 池表
+
+```
+业务数据 → 池表(POOL)新增 → 执行后产生记录(RECORD) → 删除池表数据
+```
+
+### 主细表
+
+- 主表 `_MASTER`：单据级（患者、科室、金额、状态）
+- 细表 `_DETAIL`：明细级（项目、数量、单价）
+
+### 预交金
+
+- 充值：PREPAY_RECORD(新增) + PREPAY_ACCT(更新)
+- 消费：PREPAY_ACCT(更新) + CONSUME_MASTER(新增)
+- 退费：PREPAY_ACCT(更新，退回)
+
+### 门诊/住院对称
+
+表名 `_OUTP_` / `_INP_` 区分，业务逻辑一致。
+
+## 门诊处方（摘要）
+
+保存：`PRES_OUTP_PRES_MASTER` + `DETAIL`  
+发送：摆药池 + 单据池；取消发送删池表  
+取药/执行：删池 + 记记录 + 扣预交金 + 消费流水
+
+## 住院医嘱（摘要）
+
+校对 → `PRES_APPLY_RECORDS_POOL`；申请 → 摆药池 + 单据池  
+停嘱：医生停嘱记录 → 护士审核
+
+## 关键约束
+
+- 发送后才产生池表数据
+- 执行后必须删池表并产生正式记录
+- 扣费必须记消费流水；退费必须退回预交金
+
+详细表级流转见 Skill：`patterns/his-business-patterns.md`

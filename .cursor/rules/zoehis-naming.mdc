@@ -1,0 +1,32 @@
+---
+description: ZOEHIS 项目命名规范，生成代码时必须遵守
+alwaysApply: true
+---
+
+# ZOEHIS 命名规范
+
+## 前端命名
+
+- 页面目录：小驼峰 camelCase（如 `hospatientDispensManage`）
+- 组件目录：小驼峰 camelCase，与对应页面目录同名
+- Vue 文件：小驼峰 camelCase（如 `dateDirectInput.vue`）
+- API 目录：短横线 kebab-case，与后端服务路径一致（如 `charge-service`）
+- API 文件：大驼峰 PascalCase，与后端 Java 类名对应（如 `Laycall.js`）
+- Mixin 文件：小驼峰 + Mixin(s) 后缀（如 `printMixins.js`）
+
+## 后端命名
+
+- Maven 项目：`onelink-micro-{业务域}-{地区}-{通用}`
+- 子模块：`{父模块}-{分层}` (api/pojo/service/custom)
+- Java 基础包：`com.zoe.optimus.service`
+- Controller 包：`com.zoe.optimus.service.{业务域}.web.{子域}`
+- MyBatis XML：`*Dao.xml`（非 `*Mapper.xml`）
+- Dao XML 路径：`mappings/{业务域}/{子域}/*.Dao.xml`
+
+## 数据库表命名
+
+- 全部大写+下划线
+- 前缀：`COM_` 公共 / `PAT_` 患者 / `CHA_` 收费 / `PRES_` 处方 / `APP_` 申请 / `APT_` 预约 / `INS_` 医保 / `DIC_` 字典
+- 门诊/住院：`_OUTP_` / `_INP_`
+- 主细表：`_MASTER` / `_DETAIL`
+- 池表：`_POOL`；记录表：`_RECORD` / `_RECORDS`

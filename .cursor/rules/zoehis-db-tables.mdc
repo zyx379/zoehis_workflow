@@ -1,0 +1,26 @@
+---
+description: ZOEHIS 数据库表规范，写 SQL 或表设计时必须遵守
+alwaysApply: true
+---
+
+# ZOEHIS 数据库表规范
+
+## 表名规则
+
+- 大写+下划线：`{前缀}_{OUTP|INP}_{业务名}_{后缀}`
+- 前缀：COM_ / PAT_ / CHA_ / PRES_ / APP_ / APT_ / INS_ / DIC_
+- 后缀：_MASTER / _DETAIL / _POOL / _RECORD / _DICT
+
+## 核心表（节选）
+
+**患者：** PAT_BASIC_INFO, PAT_IN_HOSPITAL, PAT_OUTP_PATIENT_CLINIC_INFO
+
+**处方：** PRES_OUTP_PRES_MASTER/DETAIL, PRES_INP_PRES_RECORD, PRES_APPLY_RECORDS_POOL
+
+**摆药/单据：** APP_*_LAY_DRUG_POOL/RECORDS, APP_*_APPLY_SHEET_POOL, APP_RETURN_* 
+
+**收费：** CHA_*_PREPAY_*, CHA_*_CHARGE_DETAIL, CHA_*_SETTLE_MASTER, INS_*_SETTLE_MASTER
+
+**字典：** DIC_DRUG_DICT, DIC_BED_DICT, DIC_PAY_MODE_DICT, DIC_CLINIC_ITEM_DICT
+
+完整清单见原规范；新增表须符合前缀与门诊/住院对称约定。

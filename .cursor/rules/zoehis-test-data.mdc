@@ -1,0 +1,28 @@
+---
+description: ZOEHIS 测试库造数规范，Step 11 通过 MCP 准备测试数据
+alwaysApply: true
+---
+
+# ZOEHIS 测试库造数（MCP）
+
+功能交付后（`docs/workflow.md` Step 11），使用 **`user-zoe-his-mcp`** 在 **测试库** 造数并验证。
+
+## 约束
+
+- **仅限测试库**：`dataSourceId` 必须指向测试环境；**禁止** 对生产数据源 INSERT/UPDATE/DELETE
+- **测试库允许**：对任意业务表 `INSERT`、`UPDATE`（团队测试库策略）
+- **验证**：写操作后用 SELECT（`query_business_data`）核对；符合池表/主细/预交金等业务规则
+- **生产排查**：仍仅 SELECT，与本规则测试造数分离
+
+## 推荐步骤
+
+1. `get_table_schema` 查表结构  
+2. 测试库执行 INSERT/UPDATE（造数 SQL 须在回复中摘要）  
+3. `query_business_data` SELECT 验证  
+4. 输出界面手工测试步骤  
+
+## MCP 工具
+
+- `get_table_schema` — 表结构  
+- `query_business_data` — SELECT 验证（`description` 注明测试验证目的）  
+- 写操作 — 测试库写 SQL 接口（与 SELECT 同源 MCP、测试 `dataSourceId`）
