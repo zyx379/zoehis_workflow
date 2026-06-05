@@ -235,6 +235,8 @@ Spec 至少包含：
 - [ ] 确认 Codegraph 已 `codegraph init`（本工作区已有 `.codegraph`）  
 - [ ] 确认 `user-zoe-his-mcp` 在 Cursor MCP 中启用（排查用）  
 - [x] 根目录 `AGENTS.md` 指向本文档与 Skill  
+- [x] 根目录 Meta Git + `.gitignore` + [multi-device-sync.md](multi-device-sync.md)  
+- [ ] GitHub/GitLab 远程 `fj-common-ai-config` 已 `push`（见 multi-device-sync 第二节）
 
 **可保留 `.trae/`：** 作为 Trae 历史备份，Cursor 以 `.cursor/` 为生效源。
 
