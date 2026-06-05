@@ -61,7 +61,7 @@ git status   # 确认没有出现 onelink-* 下的大量文件
 git commit -m "[-]【通用】初始化 fj-common AI 配置仓（workflow/skill/rule/memory）"
 
 # 在 GitHub/GitLab 新建空仓库，例如：zoehis_workflow
-git remote add origin git@github.com:<你的组织>/zoehis_workflow.git
+git remote add origin https://github.com/zyx379/zoehis_workflow.git
 git branch -M master
 git push -u origin master
 ```
@@ -72,7 +72,7 @@ git push -u origin master
 # 1. 照旧克隆/更新 9 个业务子仓库到同一父目录
 # 2. 若整目录是从别处复制的，在 fj-common 根目录：
 cd d:\zoe_work_space\fj-common
-git clone git@github.com:<组织>/zoehis_workflow.git .
+git clone https://github.com/zyx379/zoehis_workflow.git .
 # 若目录非空，改为 clone 到临时目录再复制 .cursor、docs、AGENTS.md、.gitignore
 
 git pull origin master

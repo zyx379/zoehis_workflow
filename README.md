@@ -14,7 +14,7 @@
 ## 快速开始
 
 ```bash
-git clone https://github.com/<你的用户名>/zoehis_workflow.git
+git clone https://github.com/zyx379/zoehis_workflow.git
 ```
 
 将 clone 内容放到本地 **fj-common 工作区根目录**（与 `onelink-*` 业务子仓库并列），详见 [docs/multi-device-sync.md](docs/multi-device-sync.md)。

@@ -26,5 +26,10 @@ if (git remote get-url origin 2>$null) {
     exit $LASTEXITCODE
 }
 
+# 已有远程时直接推送（仓库：https://github.com/zyx379/zoehis_workflow）
+if (-not (git remote get-url origin 2>$null)) {
+    git remote add origin https://github.com/zyx379/zoehis_workflow.git
+}
+
 git push -u origin master
 Write-Host "完成: https://github.com/$(gh api user -q .login)/zoehis_workflow" -ForegroundColor Green
