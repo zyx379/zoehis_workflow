@@ -27,6 +27,7 @@ Cursor 打开 **工作区根目录**，即可加载 `.cursor/rules` 与 Skill。
 |------|------|
 | [docs/workflow.md](docs/workflow.md) | **每次需求必读** |
 | [docs/multi-device-sync.md](docs/multi-device-sync.md) | 多设备 Git 同步 |
+| [docs/github-push-troubleshooting.md](docs/github-push-troubleshooting.md) | GitHub 推送失败（443/代理/SSH） |
 | [docs/ai-dev-setup-workflow.md](docs/ai-dev-setup-workflow.md) | Rule/Skill 配置说明 |
 | [AGENTS.md](AGENTS.md) | Agent 入口 |
 
