@@ -23,6 +23,12 @@ git commit -m "[禅道号/需求号]【项目名称】需求标题"
 git push origin master
 ```
 
+**Commit 正文约束（硬约束）：**
+
+- **禁止**在 commit message 中出现 `Co-authored-by: Cursor` 或 `cursoragent@cursor.com` 等 Agent/IDE 署名行
+- 仅保留一行标题：`[禅道号/需求号]【项目名称】需求标题`，**不要**追加 Co-authored-by、Made-with-Cursor 等 trailer
+- 若环境自动注入 Co-authored-by，提交前用 `git log -1 --format=full` 核对；含上述字样则 `--amend` 去掉后再 push
+
 ### 2. 合并到项目分支（先 master，再按 commit 关键词）
 
 commit message 匹配关键词时，将 **master merge 进** 对应项目分支：

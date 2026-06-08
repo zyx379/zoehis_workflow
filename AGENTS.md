@@ -18,6 +18,7 @@
 
 - 实现期：只改代码 + master pull，不提交
 - **提交标题：** `[禅道号/需求号]【项目名称】需求标题`
+- **禁止** commit 含 `Co-authored-by: Cursor` / `cursoragent@cursor.com`（见 Rule `zoehis-git-branch`）
 - 人审后：「审查通过，提交并 push」→ 各仓 push master
 - 「审查通过，提交并发布」→ push master → 按 commit 关键词 merge（【漳州二院】→ release-1.166；【漳州市医院】→ release-1.168）→ **项目分支** tag 最大值 +1；**无需再确认**是否编译，直接回报 tag 号（CI 自动打包）
 - 交付后 **默认** Step 12 写 `docs/memory/cases/`（见 Skill **zoehis-ai-dev**）
