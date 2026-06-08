@@ -14,11 +14,11 @@
 | 类型 | 仓库 | 业务域 |
 |------|------|--------|
 | 前端 | `onelink-web-outp-fj-common` | 门诊 |
-| 前端 | `onelink-web-pres-fj-common` | 处方 |
+| 前端 | `onelink-web-pres-fj-common` | 医嘱 |
 | 前端 | `onelink-web-his-charge-fj-common` | 收费 |
 | 前端 | `onelink-web-his-drug-fj-common` | 药库 |
 | 前端 | `onelink-web-his-fj-component` | 公共组件 |
-| 后端 | `onelink-micro-pres-fj-common` | 处方微服务 |
+| 后端 | `onelink-micro-pres-fj-common` | 医嘱 |
 | 后端 | `onelink-micro-charge-fj-common` | 收费微服务 |
 | 后端 | `onelink-micro-optimus-fj-common` | 基础/optimus |
 | 后端 | `onelink-micro-insurance-fj-ybcommon` | 医保 |

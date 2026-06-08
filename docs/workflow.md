@@ -101,11 +101,11 @@ flowchart TD
 | 仓库 | 域 |
 |------|-----|
 | onelink-web-outp-fj-common | 门诊前端 |
-| onelink-web-pres-fj-common | 处方前端 |
+| onelink-web-pres-fj-common | 医嘱前端 |
 | onelink-web-his-charge-fj-common | 收费前端 |
 | onelink-web-his-drug-fj-common | 药库前端 |
 | onelink-web-his-fj-component | 公共组件 |
-| onelink-micro-pres-fj-common | 处方服务 |
+| onelink-micro-pres-fj-common | 医嘱后端 |
 | onelink-micro-charge-fj-common | 收费服务 |
 | onelink-micro-optimus-fj-common | 基础服务 |
 | onelink-micro-insurance-fj-ybcommon | 医保服务 |
@@ -357,6 +357,21 @@ git checkout master
 | 10.3 | release-* | tag = max(tag)+1，push tag |
 
 **默认（无需再确认）：** Step 10 完成后 GitLab CI 由 tag/分支自动打包编译；Agent 直接回报各仓 **tag 号**，不再追问「是否 push / 是否编译」。`release-*` 全量 merge 冲突时优先 **cherry-pick** 本次 commit。
+
+### 10.4 cherry-pick 后格式审核（强制）
+
+cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，确认无残留冲突标记和括号/缩进错误，再 push + tag。
+
+**审核清单：**
+
+- [ ] 无残留冲突标记（`<<<<<<<` / `=======` / `>>>>>>>`）
+- [ ] 括号匹配正确（`{}` `()` 成对，无多余/缺失闭合）
+- [ ] 缩进与上下文一致
+- [ ] 语法无误（JS/Vue 无 Unexpected token；Java 无编译错误）
+
+**操作：** cherry-pick 解决冲突后、`git add` 前，用 Read 工具读取冲突文件的关键区域（冲突点 ±10 行），逐项确认上述清单。发现问题立即修正，修正后重新审核。
+
+> 此步骤源于实际踩坑：cherry-pick 冲突解决时多保留了一个 `}`，导致编译失败（tag release-1.166.16 → 修复 tag release-1.166.17）。
 
 ---
 

@@ -49,9 +49,33 @@
 - 版本管理：${revision} + flatten-maven-plugin
 ```
 
----
+### 1.5 系统参数 jsonl 单独提交模式
 
-## 二、待投喂
+```
+约束：
+- 功能代码与 *BizSysParam.jsonl 分两个 commit
+- 参数 commit 标题：`[*111111*]增加系统参数【paramEnglishName】【禅道号】`（`[*111111*]` 固定，勿写真实禅道号）
+- creatorName / checkerName = 需求负责人（非 zoehis-ai）
+
+master 顺序：
+  1. push 功能 commit
+  2. push 参数 commit
+
+项目分支：
+  - 功能：cherry-pick 功能 commit
+  - 参数：cherry-pick 参数 commit（或与 release 参数批量 merge，jsonl 保留双方行）
+```
+
+### 1.6 退药新开单有效期模式（来源：202238）
+
+```
+表：APP_RETURN_DRUG_MASTER（RETURN_DRUG_STATUS_CODE=0 新开，APPLY_TIME 开单时间）
+参数：return_drug_new_valid_hours（0/空=不限制）
+实现：SQL 列表过滤 + returnInpRefund 执行前 checkReturnDrugNewApplyValid
+异常：RETURN_DRUG_NEW_APPLY_EXPIRED (10010)
+```
+
+---
 
 以下内容需要后续从实际代码中补充：
 

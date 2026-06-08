@@ -15,11 +15,11 @@ description: >-
 | 仓库 | 域 |
 |------|-----|
 | onelink-web-outp-fj-common | 门诊前端 |
-| onelink-web-pres-fj-common | 处方前端 |
+| onelink-web-pres-fj-common | 医嘱前端 |
 | onelink-web-his-charge-fj-common | 收费前端 |
 | onelink-web-his-drug-fj-common | 药库前端 |
 | onelink-web-his-fj-component | 公共组件 |
-| onelink-micro-pres-fj-common | 处方服务 |
+| onelink-micro-pres-fj-common | 医嘱后端 |
 | onelink-micro-charge-fj-common | 收费服务 |
 | onelink-micro-optimus-fj-common | 基础服务 |
 | onelink-micro-insurance-fj-ybcommon | 医保服务 |
@@ -44,10 +44,20 @@ description: >-
 
 ### 1. 提交后 → 编译（自动）
 
+- **前置**：必须先完成 **Step 8 AI 局部审查**（完整输出审查块），再进入 Git 交付；即使用户写「自审后自动提交打包」，含义是**输出自审结论后不再二次确认**，**不是**跳过 Step 8/9 直接 push。
 - 用户已触发 Git 交付（如「审查通过，提交并发布」、或已给出 commit 并明确要求 push/发布）时：按 Step 10 完成 **push master → merge 项目分支 → 打 tag** 后，**直接结束交付**，不再追问是否编译。
 - 各子仓库 GitLab CI 由 **tag / release 分支** 自动触发打包（前端常见 `npm run generate` + Push to Platform；后端 Maven 等）。
 - 最终回复**直接列出**各改动仓的 **tag 号**（示例：`收费前端 tag：release-1.168.23`）；仅 push master、未打发布 tag 时注明「未打发布 tag，无发布流水线」。
 - `release-*` 与 master 差异大、**全量 merge 冲突**时：优先对目标 commit **cherry-pick** 到项目分支，勿强行解全仓冲突。
+- **cherry-pick 后格式审核（强制）**：解决冲突后、`git add` 前，必须用 Read 工具读取冲突区域（±10 行），确认无残留冲突标记、括号匹配、缩进一致、语法无误。踩坑记录：多保留一个 `}` 导致编译失败。
+
+### 1.1 系统参数单独提交（硬约束）
+
+- **`ChargeBizSysParam.jsonl`（及同类 `*BizSysParam.jsonl`）不得与功能代码同一 commit**。
+- **master**：功能 commit 先 push；参数 **单独 commit** 后 push。
+- **commit 标题**：`[*111111*]增加系统参数【参数英文名】【禅道号】`（前缀 `[*111111*]` **固定**，末尾写真实禅道号；示例：`[*111111*]增加系统参数【return_drug_new_valid_hours】【202238】`）
+- **作者/审核人**：`creatorName`、`checkerName` 写 **需求负责人姓名**（如 `zhouyanxi`），禁止 `zoehis-ai`。
+- **合并到项目分支**：参数 commit 可与 release 上其他参数变更 **一并 merge**（jsonl 冲突时保留双方参数行）；功能 commit 仍优先 cherry-pick。
 
 ### 2. 默认沉淀一次经验（Step 12）
 
