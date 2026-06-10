@@ -1,0 +1,113 @@
+---
+description: ZOEHIS 系统参数与页面参数的区分、使用规范、提交标准。涉及参数时必须遵守。
+alwaysApply: true
+---
+
+# ZOEHIS 参数体系规范
+
+## 核心区分
+
+| 类型 | API | 用途 | 示例 |
+|------|-----|------|------|
+| **系统参数** | `$getSysParamList` / `getSysParams` | 全局配置、跨页面共享、后端 SQL 联动 | `return_drug_new_valid_hours` |
+| **页面参数** | `$getPageControlMap(configId)` | 单页面开关/默认值、UI 行为控制 | `oper_date_default_empty` |
+| **业务参数** | `*BizSysParam.jsonl` | 系统参数种子数据、项目初始化 | Charge/Inp 等业务域参数 |
+
+### 判断原则
+
+1. **多个页面/接口共用** → 系统参数
+2. **仅单个页面行为控制** → 页面参数（`$getPageControlMap`）
+3. **首次使用前先查原页面已有参数体系**，与同页面其他 flag 保持一致
+4. **不确定时列待确认点，不猜测**
+
+## 系统参数
+
+### 后端读取
+
+```java
+String val = sysParamService.getSysParam("param_name", "默认值");
+```
+
+- 默认值 `"0"` 或 `""` 表示关闭/不限制，兼容其他医院
+- 有效期类需求优先**系统参数 + SQL 过滤 + 执行二次校验**模式
+
+### 前端读取
+
+```javascript
+// Vue 页面中
+const params = await this.$getSysParamList(['param1', 'param2'])
+this.paramValue = params.param1 || '0'
+```
+
+### jsonl 种子数据格式
+
+```json
+{
+  "paramEnglishName": "return_drug_new_valid_hours",
+  "paramValue": "24",
+  "paramName": "退药新开单有效小时数",
+  "paramDesc": "新开状态退药单有效小时数，超时不可执行且列表不展示。0或空表示不限制",
+  "orgId": "*",
+  "creatorName": "需求负责人姓名",
+  "checkerName": "需求负责人姓名"
+}
+```
+
+## 页面参数
+
+### 模式（固定三步）
+
+```javascript
+// 1. data() 声明变量
+data() {
+  return {
+    operDateDefaultEmptyFlag: null
+  }
+},
+
+// 2. $getPageControlMap 回调中读取
+methods: {
+  async loadPageParams() {
+    const map = await this.$getPageControlMap('130201')
+    const cfg = map['130201'] || {}
+    this.operDateDefaultEmptyFlag = !$.zoe.isNullOrEmpty(cfg.oper_date_default_empty)
+      && cfg.oper_date_default_empty.state * 1 === 1
+  },
+
+  // 3. 使用处三元条件
+  newOpenFun() {
+    const t = this.$getServerTime()
+    // ...
+    operationDate: this.operDateDefaultEmptyFlag ? '' : t
+  }
+}
+```
+
+- 页面参数 key 命名：**snake_case**（如 `oper_date_default_empty`），与代码变量 camelCase 对应
+- ConfigId 从页面已有 `$getPageControlMap` 调用处获取
+- 运维需在对应 configId 下配置 key，state=1 生效
+
+## 提交规范（硬约束）
+
+### jsonl 必须单独 commit
+
+**`*BizSysParam.jsonl`（及同类参数文件）不得与功能代码同一 commit。**
+
+### Commit 标题与作者
+
+| 类型 | 标题格式 | 作者/审核 |
+|------|----------|-----------|
+| 功能代码 | `[禅道号]【项目名称】需求标题` | — |
+| 系统参数 | `[*111111*]增加系统参数【paramEnglishName】【禅道号】` | `creatorName` + `checkerName` = 需求负责人姓名（如 `zhouyanxi`），**禁止** `zoehis-ai` |
+
+`[*111111*]` 前缀 **固定**，末尾写真实禅道号。
+
+### 发布顺序
+
+**master：**
+1. `git push` 功能 commit
+2. `git push` 参数 commit（单独）
+
+**项目分支：**
+- 功能：`cherry-pick` 功能 commit
+- 参数：`cherry-pick` 参数 commit（或与 release 参数批量 `merge`，jsonl 冲突时保留双方行）
