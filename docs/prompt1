@@ -1,18 +1,11 @@
-请严格按 docs/workflow.md 执行，逐步汇报进度清单。
+之前改造的需求测试未通过
+【召回记忆】
+代码仓库onelink-web-his-charge-fj-common
+git标题：
+[202226]【漳州市医院】单病种的病人，前面会显示一个单的标识，费用审核后，会显示一个费的标识，要求要两个都显示
 
-【任务类型】功能改造
-【需求描述】
-目前结算的时候会更新在院信息表和入院记录表的费用审核人字段为最新的结算人
-结算的时候不要变更费用审核人
-在院信息ZOEPATIENT.PAT_IN_HOSPITAL  入院记录表ZOEPATIENT.PAT_ADMISSION_RECORD
-FEE_AUDIT_OPERATOR	费用审核修改人；FEE_AUDIT_FLAG	费用审核标志
-【已知线索】（可空）
-- 页面/文件/接口：
-- 截图或报错：
-- traceId：
+【任务类型】排查为何测试不通过，总结经验优化
 
-【约束】
-
-
-【禅道&项目】
-[201737]【漳州市医院】
+【疑似线索（提供推理参考）】
+我觉得代码仓库得错了  即有可能是在这个仓库D:\zoe_work_space\fj-common\onelink-web-cis-common
+通过组件被调用的

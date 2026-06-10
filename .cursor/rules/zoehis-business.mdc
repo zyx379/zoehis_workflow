@@ -39,6 +39,21 @@ alwaysApply: true
 校对 → `PRES_APPLY_RECORDS_POOL`；申请 → 摆药池 + 单据池  
 停嘱：医生停嘱记录 → 护士审核
 
+## 费用审核人与结算人分离
+
+同一 SQL 若同时维护「业务标志」与「操作人」：
+- **结算/冲销/取消锁定**流程只改标志（如 `FEE_AUDIT_FLAG`），**不改操作人**（如 `FEE_AUDIT_OPERATOR`）
+- **手工审核**接口才更新操作人
+- 涉及表：`PAT_IN_HOSPITAL.FEE_AUDIT_OPERATOR`、`PAT_ADMISSION_RECORD.FEE_AUDIT_OPERATOR`
+
+## 有效期类需求模式
+
+**系统参数 + SQL 过滤 + 执行二次校验：**
+1. 新增系统参数（默认值 0/空 = 不限制，兼容其他医院）
+2. 列表/树/消息 SQL 增加时间过滤
+3. 执行入口增加校验方法，超时抛业务异常
+4. 参数 jsonl 与功能代码**分 commit 提交**（见 Rule `zoehis-sys-param`）
+
 ## 关键约束
 
 - 发送后才产生池表数据

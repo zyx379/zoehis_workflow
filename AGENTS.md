@@ -5,7 +5,7 @@
 ## 开发（改代码）
 
 1. **每次需求按步骤执行：** [docs/workflow.md](docs/workflow.md)（最终版 + 开场模板）
-2. 遵守 `.cursor/rules/zoehis-*.mdc`（含 Step 8：异常风险 + 幻觉 SQL 字段 MCP 查表）
+2. 遵守 `.cursor/rules/zoehis-*.mdc`（含 Step 8：异常风险 + 幻觉 SQL 字段 MCP 查表；系统参数/页面参数规范 `zoehis-sys-param`）
 3. 使用 Skill **zoehis-ai-dev**；代码定位优先 **Codegraph** MCP
 4. 配置说明：[docs/ai-dev-setup-workflow.md](docs/ai-dev-setup-workflow.md)
 5. **多设备同步**：[docs/multi-device-sync.md](docs/multi-device-sync.md)（GitHub 配置仓）

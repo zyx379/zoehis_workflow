@@ -2,16 +2,26 @@
 
 【任务类型】功能改造
 【需求描述】
-新建手术申请单时预计手术时间默认为空，且要求必填
-用页面参数控制，默认不为空
+双向转诊表单优化
+1、摘要信息填写框，提醒内容优化； 改成：输入摘要信息及下一步诊疗计划
+2、参考省转诊平台，转诊原因提供字典选择，选择后，支持编辑。 （字典项见图2，建议做成基本字典可维护）
+【已知线索】
 
-【已知线索】（可空）
-- 页面/文件/接口：
-- 截图或报错：
-- traceId：
+【疑似线索（提供推理参考）】
+ZOEDICT.DIC_BASIC_DICT 基本字典表  通过基本字典维护下拉框
+基本字典的前端调用方法可参考
+				// 开户行select
+        _sel.findList({dictName: 'DEPOSIT_BANK_DICT', query: ""}).then((data) => {
+					this.depositData = data;
+				});
+
+代码位置不确定是哪个
+onelink-web-outp-fj-common/pages/outpatientTreatment/referralRegistration/referralRecord.vue
+onelink-web-outp-fj-common/components/outpatientTreatment/referralRegistration/referralRegistration.vue
+【禅道&项目】
+[203042]【漳州市医院】
 
 【约束】
-自审后，自动提交打包编译
 
-【禅道&项目】
-[202235]【漳州二院】
+【skill与workflow的优化建议】
+加入基本字典维护的知识，这个比较常用

@@ -1,14 +1,21 @@
 ---
 name: zoehis-ai-dev
-description: >-
-  Fujian common HIS (fj-common) full-stack dev: Nuxt/Vue + Spring/MyBatis.
-  Use for new features, code review, DB/SQL, outpatient/inpatient/charge/drug flows.
-  Follow .cursor/rules and docs/workflow.md step-by-step with progress checklist.
+description: >
+  ZOEHIS full-stack workflow orchestrator. Use for complete feature delivery spanning
+  multiple layers (frontend + backend + DB + business). Automatically delegates to
+  domain-specific skills: zoehis-frontend (pages/components/API layer), zoehis-backend
+  (controllers/services/DAO), zoehis-business (pool tables/prepay/flows), zoehis-git-ops
+  (commit/merge/tag). Follows docs/workflow.md step-by-step with progress checklist.
+  Triggers: 新功能, 改造, 全栈, 端到端, 需求开发, Bug修复, 功能开发, 功能改造
 ---
 
-# ZOEHIS AI 开发（fj-common）
+# ZOEHIS AI 开发编排器
 
-福建通用 HIS 聚合工作区。命名、风格、业务、表结构、Git 由 **`.cursor/rules/zoehis-*.mdc`** 自动约束；本 Skill 负责工作流与参考资料。
+福建通用 HIS 聚合工作区。命名、风格、业务、表结构、Git 由 **`.cursor/rules/zoehis-*.mdc`** 自动约束。
+
+**本 Skill 是编排器**，收到需求后：
+1. 按 `docs/workflow.md` 逐步执行
+2. Step 2 代码定位后，**按需 Read 领域 Skill**（不提前全部加载）
 
 ## 工作区子仓库
 
@@ -24,55 +31,80 @@ description: >-
 | onelink-micro-optimus-fj-common | 基础服务 |
 | onelink-micro-insurance-fj-ybcommon | 医保服务 |
 
-## 何时使用
+## 领域 Skill 按需加载策略
 
-- 新功能 / 页面改造 / Bug 修复（改代码）
-- 规范检查、表结构/SQL、业务流程咨询
-- **不用于** 生产 traceId 排查 → 用个人 Skill `his-log-diagnosis`
+**核心原则：** 不在收到需求时立即加载所有 Skill。Step 2 代码定位后，按改动文件类型加载对应 Skill：
 
-## 必须遵守的工作流
+| Step 2 定位结果 | 加载的 Skill（Read） |
+|----------------|---------------------|
+| 仅前端文件（pages/、components/、api/） | `zoehis-frontend` |
+| 仅后端文件（Controller/Service/Dao/Dao.xml） | `zoehis-backend` + `zoehis-business` |
+| 仅改 SQL/Dao.xml 且无业务变更 | `zoehis-backend` |
+| 前端 + 后端 | `zoehis-frontend` + `zoehis-backend` + `zoehis-business` |
+| 涉及表结构变更 | 所有以上 + `zoehis-business` |
+| Step 10 Git 交付 | `zoehis-git-ops` |
+| Step 7 业务校验 | `zoehis-business` |
+| Step 8 AI 代码审查 | `.cursor/rules/zoehis-code-review.mdc` |
 
-**必须**按 **[docs/workflow.md](../../../docs/workflow.md)** 执行，逐步勾选汇报「需求处理进度」清单（Step 0–12），不得跳步。
+## 强制工作流（不可跳步）
 
-要点：spec 门禁 → 实现 → 业务校验 → AI 审查 → 人审 → Git 交付 → Step 11 测试库造数 → **Step 12 经验沉淀**（[docs/memory](../../../docs/memory/README.md)）。新需求前可检索 `docs/memory/index.md`。
+**必须**按 **[docs/workflow.md](../../../docs/workflow.md)** 执行，逐步汇报进度清单。
+
+```
+ 0. 任务分流（功能/Bug/生产排查）
+ 1. 需求理解（业务域、数据流、待确认点）
+ 2. 代码定位（文件清单 + 子仓库清单）→ 按需加载领域 Skill
+ 3. Git 同步（各子仓库 master pull）
+ 4-5. 改造计划 spec（复杂需求门禁）
+ 6. 最小实现
+ 7. 业务校验（池表/流水/预交金）
+ 8. AI 局部审查（异常风险 + 幻觉/SQL MCP 核验）
+ 9. 等待人工审查
+10. Git 交付（push → merge → tag）
+11. MCP 测试库造数 + 验证
+12. 经验沉淀（cases + index）
+```
 
 **硬约束：** 业务流程不清时列待确认点，禁止编造表名/接口/流程。
 
-## 默认行为（交付闭环）
+## 复杂度分流
 
-以下两项**默认执行**，**无需**在交付时再向用户确认「是否 push / 是否打包编译 / 是否写经验」。
+Agent 在 Step 0 判定后输出：
+
+| 复杂度 | 条件 | 流程 |
+|--------|------|------|
+| **Trivial** | 单文件、不改逻辑、不涉及 DB | 0→6→9→10 |
+| **Standard** | 单仓库、不改 DB 表、逻辑清晰 | 全流程，Skip 4-5 |
+| **Complex** | 跨仓库 / 改 DB / 跨多接口 / 业务不明确 | 全流程（含 spec 门禁） |
+
+## 默认行为（交付闭环）
 
 ### 1. 提交后 → 编译（自动）
 
-- **前置**：必须先完成 **Step 8 AI 局部审查**（完整输出审查块），再进入 Git 交付；即使用户写「自审后自动提交打包」，含义是**输出自审结论后不再二次确认**，**不是**跳过 Step 8/9 直接 push。
-- 用户已触发 Git 交付（如「审查通过，提交并发布」、或已给出 commit 并明确要求 push/发布）时：按 Step 10 完成 **push master → merge 项目分支 → 打 tag** 后，**直接结束交付**，不再追问是否编译。
-- 各子仓库 GitLab CI 由 **tag / release 分支** 自动触发打包（前端常见 `npm run generate` + Push to Platform；后端 Maven 等）。
-- 最终回复**直接列出**各改动仓的 **tag 号**（示例：`收费前端 tag：release-1.168.23`）；仅 push master、未打发布 tag 时注明「未打发布 tag，无发布流水线」。
-- `release-*` 与 master 差异大、**全量 merge 冲突**时：优先对目标 commit **cherry-pick** 到项目分支，勿强行解全仓冲突。
-- **cherry-pick 后格式审核（强制）**：解决冲突后、`git add` 前，必须用 Read 工具读取冲突区域（±10 行），确认无残留冲突标记、括号匹配、缩进一致、语法无误。踩坑记录：多保留一个 `}` 导致编译失败。
+- 用户已触发 Git 交付时，按 Step 10 完成后直接回报各仓 **tag 号**，不追问是否编译
+- GitLab CI 由 tag/release 分支自动触发打包
+- `release-*` 冲突优先 `cherry-pick`
 
-### 1.1 系统参数单独提交（硬约束）
+### 2. cherry-pick 后格式审核（强制）
 
-- **`ChargeBizSysParam.jsonl`（及同类 `*BizSysParam.jsonl`）不得与功能代码同一 commit**。
-- **master**：功能 commit 先 push；参数 **单独 commit** 后 push。
-- **commit 标题**：`[*111111*]增加系统参数【参数英文名】【禅道号】`（前缀 `[*111111*]` **固定**，末尾写真实禅道号；示例：`[*111111*]增加系统参数【return_drug_new_valid_hours】【202238】`）
-- **作者/审核人**：`creatorName`、`checkerName` 写 **需求负责人姓名**（如 `zhouyanxi`），禁止 `zoehis-ai`。
-- **合并到项目分支**：参数 commit 可与 release 上其他参数变更 **一并 merge**（jsonl 冲突时保留双方参数行）；功能 commit 仍优先 cherry-pick。
+解决冲突后、`git add` 前，确认无残留冲突标记、括号匹配、缩进一致、语法无误。
 
-### 2. 默认沉淀一次经验（Step 12）
+### 3. 系统参数单独提交（硬约束）
 
-- 每次需求交付闭环后**默认**写一条经验（除非纯一次性文案等无可复用点，须在进度清单注明「无沉淀」）。
-- 使用 [cases/_template.md](../../../docs/memory/cases/_template.md) 新建 `docs/memory/cases/YYYY-MM-<slug>.md`，并更新 [docs/memory/index.md](../../../docs/memory/index.md)。
-- **无需**用户另说「沉淀经验」「写 memory」。
+`*BizSysParam.jsonl` 不得与功能代码同一 commit。详见 `zoehis-git-ops`。
+
+### 4. 默认沉淀一次经验（Step 12）
+
+交付闭环后默认写经验 `docs/memory/cases/YYYY-MM-<slug>.md`，更新 `docs/memory/index.md`。
 
 ## 输出要求
 
-1. 涉及子仓库与文件清单（前/Api/Controller/Service/Dao.xml）
-2. 涉及表及增删改（池表→记录）
+1. 涉及子仓库与文件清单
+2. 涉及表及增删改
 3. 业务校验点
-4. 审查通过后 Git 交付（逐仓）：push master；可选关键词 merge + 项目分支 tag+1
-5. Step 11：MCP 测试库造数（Rule `zoehis-test-data`）
-6. Step 12：可复用经验写入 `docs/memory/cases/`（见 memory/README）
+4. 审查通过后 Git 交付（逐仓）
+5. MCP 测试库造数
+6. 可复用经验写入 `docs/memory/cases/`
 
 ## 技术栈
 
@@ -80,17 +112,20 @@ description: >-
 - 后端：Spring Boot 2.3 + JDK 11 + MyBatis `*Dao.xml` + 达梦/Oracle
 - 基础设施：Dubbo + Nacos + ZK；Maven api/pojo/service
 
-## 参考资料（按需 Read）
+## 参考资料
 
-| 文件 | 用途 |
-|------|------|
-| [docs/workflow.md](../../../docs/workflow.md) | **最终版执行工作流（必读）** |
-| [docs/memory/README.md](../../../docs/memory/README.md) | 工作经验记忆库与定期优化归档 |
-| [patterns/his-business-patterns.md](patterns/his-business-patterns.md) | 门诊/住院表级数据流 |
-| [patterns/common-patterns.md](patterns/common-patterns.md) | 通用代码模式 |
-| [examples/full-stack-example.md](examples/full-stack-example.md) | 全栈示例骨架 |
-| [docs/frontend-components.md](docs/frontend-components.md) | zoehis 组件（改 UI 时） |
-| [docs/ai-dev-setup-workflow.md](../../../docs/ai-dev-setup-workflow.md) | 配置总览与 Rule/Skill 说明 |
+| 文件 | 用途 | 按需加载 |
+|------|------|---------|
+| [docs/workflow.md](../../../docs/workflow.md) | **最终版执行工作流（必读）** | 始终 |
+| [../zoehis-frontend/SKILL.md](../zoehis-frontend/SKILL.md) | 前端组件/Vue/API 层 | Step 2 判定前端改动 |
+| [../zoehis-backend/SKILL.md](../zoehis-backend/SKILL.md) | 后端 Controller/Service/DAO/XML/Maven | Step 2 判定后端改动 |
+| [../zoehis-business/SKILL.md](../zoehis-business/SKILL.md) | 业务模式/池表/主细/预交金 | Step 2/7 判定涉及业务 |
+| [../zoehis-git-ops/SKILL.md](../zoehis-git-ops/SKILL.md) | Git 提交/分支/tag | Step 10 Git 交付 |
+| [docs/memory/README.md](../../../docs/memory/README.md) | 工作经验记忆库 | Step 12 |
+| [patterns/his-business-patterns.md](patterns/his-business-patterns.md) | 门诊/住院表级数据流（保留引用） | Step 1/7 |
+| [patterns/common-patterns.md](patterns/common-patterns.md) | 通用代码模式（保留引用） | Step 6 |
+| [examples/full-stack-example.md](examples/full-stack-example.md) | 全栈示例骨架 | Step 4 |
+| [docs/frontend-components.md](docs/frontend-components.md) | zoehis 组件 API（保留引用） | 前端改动时 |
 
 ## 关联 Rules
 
@@ -98,6 +133,7 @@ description: >-
 - `.cursor/rules/zoehis-code-style.mdc`
 - `.cursor/rules/zoehis-business.mdc`
 - `.cursor/rules/zoehis-db-tables.mdc`
+- `.cursor/rules/zoehis-sys-param.mdc`
 - `.cursor/rules/zoehis-git-branch.mdc`
 - `.cursor/rules/zoehis-test-data.mdc`
 - `.cursor/rules/zoehis-code-review.mdc`
