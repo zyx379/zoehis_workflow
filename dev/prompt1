@@ -1,0 +1,23 @@
+请按 docs/prompt_external.md 与 docs/workflow.md 的 Step 0–4 执行，逐步汇报进度。
+禁止改代码、禁止 git pull/commit/push。
+
+【任务类型】功能改造 / Bug 修复
+【需求描述】
+特殊病种用药维护界面维护了白名单后，
+门诊医生站开具药品时也需要按特殊病种白名单判断
+目前是：只按照特殊病种药品分发判断
+要求：属于白名单或者特珠病种分发药都不限制开出
+
+【已知线索】（可空）
+- 页面/文件/接口：
+- 截图或报错：
+
+【禅道&项目】
+[202240]【漳州二院】
+
+【约束】
+- 只输出初步分析(必做)，最终 spec 与实现在 Cursor 完成
+- 遵守 .cursor/rules/zoehis-*.mdc（Read 仓库内文件，不要猜测表名/接口）
+- Step 4 按 .cursor/skills/zoehis-code-map/SKILL.md 产出代码地图
+- 检索 docs/memory/index.md 找类似 case
+- 分析结果写入 docs/memory/short-term/{禅道号}-{slug}.md

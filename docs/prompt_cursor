@@ -1,0 +1,25 @@
+请严格按 docs/workflow.md 执行，逐步汇报进度清单。
+
+【任务类型】功能改造 / Bug 修复
+【需求描述】
+（页面/菜单、期望行为、验收标准）
+
+【已知线索】（可空）
+- 页面/文件/接口：
+- 截图或报错：
+- traceId：（仅排查时填）
+
+【禅道&项目】
+[禅道号]【项目名称】
+
+【约束】
+- 复杂需求：Step 4 需求分析 → Step 5 spec 等我确认再改代码
+- 实现期不要 commit/push；我审查通过后再提交
+
+【外部分析交接】（可空，Trae/CodeBuddy 完成后粘贴 docs/prompt_external.md 交接块）
+
+---
+相关文档：
+- 完整 workflow：docs/workflow.md
+- Trae/CodeBuddy 外部分析：docs/prompt_external.md
+- 多编辑器协作：docs/multi-editor-cursor-collab.md
