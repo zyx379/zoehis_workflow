@@ -31,7 +31,7 @@
 
 **已具备、`.trae` 未写明的增强能力：**
 
-- **Codegraph MCP**：工作区已索引（`.codegraph/`），应用 `codegraph_explore` 做代码定位，替代 dev-workflow 里「待探索 codegraph」的疑问。  
+- **Codegraph MCP（可选）**：符号名明确时可 `codegraph_explore`；**首选** Step 4 Skill `zoehis-code-map`（记忆库 + 定向 Grep）。  
 - **HIS 日志 MCP**：生产排查用个人 Skill `his-log-diagnosis` + `user-zoe-his-mcp`（与本地改代码流程分离）。
 
 ---
@@ -173,7 +173,7 @@ flowchart TD
 | 页面/菜单名 | `pages/{camelCase}/`、`components/{同名}/` |
 | 接口 | `api/{kebab-service}/.../{PascalCase}.js` → 后端 Controller |
 | 后端 | `Controller → Service → Dao → *Dao.xml` |
-| 类名/方法名/SQL | **优先** `codegraph_explore` / `codegraph_search`，避免盲目全库 Grep |
+| 类名/方法名/SQL | Skill `zoehis-code-map` + 定向 Grep；Codegraph 可选 |
 | 生产 traceId | **禁止**仅用本地仓库猜；用 MCP + GitLab `get_code` |
 
 **多仓库清单：** 定位结束时必须写出「将改动哪些仓库」；跨域功能常见组合例如摆药：web-drug + micro-charge。

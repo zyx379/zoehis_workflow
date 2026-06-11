@@ -21,14 +21,26 @@
 ```
 docs/memory/
 ├── README.md              # 本说明 + 维护周期
-├── index.md               # 案例索引（按域/表/页面/关键词）
-├── optimization-log.md    # 升格/归档记录（谁、何时、改了什么）
-├── cases/
-│   ├── _template.md       # 新案例模板
-│   └── YYYY-MM-<slug>.md  # 单条经验（一需求或一排查一条）
+├── index.md               # 长期案例索引（按域/表/页面/关键词）
+├── optimization-log.md    # 升格/归档记录
+├── short-term/            # 短期记忆（需求进行中，交付后删除）
+│   ├── README.md
+│   └── {禅道号}-{slug}.md
+├── cases/                 # 长期记忆（已验证、可复用）
+│   ├── _template.md
+│   └── YYYY-MM-<slug>.md
 └── archive/
-    └── YYYY-MM-DD/        # 归档的旧 workflow/skill 快照
+    └── YYYY-MM-DD/
 ```
+
+### 短期 vs 长期
+
+| | 短期 `short-term/` | 长期 `cases/` |
+|---|-------------------|---------------|
+| **内容** | 代码地图、spec 草稿、排查笔记 | 已验证做法、踩坑、表流转 |
+| **写入** | Step 4–5；外部分析交接 | Step 12 |
+| **删除** | 交付闭环后 Agent 删除 | 保留；过时标 deprecated |
+| **index** | 不进入 | 更新 index.md |
 
 ---
 
@@ -103,8 +115,8 @@ flowchart LR
 
 ## Agent 使用方式
 
-- **新需求前**：Read `index.md`，按页面/表/域搜相关 case
-- **需求后**：Step 12 按模板写 case（用户确认后）
+- **新需求前**：Read `index.md`，按页面/表/域搜相关 case；Complex 需求 Step 4 另建 `short-term/` 文件  
+- **需求后**：Step 12 写长期 case → 更新 index → **删除** 对应 short-term 文件  
 - **回顾时**：读全部 cases + 当前 workflow/skill，输出升格提案，**人审后**再改 Rule/Skill
 
 ---

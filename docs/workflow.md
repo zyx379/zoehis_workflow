@@ -13,16 +13,19 @@
 - [ ] 1. 需求理解（业务域、数据流、待确认点）
 - [ ] 2. 代码定位（文件清单 + 子仓库清单）
 - [ ] 3. Git 同步（各子仓库 master pull）
-- [ ] 4. 改造计划 spec（复杂需求；简单可跳过并说明）
-- [ ] 5. 用户确认 spec（复杂需求门禁）
+- [ ] 4. 需求分析（代码地图 + 记忆库检索；复杂必做，简单可合并到 Step 2 说明）
+- [ ] 5. 产出 spec + 用户确认（复杂需求门禁）
 - [ ] 6. 最小实现
 - [ ] 7. 业务校验（池表/流水/预交金）
 - [ ] 8. AI 局部审查（异常风险 + 幻觉/SQL 字段 MCP 核验）
 - [ ] 9. 等待人工审查
 - [ ] 10. Git 交付：push master → 关键词合并项目分支 → 项目分支打 tag
 - [ ] 11. MCP 测试库造数 + 验证（INSERT/UPDATE/SELECT）
-- [ ] 12. 经验沉淀（cases + index，可复用时）
+- [ ] 12. 经验沉淀（长期 cases + index；清理 short-term）
+- [ ] 13. 会话收尾（可选：用户于 Cursor Usage 查看 token）
 ```
+
+> **外部分析**：Trae / CodeBuddy 仅做 Step 0–4，见 [prompt_external.md](prompt_external.md) 与 [multi-editor-cursor-collab.md](multi-editor-cursor-collab.md)。
 
 ---
 
@@ -33,10 +36,11 @@ flowchart TD
   S0[0 任务分流] --> S1[1 需求理解]
   S1 --> S2[2 代码定位]
   S2 --> S3[3 Git 同步 master pull]
-  S3 --> S4{复杂需求?}
-  S4 -->|是| S5[4-5 产出 spec 等人确认]
-  S4 -->|否| S6[6 最小实现]
-  S5 --> S6
+  S3 --> S4[4 需求分析 代码地图]
+  S4 --> S5{复杂需求?}
+  S5 -->|是| S5a[5 产出 spec 等人确认]
+  S5 -->|否| S6[6 最小实现]
+  S5a --> S6
   S6 --> S7[7 业务校验]
   S7 --> S8[8 AI 审查]
   S8 --> S9[9 人工审查]
@@ -84,7 +88,7 @@ flowchart TD
 
 **定位手段（按优先级）：**
 
-1. **Codegraph**：`codegraph_explore`（类名、方法、页面、流程）  
+1. **长期记忆**：Read [docs/memory/index.md](memory/index.md)，按页面/表/关键词找 cases  
 2. 用户线索：页面名、截图、接口名、文件路径  
 3. 路径约定：
 
@@ -93,6 +97,9 @@ flowchart TD
 | 页面 | `pages/{camelCase}/`、`components/{同名}/` |
 | API | `api/{kebab-service}/.../{PascalCase}.js` |
 | 后端 | `Controller → Service → Dao → *Dao.xml` |
+
+4. **定向 Grep / Read**：小范围符号、路由、`baseUrl`、`dictName`  
+5. **Codegraph（可选）**：索引就绪且符号名明确时，`codegraph_explore` 补调用链；非强制，见 Skill `zoehis-code-map`
 
 **Agent 必须输出：**
 
@@ -133,7 +140,28 @@ git pull origin master
 
 ---
 
-## Step 4–5 — 改造计划 spec（复杂需求门禁）
+## Step 4 — 需求分析
+
+在 Step 2 候选清单基础上，建立 **代码地图** 与业务上下文，供 Step 5 spec 使用。
+
+**Agent 操作：**
+
+1. Read Skill **`.cursor/skills/zoehis-code-map/SKILL.md`**  
+2. 检索 [docs/memory/index.md](memory/index.md) 与相关 cases  
+3. 验证调用链（页面 → API → Controller → Service → Dao → 表）  
+4. 识别参数体系（系统参数 / 页面参数 / 无）与数据流  
+5. **复杂需求**：写入 [docs/memory/short-term/{禅道号}-{slug}.md](memory/short-term/_template.md)  
+6. **简单需求**：在回复中说明「Step 4 与 Step 2 合并，跳过短期记忆文件」
+
+**Agent 必须输出：**
+
+- 代码地图表（仓库、路径、角色、**置信度**）  
+- 记忆库命中（case 链接 + 可复用结论）  
+- 待确认问题（低置信度路径、业务不清点）
+
+---
+
+## Step 5 — 产出 spec + 用户确认（复杂需求门禁）
 
 **满足任一即视为复杂，必须出 spec 并等人确认：**
 
@@ -141,6 +169,8 @@ git pull origin master
 - 跨多页面 / 多接口  
 - 新建表或改核心流水  
 - 业务规则不明确  
+
+Spec 可写在短期记忆同一文件，或直接在回复中（简单改动）。
 
 ### Spec 模板（Agent 填写）
 
@@ -171,7 +201,9 @@ git pull origin master
 ```
 
 **门禁：** 用户回复「spec 确认」或等价确认前，**不进入 Step 6**。  
-简单需求：Agent 说明「本次为简单改动，跳过 spec」并直接进入 Step 6。
+简单需求：Agent 说明「本次为简单改动，跳过 Step 5 spec」并直接进入 Step 6。
+
+**外部分析接手：** 若 Trae/CodeBuddy 已完成 Step 0–4，Cursor 从本步完善 spec，见 [multi-editor-cursor-collab.md](multi-editor-cursor-collab.md)。
 
 ---
 
@@ -434,11 +466,18 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 ---
 
-## Step 12 — 经验沉淀（工作经验记忆库）
+## Step 12 — 经验沉淀（长期记忆 + 清理短期）
 
-将本次**已验证**、可复用的经验写入记忆库，供后续需求检索；**不**把长案例直接塞进 Rule。
+将本次**已验证**、可复用的经验写入 **长期记忆**；**不**把长案例直接塞进 Rule。
 
-### 何时写 case
+### 记忆分层
+
+| 类型 | 目录 | 生命周期 |
+|------|------|----------|
+| **短期** | [docs/memory/short-term/](memory/short-term/) | Step 4–5 分析/spec；**交付后删除** |
+| **长期** | [docs/memory/cases/](memory/cases/) | 跨需求复用；定期升格 workflow/skill/rule |
+
+### 何时写长期 case
 
 - 新踩坑、新表流转、非显而易见改法  
 - 与既有 case 重复 → 只更新原 case，不新建  
@@ -450,7 +489,8 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 1. **新需求前**（可选）：Read [docs/memory/index.md](memory/index.md)，按页面/表/禅道号检索  
 2. **交付后**：用 [docs/memory/cases/_template.md](memory/cases/_template.md) 新建 `cases/YYYY-MM-<slug>.md`  
 3. 更新 [docs/memory/index.md](memory/index.md) 一行  
-4. 若建议升格 workflow/skill/rule → 在 case 中勾选「升格建议」，**不自动改** 权威文档  
+4. **删除** 本次 `docs/memory/short-term/{禅道号}-*.md`（内容已提炼进 case 或无需保留）  
+5. 若建议升格 workflow/skill/rule → 在 case 中勾选「升格建议」，**不自动改** 权威文档  
 
 ### 定期优化与归档
 
@@ -465,6 +505,22 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 ```text
 请按 docs/memory/README.md 做经验库回顾，提议升格项，我确认后再改 workflow/skill/rule 并归档。
 ```
+
+---
+
+## Step 13 — 会话收尾（可选）
+
+### Token 消耗汇报
+
+**Agent 无法可靠读取本会话 token 数**（Cursor 未向 Agent 暴露精确计量 API）。因此：
+
+| 做法 | 说明 |
+|------|------|
+| **推荐** | 用户在 **Cursor Settings → Usage / Billing** 自行查看当次或当日用量 |
+| **Agent 可汇报** | 改动文件数、子仓库数、是否走 spec/MCP 造数、完成的 workflow 步骤 |
+| **不建议** | Agent 猜测 token 数（易误导） |
+
+若团队需统计成本，可在需求结束时由人记录 Usage 截图或账单条目，与禅道号关联。
 
 ---
 
@@ -484,10 +540,12 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 | 命名/风格/业务/表/Git/测试造数/AI 审查 | `.cursor/rules/zoehis-*.mdc` |
 | Skill 入口 | `.cursor/skills/zoehis-ai-dev/SKILL.md` |
 | 业务表流转细节 | `.cursor/skills/zoehis-ai-dev/patterns/his-business-patterns.md` |
-| 代码定位 | Codegraph MCP `codegraph_explore` |
+| 代码地图（Step 4） | Skill `zoehis-code-map`；Codegraph 可选 |
+| 多编辑器协作 | [multi-editor-cursor-collab.md](multi-editor-cursor-collab.md) |
 | 生产日志 | `his-log-diagnosis` + `user-zoe-his-mcp`（仅 SELECT） |
 | 测试库造数 | `user-zoe-his-mcp`（测试 `dataSourceId`，INSERT/UPDATE/SELECT） |
-| 工作经验记忆 | [docs/memory/](memory/)（cases / index / 定期升格与 archive） |
+| 长期记忆 | [docs/memory/cases/](memory/cases/) + index |
+| 短期记忆 | [docs/memory/short-term/](memory/short-term/)（需求结束删除） |
 
 ---
 
@@ -508,9 +566,14 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 - traceId：（仅排查时填）
 
 【约束】
-- 复杂需求先出 spec 等我确认再改代码
+- 复杂需求：Step 4 需求分析 → Step 5 spec 等我确认再改代码
 - 实现期不要 commit/push；我审查通过后再提交
+
+【外部分析交接】（可空，Trae/CodeBuddy 完成后粘贴 prompt_external 交接块）
 ```
+
+**Cursor 专用开场：** [docs/prompt_cursor](prompt_cursor)（占位，可复制 workflow 开场模板）  
+**Trae/CodeBuddy 专用：** [docs/prompt_external.md](prompt_external.md)（仅 Step 0–4）
 
 审查通过后追加（按需选一）：
 
@@ -530,4 +593,4 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 ---
 
-*版本：2026-06-05（合并关键词、项目分支 tag、MCP 测试库造数）| 权威执行文档：`docs/workflow.md`*
+*版本：2026-06-11（Step 4/5 拆分、短期/长期记忆、多编辑器协作、code-map Skill）| 权威执行文档：`docs/workflow.md`*

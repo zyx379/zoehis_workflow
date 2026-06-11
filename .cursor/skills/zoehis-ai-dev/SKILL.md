@@ -37,6 +37,7 @@ description: >
 
 | Step 2 定位结果 | 加载的 Skill（Read） |
 |----------------|---------------------|
+| Step 4 需求分析 | `zoehis-code-map` |
 | 仅前端文件（pages/、components/、api/） | `zoehis-frontend` |
 | 仅后端文件（Controller/Service/Dao/Dao.xml） | `zoehis-backend` + `zoehis-business` |
 | 仅改 SQL/Dao.xml 且无业务变更 | `zoehis-backend` |
@@ -55,14 +56,16 @@ description: >
  1. 需求理解（业务域、数据流、待确认点）
  2. 代码定位（文件清单 + 子仓库清单）→ 按需加载领域 Skill
  3. Git 同步（各子仓库 master pull）
- 4-5. 改造计划 spec（复杂需求门禁）
+ 4. 需求分析（代码地图 + 记忆库；Skill zoehis-code-map）
+ 5. 产出 spec + 用户确认（复杂需求门禁）
  6. 最小实现
  7. 业务校验（池表/流水/预交金）
  8. AI 局部审查（异常风险 + 幻觉/SQL MCP 核验）
  9. 等待人工审查
 10. Git 交付（push → merge → tag）
 11. MCP 测试库造数 + 验证
-12. 经验沉淀（cases + index）
+12. 经验沉淀（长期 cases + 清理 short-term）
+13. 会话收尾（Usage 查看 token；Agent 汇报范围统计）
 ```
 
 **硬约束：** 业务流程不清时列待确认点，禁止编造表名/接口/流程。
@@ -73,9 +76,9 @@ Agent 在 Step 0 判定后输出：
 
 | 复杂度 | 条件 | 流程 |
 |--------|------|------|
-| **Trivial** | 单文件、不改逻辑、不涉及 DB | 0→6→9→10 |
-| **Standard** | 单仓库、不改 DB 表、逻辑清晰 | 全流程，Skip 4-5 |
-| **Complex** | 跨仓库 / 改 DB / 跨多接口 / 业务不明确 | 全流程（含 spec 门禁） |
+| **Trivial** | 单文件、不改逻辑、不涉及 DB | 0→6→9→10（Skip 4–5） |
+| **Standard** | 单仓库、不改 DB 表、逻辑清晰 | 全流程，Skip 5 spec（Step 4 可合并到 Step 2） |
+| **Complex** | 跨仓库 / 改 DB / 跨多接口 / 业务不明确 | 全流程（含 Step 4 代码地图 + Step 5 spec 门禁） |
 
 ## 默认行为（交付闭环）
 
@@ -104,7 +107,7 @@ Agent 在 Step 0 判定后输出：
 3. 业务校验点
 4. 审查通过后 Git 交付（逐仓）
 5. MCP 测试库造数
-6. 可复用经验写入 `docs/memory/cases/`
+6. 可复用经验写入 `docs/memory/cases/`；清理 `docs/memory/short-term/`
 
 ## 技术栈
 
@@ -124,7 +127,8 @@ Agent 在 Step 0 判定后输出：
 | [docs/memory/README.md](../../../docs/memory/README.md) | 工作经验记忆库 | Step 12 |
 | [patterns/his-business-patterns.md](patterns/his-business-patterns.md) | 门诊/住院表级数据流（保留引用） | Step 1/7 |
 | [patterns/common-patterns.md](patterns/common-patterns.md) | 通用代码模式（保留引用） | Step 6 |
-| [examples/full-stack-example.md](examples/full-stack-example.md) | 全栈示例骨架 | Step 4 |
+| [../zoehis-code-map/SKILL.md](../zoehis-code-map/SKILL.md) | Step 4 代码地图 / 需求分析 | Step 4 或 Complex |
+| [examples/full-stack-example.md](examples/full-stack-example.md) | 全栈示例骨架 | Step 5 spec |
 | [docs/frontend-components.md](docs/frontend-components.md) | zoehis 组件 API（保留引用） | 前端改动时 |
 
 ## 关联 Rules

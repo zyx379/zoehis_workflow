@@ -6,9 +6,10 @@
 
 1. **每次需求按步骤执行：** [docs/workflow.md](docs/workflow.md)（最终版 + 开场模板）
 2. 遵守 `.cursor/rules/zoehis-*.mdc`（含 Step 8：异常风险 + 幻觉 SQL 字段 MCP 查表；系统参数/页面参数规范 `zoehis-sys-param`）
-3. 使用 Skill **zoehis-ai-dev**；代码定位优先 **Codegraph** MCP
+3. 使用 Skill **zoehis-ai-dev**；Step 4 代码地图用 **zoehis-code-map**（Codegraph 可选）
 4. 配置说明：[docs/ai-dev-setup-workflow.md](docs/ai-dev-setup-workflow.md)
 5. **多设备同步**：[docs/multi-device-sync.md](docs/multi-device-sync.md)（GitHub 配置仓）
+6. **多编辑器协作**：[docs/multi-editor-cursor-collab.md](docs/multi-editor-cursor-collab.md)（Trae/CodeBuddy → Cursor）
 
 ## 生产排查（traceId）
 
@@ -29,4 +30,5 @@
 
 ## 工作经验记忆库
 
-- 目录：[docs/memory/](docs/memory/README.md) — 需求后 Step 12 写 case；定期回顾升格 workflow/skill/rule 并 **archive** 旧版
+- **长期**：[docs/memory/cases/](docs/memory/cases/) + index — Step 12 沉淀；定期升格 workflow/skill/rule  
+- **短期**：[docs/memory/short-term/](docs/memory/short-term/) — Step 4–5 分析/spec；交付后删除
