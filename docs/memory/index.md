@@ -13,3 +13,4 @@
 | 2026-06-08 | 202505 | 药库/摆药 | 配药池、释放库存、release_stock_skip_valid_check、VALID_END_TIME | [cases/2026-06-dispense-pool-release-skip-valid-check.md](cases/2026-06-dispense-pool-release-skip-valid-check.md) | skill |
 | 2026-06-10 | 202510 | 收费/自助取药 | selfTakeDrug、取药凭证预览、preview-remark、kiosk | [cases/2026-06-selfTakeDrug-preview-enlarge-remark.md](cases/2026-06-selfTakeDrug-preview-enlarge-remark.md) | — |
 | 2026-06-10 | 203042 | 门诊/转诊 | 双向转诊、TRANSFER_REASON、基本字典、转诊原因弹窗 | [cases/2026-06-referral-form-reason-dict-dialog.md](cases/2026-06-referral-form-reason-dict-dialog.md) | — |
+| 2026-06-11 | 202860 | 住院/手术 | 手术导航、排台、登记、PRES_OPERATION_APPLY_RECORD、状态同步、updateOperationPlatoon | [cases/2026-06-operationApply-status-sync-platoon.md](cases/2026-06-operationApply-status-sync-platoon.md) | — |
