@@ -11,6 +11,7 @@
 |------|------|--------|
 | 需求分析 | 代码地图、调用链、待确认点 | Step 4 |
 | Spec 草稿 | 改造计划、表/接口清单 | Step 5 |
+| 人工审核意见 | 审查补充、回归范围、驳回说明（选填） | Step 9 |
 | 排查笔记 | 非生产 trace 的本地定位记录 | Bug 修复 Step 2–4 |
 | 外部编辑器交接 | Trae/CodeBuddy 初步线索汇总 | 接手 Cursor 前 |
 
@@ -25,12 +26,14 @@
 
 - 文件：`{禅道号}-{slug}.md`（例：`203042-referral-reason-dict.md`）
 - 模板：[\_template.md](_template.md)
+- **同步 Skill**：Step 4 同时写入 `.cursor/skills/{禅道号}-{slug}/SKILL.md`；**Agent 会话标题**用中文（需求的简单描述），见 Skill 正文首段
 
 ## 清理（Step 12 后）
 
 1. 将 **已验证** 条目提炼进 `cases/YYYY-MM-<slug>.md`
 2. 更新 `index.md`
 3. **删除** 本目录对应该需求的短期文件
-4. 进度清单注明「短期记忆已清理」
+4. **删除** 对应 `.cursor/skills/{禅道号}-{slug}/` 需求 Skill 目录
+5. 进度清单注明「短期记忆已清理」
 
 Agent **不得** 把短期记忆全文复制进 alwaysApply Rule。

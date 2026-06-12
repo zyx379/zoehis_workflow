@@ -58,9 +58,10 @@ Read Skill：` .cursor/skills/zoehis-code-map/SKILL.md`
 2. **调用关系**（页面 → API → 后端 → 表）
 3. **记忆库命中**（index/cases 链接与一句可复用结论）
 4. **待确认问题**（业务不清、低置信度路径）
-5. 写入 `docs/memory/short-term/{禅道号}-{slug}.md`
+5. 写入 `docs/memory/short-term/{禅道号}-{slug}.md`（含末栏「人工审核意见（选填）」）
+6. **表/SQL 字段**：外部分析不调 MCP；存疑时标「待 Cursor Step 4 MCP get_table_schema」
 
-**禁止**：编造表名、SQL 列名、接口 URL；存疑时标「待 MCP get_table_schema」留给 Cursor。
+**禁止**：编造表名、SQL 列名、接口 URL。
 
 ---
 

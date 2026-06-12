@@ -28,10 +28,19 @@ description: >
 4. **定向搜索**：Grep 类名/方法名/路由/`baseUrl`/`dictName`（小范围，带仓库前缀）
 5. **Read 关键文件**：仅读 Step 2 候选清单，不整文件通读大 Service
 6. **Codegraph（可选）**：索引就绪且符号名明确时，可 `codegraph_explore` 补全调用链；**非强制**
+7. **MCP 字段核验（按需，Cursor Step 4）**：代码地图涉及**表名、拟改 SQL 列、Dao.xml 字段、实体/DTO 属性**且未从已读源码确认时：
+   - 调用 MCP `user-zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**
+   - 以返回**真实列名**写入短期记忆「数据库」表或「需求分析要点」
+   - 在回复中摘要：`已核对 <表名>：字段 xxx, yyy, ...`
+   - 纯前端、不涉及表/SQL → 注明「Step 4 不涉及 MCP 字段核验」
+   - 外部分析（Trae/CodeBuddy）无法调 MCP 时标「待 Cursor Step 4 MCP 核验」，**禁止**猜测列名写入 spec
 
-## 必须输出（写入短期记忆）
+## 必须输出（写入短期记忆 + 需求 Skill）
 
-路径：`docs/memory/short-term/{禅道号}-{slug}.md`（模板见该目录 `_template.md`）
+1. **短期记忆**：`docs/memory/short-term/{禅道号}-{slug}.md`（模板见该目录 `_template.md`）
+2. **需求 Skill**：`.cursor/skills/{禅道号}-{slug}/SKILL.md`（与短期记忆同步；Step 12 交付后删除 Skill 目录）
+
+**Agent 会话标题**：用**中文**写需求的简单描述（例：`特殊病种白名单前缀匹配开方校验`），写在 Skill 正文首段 `> **Agent 会话标题（中文）**` 行。
 
 ```markdown
 ## 代码地图
@@ -47,7 +56,12 @@ description: >
 
 ### 待确认
 - 低置信度路径、业务不清点
+
+### MCP 字段核验（按需）
+- 已核对表 / 关键字段摘要，或「不涉及」
 ```
+
+短期记忆文件末栏须含 **「人工审核意见（选填）」**（模板 `_template.md`），供 Step 9 用户填写。
 
 ## 与 Step 2 的分工
 
@@ -72,6 +86,6 @@ description: >
 
 ## 禁止
 
-- 未读文件就编造 Controller 路径或 SQL 列名
+- 未读文件、未 MCP 核验就编造 Controller 路径或 SQL 列名
 - 把猜测写进长期 `cases/`（未验证只放短期记忆 + 标待确认）
 - 用全库无差别 Grep 替代 index/case 检索

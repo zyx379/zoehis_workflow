@@ -5,7 +5,7 @@ alwaysApply: true
 
 # ZOEHIS Git 规范
 
-工作区为 **9 个独立 Git 子仓库**（根目录无 Git）。每个将改动的子仓库单独操作。完整步骤见 `docs/workflow.md` Step 10。
+工作区为 **10 个独立 Git 子仓库**（根目录无 Git）。每个将改动的子仓库单独操作。完整步骤见 `docs/workflow.md` Step 10。
 
 ## 分支策略
 
@@ -49,6 +49,8 @@ git checkout master
 ```
 
 无关键词匹配且用户未指定分支 → 只做步骤 1。
+
+**`onelink-web-cis-common` 例外：** CIS 公共 npm 包，无 `release-*` 与 tag；**始终只做步骤 1**（push master），不 merge、不打 tag，不参与项目分支 CI 编译。
 
 ### 3. Tag（在项目分支：当前分支最大 tag + 1）
 

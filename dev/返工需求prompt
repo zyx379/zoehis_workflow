@@ -1,0 +1,49 @@
+# Trae 返工初步分析 — 复制本文件为 dev/返工需求prompt 后填写
+
+> Trae：只 Step 0–4，禁止改代码/git。分析结果写入本文件【分析结果】区。
+> Cursor：@dev/返工需求prompt，状态=已分析 后才改代码。
+
+【禅道号】
+[202510]【漳州二院】将自助机取药凭证预览调大显示并增加备注提示
+
+【项目】
+与首次交付一致
+
+【测试反馈】
+票据被放大太多了
+
+【状态】
+已修复
+
+【关联记忆】（Trae 先搜 docs/memory/index.md）
+- case：[2026-06-selfTakeDrug-preview-enlarge-remark.md](docs/memory/cases/2026-06-selfTakeDrug-preview-enlarge-remark.md)
+- 首次 commit：`[202510]【漳州二院】将自助机取药凭证预览调大显示并增加备注提示`（两轮），tag `release-1.166.43`
+
+=====================================
+【分析结果】（Trae 填写，Cursor 不改）
+=====================================
+
+【域】收费 / 自助取药
+【仓库】`onelink-web-his-charge-fj-common`
+【根因】第二轮修复时，`enlargePreviewHtml`（L538）和 `onPreviewIframeLoad`（L561）**重复注入**了 `zoom: 2` 样式。两处都注入导致放大倍率叠加，票据被放得过大。
+【问题位置】`pages/charge/prePayManage/selfTakeDrug.vue`
+  - L538 `enlargePreviewHtml` 方法：注入 `zoom: ${scale}` 到 HTML 的 `<head>` 或 `<body>`
+  - L561 `onPreviewIframeLoad` 方法：iframe 加载后再次注入 `zoom: ${scale}` 到 iframe document
+  - L170 `previewScale: 2` 倍率值
+【参考实现】无（同仓无类似预览放大逻辑）
+【修复建议】保留 `onPreviewIframeLoad` 注入（更可靠，确保 iframe 内生效），**删除 `enlargePreviewHtml` 中的 zoom 注入逻辑**，只保留该方法作为兜底（不注入 zoom，或完全移除 zoom 相关注入）。具体：
+  - `enlargePreviewHtml` 中移除 `zoom: ${scale}` 的 style 注入，或改为不注入任何样式
+  - `onPreviewIframeLoad` 保持不变，负责在 iframe 加载后注入 zoom
+【待确认】无
+【复杂度】Trivial
+【下一步】Cursor 执行修复 → 验证预览放大效果正常
+
+=====================================
+【修复记录】（Cursor 填写）
+=====================================
+
+- **改动**：`onelink-web-his-charge-fj-common/pages/charge/prePayManage/selfTakeDrug.vue`
+  - 删除 `enlargePreviewHtml`，预览 HTML 直接赋给 `previewSrc`
+  - 保留 `onPreviewIframeLoad` 单点注入；`zoom` 仅作用于 `html`（原 `html, body` 同设 zoom 在浏览器中会叠乘约 4 倍）
+- **验证**：界面读卡/扫码触发预览，确认放大适中、底部备注正常
+- **待交付**：人审后「审查通过，提交并发布」→ push master → merge release-1.166 → tag+1

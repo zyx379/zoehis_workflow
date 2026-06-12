@@ -116,6 +116,7 @@ flowchart TD
 | onelink-web-his-charge-fj-common | 收费前端 |
 | onelink-web-his-drug-fj-common | 药库前端 |
 | onelink-web-his-fj-component | 公共组件 |
+| onelink-web-cis-common | CIS 公共组件（npm 包） |
 | onelink-micro-pres-fj-common | 医嘱后端 |
 | onelink-micro-charge-fj-common | 收费服务 |
 | onelink-micro-optimus-fj-common | 基础服务 |
@@ -144,19 +145,30 @@ git pull origin master
 
 在 Step 2 候选清单基础上，建立 **代码地图** 与业务上下文，供 Step 5 spec 使用。
 
+### 4.1 记忆检索（按优先级）
+
+1. **Read `docs/memory/business-rules.md`** → 确认业务约束（如「费用审核人与结算人分离」「手术申请 MASTER+RECORD 双表同步」）
+2. **按表名/页面路由查 `docs/memory/index.md` 反向索引** → 找到相关 case
+3. **读相关 case 文件** → 获取实现细节和踩坑记录
+4. 若无匹配 → 正常分析，交付后沉淀新 case
+
+### 4.2 代码地图
+
 **Agent 操作：**
 
 1. Read Skill **`.cursor/skills/zoehis-code-map/SKILL.md`**  
 2. 检索 [docs/memory/index.md](memory/index.md) 与相关 cases  
 3. 验证调用链（页面 → API → Controller → Service → Dao → 表）  
 4. 识别参数体系（系统参数 / 页面参数 / 无）与数据流  
-5. **复杂需求**：写入 [docs/memory/short-term/{禅道号}-{slug}.md](memory/short-term/_template.md)  
-6. **简单需求**：在回复中说明「Step 4 与 Step 2 合并，跳过短期记忆文件」
+5. **MCP 字段核验（按需）**：涉及表名、拟改 SQL 列、Dao.xml 字段或实体属性且**未从现有代码确认**时，调用 MCP `user-zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**，以返回列名为准写入短期记忆「数据库」或「需求分析要点」；外部分析无法调 MCP 时标「待 Cursor Step 4 MCP 核验」  
+6. **复杂需求**：写入 [docs/memory/short-term/{禅道号}-{slug}.md](memory/short-term/_template.md)  
+7. **简单需求**：在回复中说明「Step 4 与 Step 2 合并，跳过短期记忆文件」
 
 **Agent 必须输出：**
 
 - 代码地图表（仓库、路径、角色、**置信度**）  
 - 记忆库命中（case 链接 + 可复用结论）  
+- MCP 字段核验摘要（若涉及表/SQL；无则注明「不涉及」）  
 - 待确认问题（低置信度路径、业务不清点）
 
 ---
@@ -198,6 +210,11 @@ Spec 可写在短期记忆同一文件，或直接在回复中（简单改动）
 
 ### 待确认问题
 1. ...
+
+### 人工审核意见（选填）
+> Step 9 人工审查时由用户填写；有内容时须回到 Step 6 纳入改造。
+
+（留空）
 ```
 
 **门禁：** 用户回复「spec 确认」或等价确认前，**不进入 Step 6**。  
@@ -303,7 +320,7 @@ Spec 可写在短期记忆同一文件，或直接在回复中（简单改动）
 ## Step 9 — 人工审查（Git 门禁）
 
 **Agent：** 汇总 diff 要点，**停止一切 git 写操作**，等待用户。  
-**用户：** 在 diff 上确认业务与回归范围。
+**用户：** 在 diff 上确认业务与回归范围；若有补充意见，可写入短期记忆末栏 **「人工审核意见（选填）」**（Agent 协助更新对应 `short-term/{禅道号}-*.md`）。
 
 | 用户反馈 | Agent 动作 |
 |----------|------------|
@@ -343,6 +360,14 @@ git push origin master
 - 多仓顺序：**先后端 service，再前端**  
 - 每步后汇报 `git status`  
 
+#### 例外：`onelink-web-cis-common`
+
+该仓为 CIS 公共 npm 包，**无** `release-*` 发布分支与 tag 序列。无论用户触发「提交并 push」或「提交并发布」：
+
+- **仅执行 10.1**（master commit + push）
+- **跳过** 10.2 merge 与 10.3 tag
+- Agent 回报时注明「cis-common 已 push master，不参与项目分支编译」
+
 ### 10.2 合并到项目分支（先 master，再按提交关键词匹配）
 
 **原则：** 变更必须先落在 **master** 并已 push；再合并到对应 **release-*** 项目分支。  
@@ -350,7 +375,8 @@ git push origin master
 
 1. 读取本次 **commit message**（或用户指定的关键词）  
 2. 查下表匹配目标项目分支；**无匹配且用户未指定** → 只完成 10.1，不 merge  
-3. 对每个需发布的子仓库：
+3. **`onelink-web-cis-common` 始终跳过本步**（见 10.1 例外）  
+4. 对每个需发布的子仓库：
 
 ```bash
 git fetch origin
@@ -489,8 +515,22 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 1. **新需求前**（可选）：Read [docs/memory/index.md](memory/index.md)，按页面/表/禅道号检索  
 2. **交付后**：用 [docs/memory/cases/_template.md](memory/cases/_template.md) 新建 `cases/YYYY-MM-<slug>.md`  
 3. 更新 [docs/memory/index.md](memory/index.md) 一行  
-4. **删除** 本次 `docs/memory/short-term/{禅道号}-*.md`（内容已提炼进 case 或无需保留）  
-5. 若建议升格 workflow/skill/rule → 在 case 中勾选「升格建议」，**不自动改** 权威文档  
+4. **更新 `docs/memory/business-rules.md`**（见下方更新机制）  
+5. **删除** 本次 `docs/memory/short-term/{禅道号}-*.md`（内容已提炼进 case 或无需保留）  
+6. 若建议升格 workflow/skill/rule → 在 case 中勾选「升格建议」，**不自动改** 权威文档  
+
+### 业务规则速查表更新机制（Step 12 自动执行）
+
+每次写 case 后，Agent 判断是否更新 `docs/memory/business-rules.md`：
+
+| 情况 | 动作 |
+|------|------|
+| 新业务规则（之前没记录过） | 新增一行到对应分类下 |
+| 既有规则的新场景 | 在对应规则下追加 case 链接 |
+| 纯 UI/样式/文案改动 | 不更新 |
+| 规则已升格到 rule/skill | 在速查表中标注「详见 xxx rule/skill」 |
+
+**定期优化**（双周/月度）：检查重复/冲突条目、合并相似规则、删除已失效规则。  
 
 ### 定期优化与归档
 
@@ -593,4 +633,4 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 ---
 
-*版本：2026-06-11（Step 4/5 拆分、短期/长期记忆、多编辑器协作、code-map Skill）| 权威执行文档：`docs/workflow.md`*
+*版本：2026-06-12（短期记忆人工审核栏、Step 4 MCP 字段核验、cis-common 仅 push master）| 权威执行文档：`docs/workflow.md`*

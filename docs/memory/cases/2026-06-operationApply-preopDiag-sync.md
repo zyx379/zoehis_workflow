@@ -1,6 +1,6 @@
 # [202858] 手术申请保存时术前诊断未同步方位
 
-> 状态：`verified`  
+> 状态：`verified`（含 2026-06-11 返工）  
 > 日期：2026-06-10  
 > 域：住院
 
@@ -48,11 +48,19 @@ obj.preopDiags = this.$refs.opApplicationRef.formData.preopDiags || [];
 ## 关联 commit
 
 - `[202858]【漳州二院】保存手术时产生的术前诊断未同步方位`
+- `[202858]【漳州二院】手术申请列表术前诊断回显遗漏方位`（返工：getOperationApplys 拼接遗漏 diagDirectionCode）
+
+## 返工记录（2026-06-11）
+
+- **现象**：列表术前诊断仍缺方位（保存已正确）
+- **根因**：`getOperationApplys()` 回显字符串未拼 `diagDirectionCode`
+- **修复**：与子组件 `getDiagnosisList()` 一致：方位+部位+名称+说明
 
 ## 可复用结论
 
 - 父子组件通过 `watch` 同步 `formData` 时，若子组件独立修改了 `formData` 的某个字段（如通过 API 获取后赋值），父组件保存时需手动从子组件 `ref` 取最新值
 - 类似场景：子组件通过 API 获取数据回填表单字段，父组件保存时遗漏该字段
+- **同一字段多处拼接展示**（保存 vs 列表回显）须逐一核对；修一处不代表另一处已对齐
 
 ## 升格建议
 

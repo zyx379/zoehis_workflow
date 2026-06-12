@@ -21,9 +21,17 @@
 
 纯 UI 改造，预览由 `loadPreviewContent` → `getHtmlDocument` 加载票据 HTML 到 iframe，不涉及后端。
 
-- 预览时给 `.card-slot` 加 `card-slot--preview`：`95vw` / `72vh`
+**第一轮**：仅放大外层容器与标题/备注，iframe 内票据仍默认比例。
+
+**第二轮（反馈仍偏小）**：
+- `enlargePreviewHtml` + `onPreviewIframeLoad`：注入 `zoom: 2`、字号 `1.2em`
+- `self-service-container--preview`：预览区 flex 撑满，`card-slot--preview` 宽 `98vw`
+- `previewScale: 2` 集中维护倍率
+
+**共同**：
+- 预览时给 `.card-slot` 加 `card-slot--preview`
 - 预览标题、关闭按钮用 `clamp` 响应式字号
-- 在 `.preview-content` 下方新增 `.preview-remark` 固定栏（`flex-shrink: 0`），样式与顶部 alert 一致
+- `.preview-remark` 底部固定提示栏
 
 ## 涉及表 / 接口
 
@@ -39,8 +47,8 @@
 
 ## 关联 commit
 
-- `[202510]【漳州二院】将自助机取药凭证预览调大显示并增加备注提示`
-- tag：`release-1.166.41`（onelink-web-his-charge-fj-common）
+- `[202510]【漳州二院】将自助机取药凭证预览调大显示并增加备注提示`（两轮）
+- tag：`release-1.166.43`（onelink-web-his-charge-fj-common，第二轮 cherry-pick 发布）
 
 ## 可复用结论
 
@@ -56,3 +64,11 @@
 - [x] 无需升格，保留 case 即可
 
 **说明**：常规前端 UI 微调，无新业务模式。
+
+## 返工记录
+
+### 2026-06-11 预览放大过大
+
+- **反馈**：票据被放大太多
+- **根因**：第二轮同时保留 `enlargePreviewHtml` 与 `onPreviewIframeLoad` 两套 zoom 注入；且 `html, body { zoom: 2 }` 在浏览器中叠乘
+- **修复**：删除 `enlargePreviewHtml`；`onPreviewIframeLoad` 仅对 `html` 设置 `zoom: previewScale`

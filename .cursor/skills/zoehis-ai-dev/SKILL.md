@@ -26,6 +26,7 @@ description: >
 | onelink-web-his-charge-fj-common | 收费前端 |
 | onelink-web-his-drug-fj-common | 药库前端 |
 | onelink-web-his-fj-component | 公共组件 |
+| onelink-web-cis-common | CIS 公共组件（npm 包；**Git 仅 push master**） |
 | onelink-micro-pres-fj-common | 医嘱后端 |
 | onelink-micro-charge-fj-common | 收费服务 |
 | onelink-micro-optimus-fj-common | 基础服务 |
@@ -64,7 +65,7 @@ description: >
  9. 等待人工审查
 10. Git 交付（push → merge → tag）
 11. MCP 测试库造数 + 验证
-12. 经验沉淀（长期 cases + 清理 short-term）
+12. 经验沉淀（长期 cases + 清理 short-term 与需求 Skill）
 13. 会话收尾（Usage 查看 token；Agent 汇报范围统计）
 ```
 
@@ -87,6 +88,7 @@ Agent 在 Step 0 判定后输出：
 - 用户已触发 Git 交付时，按 Step 10 完成后直接回报各仓 **tag 号**，不追问是否编译
 - GitLab CI 由 tag/release 分支自动触发打包
 - `release-*` 冲突优先 `cherry-pick`
+- **`onelink-web-cis-common`**：仅 push master，不 merge/tag，不参与项目分支编译
 
 ### 2. cherry-pick 后格式审核（强制）
 
@@ -107,7 +109,7 @@ Agent 在 Step 0 判定后输出：
 3. 业务校验点
 4. 审查通过后 Git 交付（逐仓）
 5. MCP 测试库造数
-6. 可复用经验写入 `docs/memory/cases/`；清理 `docs/memory/short-term/`
+6. 可复用经验写入 `docs/memory/cases/`；清理 `docs/memory/short-term/` 及对应 `.cursor/skills/{禅道号}-*/` 需求 Skill
 
 ## 技术栈
 

@@ -15,16 +15,17 @@ description: >
 
 ## 工作区结构
 
-9 个独立 Git 子仓库（根目录无 Git）。操作时须进入具体子仓库。
+10 个独立 Git 子仓库（根目录无 Git）。操作时须进入具体子仓库。
 
-| 仓库 | 域 |
-|------|-----|
-| onelink-web-outp-fj-common | 门诊前端 |
-| onelink-web-pres-fj-common | 医嘱前端 |
-| onelink-web-his-charge-fj-common | 收费前端 |
-| onelink-web-his-drug-fj-common | 药库前端 |
-| onelink-web-his-fj-component | 公共组件 |
-| onelink-micro-pres-fj-common | 医嘱后端 |
+| 仓库 | 域 | Step 10 备注 |
+|------|-----|--------------|
+| onelink-web-outp-fj-common | 门诊前端 | 可 merge + tag |
+| onelink-web-pres-fj-common | 医嘱前端 | 可 merge + tag |
+| onelink-web-his-charge-fj-common | 收费前端 | 可 merge + tag |
+| onelink-web-his-drug-fj-common | 药库前端 | 可 merge + tag |
+| onelink-web-his-fj-component | 公共组件 | 可 merge + tag |
+| **onelink-web-cis-common** | **CIS 公共组件（npm 包）** | **仅 10.1 push master；跳过 merge/tag** |
+| onelink-micro-pres-fj-common | 医嘱后端 | 可 merge + tag |
 | onelink-micro-charge-fj-common | 收费服务 |
 | onelink-micro-optimus-fj-common | 基础服务 |
 | onelink-micro-insurance-fj-ybcommon | 医保服务 |
@@ -53,6 +54,8 @@ git push origin master
 - **commit 标题**：`[禅道号]【项目名称】需求标题`（无禅道号用 `[-]` 占位）
 - 每步汇报 `git status`
 
+**`onelink-web-cis-common` 例外：** 无 `release-*` 分支与 tag 序列；无论触发「提交并 push」或「提交并发布」，**只执行 10.1**，不 merge、不打 tag。回报注明「cis-common 已 push master，不参与项目分支编译」。
+
 ### 10.2 合并到项目分支
 
 ```bash
@@ -72,6 +75,7 @@ git checkout master
 
 - 匹配优先最长关键词
 - 冲突优先 **cherry-pick** 本次 commit（而非全量 merge）
+- **`onelink-web-cis-common` 跳过本步**
 
 ### 10.3 打 Tag（在项目分支）
 
@@ -86,6 +90,7 @@ git checkout master
 
 - 版本规则：**当前项目分支上已有 tag 的最大值 + 1**
 - 每仓 tag 独立计算
+- **`onelink-web-cis-common` 跳过本步**
 
 ## Windows / Cursor Agent 提交技巧
 

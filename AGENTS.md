@@ -1,6 +1,6 @@
 # fj-common — Agent 指引
 
-福建通用 HIS **多仓库聚合工作区**（9 个独立 Git 子仓库，根目录无 Git）。
+福建通用 HIS **多仓库聚合工作区**（10 个独立 Git 子仓库，根目录无 Git）。
 
 ## 开发（改代码）
 
@@ -22,11 +22,12 @@
 - **禁止** commit 含 `Co-authored-by: Cursor` / `cursoragent@cursor.com`（见 Rule `zoehis-git-branch`）
 - 人审后：「审查通过，提交并 push」→ 各仓 push master
 - 「审查通过，提交并发布」→ push master → 按 commit 关键词 merge（【漳州二院】→ release-1.166；【漳州市医院】→ release-1.168）→ **项目分支** tag 最大值 +1；**无需再确认**是否编译，直接回报 tag 号（CI 自动打包）
+- **`onelink-web-cis-common`**：无论何种交付触发语，**仅 push master**，不 merge 项目分支、不打 tag
 - 交付后 **默认** Step 12 写 `docs/memory/cases/`（见 Skill **zoehis-ai-dev**）
 
 ## 测试造数
 
-- Step 11：MCP `user-zoe-his-mcp` 在**测试库** INSERT/UPDATE 造数 + SELECT 验证（见 `docs/workflow.md`）
+- Step 11（默认跳过）：MCP `user-zoe-his-mcp` 在**测试库** INSERT/UPDATE 造数 + SELECT 验证（见 `docs/workflow.md`）
 
 ## 工作经验记忆库
 

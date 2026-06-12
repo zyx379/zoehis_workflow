@@ -14,6 +14,7 @@
 
 【约束】
 - 复杂需求：Step 4 需求分析 → Step 5 spec 等我确认再改代码
+- 简单需求：可跳过 Step 5 spec
 - 实现期不要 commit/push；我审查通过后再提交
 
 【外部分析交接】（可空，Trae/CodeBuddy 完成后粘贴 docs/prompt_external.md 交接块）
