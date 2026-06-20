@@ -4,46 +4,40 @@
 > Cursor：@dev/返工需求prompt，状态=已分析 后才改代码。
 
 【禅道号】
-[202510]【漳州二院】将自助机取药凭证预览调大显示并增加备注提示
+[203283]【漳州二院】门诊诊病界面添加预约渠道显示
 
 【项目】
 与首次交付一致
 
 【测试反馈】
-票据被放大太多了
+如图所示 发布后程序报错
 
 【状态】
-已修复
+已分析 | 已修复
 
 【关联记忆】（Trae 先搜 docs/memory/index.md）
-- case：[2026-06-selfTakeDrug-preview-enlarge-remark.md](docs/memory/cases/2026-06-selfTakeDrug-preview-enlarge-remark.md)
-- 首次 commit：`[202510]【漳州二院】将自助机取药凭证预览调大显示并增加备注提示`（两轮），tag `release-1.166.43`
+- case：docs/memory/cases/2026-06-outp-appt-way-health-display.md
+- 首次 commit：master `1d5ce898` / release-1.166 `b8de178d`（cherry-pick）
 
 =====================================
 【分析结果】（Trae 填写，Cursor 不改）
 =====================================
 
-【域】收费 / 自助取药
-【仓库】`onelink-web-his-charge-fj-common`
-【根因】第二轮修复时，`enlargePreviewHtml`（L538）和 `onPreviewIframeLoad`（L561）**重复注入**了 `zoom: 2` 样式。两处都注入导致放大倍率叠加，票据被放得过大。
-【问题位置】`pages/charge/prePayManage/selfTakeDrug.vue`
-  - L538 `enlargePreviewHtml` 方法：注入 `zoom: ${scale}` 到 HTML 的 `<head>` 或 `<body>`
-  - L561 `onPreviewIframeLoad` 方法：iframe 加载后再次注入 `zoom: ${scale}` 到 iframe document
-  - L170 `previewScale: 2` 倍率值
-【参考实现】无（同仓无类似预览放大逻辑）
-【修复建议】保留 `onPreviewIframeLoad` 注入（更可靠，确保 iframe 内生效），**删除 `enlargePreviewHtml` 中的 zoom 注入逻辑**，只保留该方法作为兜底（不注入 zoom，或完全移除 zoom 相关注入）。具体：
-  - `enlargePreviewHtml` 中移除 `zoom: ${scale}` 的 style 注入，或改为不注入任何样式
-  - `onPreviewIframeLoad` 保持不变，负责在 iframe 加载后注入 zoom
+【域】后端（charge-service）+ 前端 eventNo 空值守卫（master 已有）
+【仓库】onelink-micro-charge-fj-common（主修复）+ onelink-web-outp-fj-common（eventNo 空值守卫已存在）
+【根因】（MCP traceId=dac70e2290714a36 复核修正）charge-service `OutpApptRecordController.get` 方法标注 `@Required({""})`，`ParameterHelper.checkFields` 校验空字段名，抛出 `[]节点不能为空`（i18n KEY_NOT_NULL）。日志 requestParam 为 `{"eventNo":"D3426862"}`，**非** eventNo 为空导致。
+【问题位置】`onelink-micro-charge-fj-common` — `OutpApptRecordController.java` — `/get` 接口 `@Required({""})` 配置错误
+【参考实现】同 Controller 内 `getTriageQueueInfo`、`checkPatientAptRecord` 等接口使用有效字段名的 `@Required`；`/get` 为动态条件查询，Dao `getOutpApptRecord` 各字段均为可选 `<if>`
+【修复建议】移除 `/get` 上错误的 `@Required({""})`；前端 `loadPatientApptWay` 保留 eventNo 空值守卫（master 已有，防御未挂号场景）
 【待确认】无
 【复杂度】Trivial
-【下一步】Cursor 执行修复 → 验证预览放大效果正常
+【下一步】修复 charge-service `OutpApptRecordController.get` 的 @Required 注解
 
 =====================================
 【修复记录】（Cursor 填写）
 =====================================
 
-- **改动**：`onelink-web-his-charge-fj-common/pages/charge/prePayManage/selfTakeDrug.vue`
-  - 删除 `enlargePreviewHtml`，预览 HTML 直接赋给 `previewSrc`
-  - 保留 `onPreviewIframeLoad` 单点注入；`zoom` 仅作用于 `html`（原 `html, body` 同设 zoom 在浏览器中会叠乘约 4 倍）
-- **验证**：界面读卡/扫码触发预览，确认放大适中、底部备注正常
-- **待交付**：人审后「审查通过，提交并发布」→ push master → merge release-1.166 → tag+1
+- MCP 复核 traceId `dac70e2290714a36`：charge-service POST `/api/dict/reservation/outpApptRecord/get`，requestParam `{"eventNo":"D3426862"}`，异常 `[]节点不能为空`（KEY_NOT_NULL）
+- 修正 Trae 分析：根因在后端 `@Required({""})`，非前端 eventNo 为空
+- 改动：`OutpApptRecordController.get` 移除错误的 `@Required({""})` 注解
+- 前端 `main.vue` `loadPatientApptWay` 已有 `$.zoe.isNullOrEmpty(patientInfo.eventNo)` 守卫，无需再改

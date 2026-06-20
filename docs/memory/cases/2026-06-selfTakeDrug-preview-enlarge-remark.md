@@ -67,8 +67,10 @@
 
 ## 返工记录
 
-### 2026-06-11 预览放大过大
+### 2026-06-15 预览放大过大（二次返工）
 
-- **反馈**：票据被放大太多
-- **根因**：第二轮同时保留 `enlargePreviewHtml` 与 `onPreviewIframeLoad` 两套 zoom 注入；且 `html, body { zoom: 2 }` 在浏览器中叠乘
-- **修复**：删除 `enlargePreviewHtml`；`onPreviewIframeLoad` 仅对 `html` 设置 `zoom: previewScale`
+- **反馈**：票据还是被放大太多；希望单独跑页面看效果
+- **根因**：`f9433a20` 将 `onPreviewIframeLoad` 倍率硬编码为 2.5，且叠加 `body font-size: 16px` + 元素 `1.15em`，与 `zoom` 叠乘
+- **修复**：`previewScale` 降为 1.3；`onPreviewIframeLoad` 仅 `html { zoom }` + `body { margin: 0 }`，去掉字号叠加
+- **验证路径**：`/charge/prePayManage/selfTakeDrug`（白名单，可独立 dev 访问）
+- **交付**：tag `release-1.166.47`（`previewScale: 1.3`）

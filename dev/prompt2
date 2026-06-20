@@ -1,23 +1,25 @@
 请按 docs/prompt_external.md 与 docs/workflow.md 的 Step 0–4 执行，逐步汇报进度。
 禁止改代码、禁止 git pull/commit/push。
-
-【任务类型】功能改造 / Bug 修复
-【需求描述】
-手术申请指定知情同意书模板需支持多类别
-图中判断是根据系统参数判断的，但是只支持维护一个知情同意书模板id，现在想支持维护多个
-
-【已知线索】（可空）
-住院界面，其余线索图中获取
-
-【疑似线索，用于推理提示】
-
-
-【禅道&项目】
-[202857]【漳州二院】
-
 【约束】
 - 只输出初步分析(必做)，最终 spec 与实现在 Cursor 完成
 - 遵守 .cursor/rules/zoehis-*.mdc（Read 仓库内文件，不要猜测表名/接口）
 - Step 4 按 .cursor/skills/zoehis-code-map/SKILL.md 产出代码地图
 - 检索 docs/memory/index.md 找类似 case
 - 分析结果写入 docs/memory/short-term/{禅道号}-{slug}.md
+【任务类型】功能开发
+【需求描述】
+文档中提取增量需求，进行改造
+
+【已知线索】（可空）
+""C:\Users\陈碗周\Documents\WXWork\1688855718407050\Cache\File\2026-06\追溯码使用记录查询(1).html""
+""C:\Users\陈碗周\Documents\WXWork\1688855718407050\Cache\File\2026-06\追溯码使用记录查询-功能说明(1).docx""
+
+【疑似线索，用于推理提示】
+
+【禅道&项目】
+
+【需求补充】
+一、调拨要调用后端接口
+有两个动作：调拨、拆零
+调拨功能可参考
+

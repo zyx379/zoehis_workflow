@@ -1,22 +1,19 @@
-请按 docs/prompt_external.md 与 docs/workflow.md 的 Step 0–4 执行，逐步汇报进度。
-禁止改代码、禁止 git pull/commit/push。
+请严格按 docs/排查/现场离线排查流程.md 执行，逐步汇报进度清单。
+禁止改代码、禁止 git 写操作、禁止对生产库写 SQL。
 
-【任务类型】功能改造 / Bug 修复
-【需求描述】
-在红处方的代办人界面增加下拉选项，可选择院内职工字典，可根据工号、姓名、拼音、五笔检索，选择后自动带出该工号的性别、电话、证件类型和身份证号；同时不影响现有功能，可手工录入代办人信息
+【任务类型】现场离线排查
+【页面/菜单】
+【期望处理方式（sql排查脚本/代码逻辑分析/临时处理建议）】
+代码逻辑分析
+【问题描述】
+非急诊手术，则手术日期不能为今天
+这是怎么判断的 有参数可以关吗
 
-【已知线索】（可空）
-
-【疑似线索（需要验证）】
-onelink-micro-pres-fj-common
-onelink-web-outp-fj-common
-门诊住院都用用到 可能是公用组件，也可能是要改两个地方
-【禅道&项目】
-[203305]【漳州二院】
+【已知线索】
+页面：住院手术申请
 
 【约束】
-- 只输出初步分析(必做)，最终 spec 与实现在 Cursor 完成
-- 遵守 .cursor/rules/zoehis-*.mdc（Read 仓库内文件，不要猜测表名/接口）
-- Step 4 按 .cursor/skills/zoehis-code-map/SKILL.md 产出代码地图
-- 检索 docs/memory/index.md 找类似 case
-- 分析结果写入 docs/memory/short-term/{禅道号}-{slug}.md
+
+- 表名列名不确定时用 MCP 测试库 get_table_schema 或标待核对
+
+- 不要用get_code,代码取当前文件夹

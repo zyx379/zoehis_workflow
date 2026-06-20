@@ -11,9 +11,12 @@
 5. **多设备同步**：[docs/multi-device-sync.md](docs/multi-device-sync.md)（GitHub 配置仓）
 6. **多编辑器协作**：[docs/multi-editor-cursor-collab.md](docs/multi-editor-cursor-collab.md)（Trae/CodeBuddy → Cursor）
 
-## 生产排查（traceId）
+## 生产排查
 
-使用个人 Skill **his-log-diagnosis** + MCP `user-zoe-his-mcp`，验证前不改代码。
+| 场景 | 文档 |
+|------|------|
+| MCP / traceId 可达 | Skill **his-log-diagnosis** + MCP `user-zoe-his-mcp`（workflow 分支 A） |
+| **现场库不可达** | [docs/排查/现场离线排查流程.md](docs/排查/现场离线排查流程.md)（分支 B，产出 SELECT 脚本，验证前不改代码） |
 
 ## Git 约定摘要
 

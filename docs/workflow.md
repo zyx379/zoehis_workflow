@@ -9,7 +9,7 @@
 
 ```
 需求处理进度:
-- [ ] 0. 任务分流（功能 / Bug / 生产排查）
+- [ ] 0. 任务分流（功能 / Bug / 生产排查 / **现场离线排查**）
 - [ ] 1. 需求理解（业务域、数据流、待确认点）
 - [ ] 2. 代码定位（文件清单 + 子仓库清单）
 - [ ] 3. Git 同步（各子仓库 master pull）
@@ -62,8 +62,10 @@ flowchart TD
 | **功能改造** | ✅ 全流程 | 新需求、增强 |
 | **Bug 修复** | ✅ 全流程（可跳过 spec） | 先复现/定位根因 |
 | **生产排查** | ❌ 改走排查链路 | Skill `his-log-diagnosis` + MCP `user-zoe-his-mcp`；**验证前不改代码** |
+| **现场离线排查** | ❌ 改走 [现场离线排查流程](排查/现场离线排查流程.md) | 库/MCP 生产不可达，凭截图产出 **SELECT 脚本**；**验证前不改代码** |
 
-有 **traceId** 且目的是查生产 → 不走本工作流改码路径。
+有 **traceId** 且 MCP 生产可达 → **分支 A**，不走本工作流改码路径。  
+现场库不可达、仅有截图/报错 → **分支 B**（见上表链接）。
 
 ---
 
@@ -564,12 +566,24 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 ---
 
-## 分支 A：生产排查（不走改码流程）
+## 分支 A：生产排查（MCP / traceId 可达）
 
 1. 使用 Skill **`his-log-diagnosis`**  
 2. MCP **`user-zoe-his-mcp`**：HTTP → RPC → SQL → 业务 SELECT  
 3. 代码用 GitLab `get_code`，**不用本地 Grep 冒充生产代码**  
 4. 结论需日志+SQL+代码交叉验证；验证前不改代码  
+
+---
+
+## 分支 B：现场离线排查（库不可达）
+
+**适用：** 现场生产库、VPN 或 MCP 生产数据源不可达；仅有截图、报错、界面字段、Network 等线索。
+
+1. 严格按 **[docs/排查/现场离线排查流程.md](排查/现场离线排查流程.md)** 逐步执行  
+2. **只读**分析本地代码 + 记忆库；MCP 仅用于测试库 **`get_table_schema`** 核对列名  
+3. 产出 **排查 SQL 脚本包**（默认仅 SELECT）+ 非 SQL 建议（参数、版本、权限等）  
+4. 结论需 **代码链路 + 假设 + 预期 SQL 结果** 交叉验证；验证前不改代码  
+5. 现场回传 SQL 结果后：数据/参数类由现场处置；确认代码缺陷 → 转本 workflow **Bug 修复**（Step 1 起）
 
 ---
 
@@ -582,7 +596,8 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 | 业务表流转细节 | `.cursor/skills/zoehis-ai-dev/patterns/his-business-patterns.md` |
 | 代码地图（Step 4） | Skill `zoehis-code-map`；Codegraph 可选 |
 | 多编辑器协作 | [multi-editor-cursor-collab.md](multi-editor-cursor-collab.md) |
-| 生产日志 | `his-log-diagnosis` + `user-zoe-his-mcp`（仅 SELECT） |
+| 生产日志（分支 A） | `his-log-diagnosis` + `user-zoe-his-mcp`（仅 SELECT） |
+| 现场离线排查（分支 B） | [docs/排查/现场离线排查流程.md](排查/现场离线排查流程.md) |
 | 测试库造数 | `user-zoe-his-mcp`（测试 `dataSourceId`，INSERT/UPDATE/SELECT） |
 | 长期记忆 | [docs/memory/cases/](memory/cases/) + index |
 | 短期记忆 | [docs/memory/short-term/](memory/short-term/)（需求结束删除） |
@@ -603,7 +618,8 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 【已知线索】（可空）
 - 页面/文件/接口：
 - 截图或报错：
-- traceId：（仅排查时填）
+- traceId：（分支 A 生产排查时填）
+- 现场库是否可达：是 → 分支 A / 否 → [现场离线排查](排查/现场离线排查流程.md)
 
 【约束】
 - 复杂需求：Step 4 需求分析 → Step 5 spec 等我确认再改代码
@@ -633,4 +649,4 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 ---
 
-*版本：2026-06-12（短期记忆人工审核栏、Step 4 MCP 字段核验、cis-common 仅 push master）| 权威执行文档：`docs/workflow.md`*
+*版本：2026-06-15（新增分支 B 现场离线排查）| 权威执行文档：`docs/workflow.md`*
