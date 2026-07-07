@@ -13,6 +13,22 @@ description: >
 
 福建通用 HIS 前端开发规范与组件 API。负责 Vue 页面 / 组件 / API 调用层 / 样式。
 
+## 子仓库定位（关键）
+
+> **所有子仓库均位于工作区根目录 `{workspaceRoot}/` 下**（如 `d:\zoe_work_space\fj-common\onelink-web-pres-fj-common`）。
+> **禁止**用 Glob `**/{repo-name}/**` 搜索子仓库（会返回空）。应直接 `LS {workspaceRoot}/{repo-name}/` 或 `Read {workspaceRoot}/{repo-name}/...` 访问。
+
+前端子仓库：
+
+| 仓库 | 域 | 实际路径 |
+|------|-----|----------|
+| onelink-web-outp-fj-common | 门诊前端 | `{workspaceRoot}/onelink-web-outp-fj-common/` |
+| onelink-web-pres-fj-common | 医嘱前端 | `{workspaceRoot}/onelink-web-pres-fj-common/` |
+| onelink-web-his-charge-fj-common | 收费前端 | `{workspaceRoot}/onelink-web-his-charge-fj-common/` |
+| onelink-web-his-drug-fj-common | 药库前端 | `{workspaceRoot}/onelink-web-his-drug-fj-common/` |
+| onelink-web-his-fj-component | 公共组件 | `{workspaceRoot}/onelink-web-his-fj-component/` |
+| onelink-web-cis-common | CIS 公共组件（npm 包） | `{workspaceRoot}/onelink-web-cis-common/` |
+
 ## 技术栈
 
 - **框架**：Nuxt 2 + Vue 2.6

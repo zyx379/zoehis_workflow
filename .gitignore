@@ -15,6 +15,7 @@ onelink-web-pres-fj-common/
 .codegraph/
 .idea/
 .trae/
+.cursor/mcp.json
 
 # 个人草稿（可选：若需共享草稿则删除本行）
 docs/prompt临时区

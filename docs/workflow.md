@@ -111,18 +111,21 @@ flowchart TD
 
 ### 子仓库对照
 
-| 仓库 | 域 |
-|------|-----|
-| onelink-web-outp-fj-common | 门诊前端 |
-| onelink-web-pres-fj-common | 医嘱前端 |
-| onelink-web-his-charge-fj-common | 收费前端 |
-| onelink-web-his-drug-fj-common | 药库前端 |
-| onelink-web-his-fj-component | 公共组件 |
-| onelink-web-cis-common | CIS 公共组件（npm 包） |
-| onelink-micro-pres-fj-common | 医嘱后端 |
-| onelink-micro-charge-fj-common | 收费服务 |
-| onelink-micro-optimus-fj-common | 基础服务 |
-| onelink-micro-insurance-fj-ybcommon | 医保服务 |
+> **定位方法**：所有子仓库均位于工作区根目录 `{workspaceRoot}/` 下（如 `d:\zoe_work_space\fj-common\onelink-web-pres-fj-common`）。
+> **禁止**用 Glob `**/{repo-name}/**` 搜索子仓库（会返回空）。应直接 `LS {workspaceRoot}/{repo-name}/` 或 `Read {workspaceRoot}/{repo-name}/...` 访问。
+
+| 仓库 | 域 | 实际路径 |
+|------|-----|----------|
+| onelink-web-outp-fj-common | 门诊前端 | `{workspaceRoot}/onelink-web-outp-fj-common/` |
+| onelink-web-pres-fj-common | 医嘱前端 | `{workspaceRoot}/onelink-web-pres-fj-common/` |
+| onelink-web-his-charge-fj-common | 收费前端 | `{workspaceRoot}/onelink-web-his-charge-fj-common/` |
+| onelink-web-his-drug-fj-common | 药库前端 | `{workspaceRoot}/onelink-web-his-drug-fj-common/` |
+| onelink-web-his-fj-component | 公共组件 | `{workspaceRoot}/onelink-web-his-fj-component/` |
+| onelink-web-cis-common | CIS 公共组件（npm 包） | `{workspaceRoot}/onelink-web-cis-common/` |
+| onelink-micro-pres-fj-common | 医嘱后端 | `{workspaceRoot}/onelink-micro-pres-fj-common/` |
+| onelink-micro-charge-fj-common | 收费服务 | `{workspaceRoot}/onelink-micro-charge-fj-common/` |
+| onelink-micro-optimus-fj-common | 基础服务 | `{workspaceRoot}/onelink-micro-optimus-fj-common/` |
+| onelink-micro-insurance-fj-ybcommon | 医保服务 | `{workspaceRoot}/onelink-micro-insurance-fj-ybcommon/` |
 
 **不确定涉及哪个仓 → 列出待确认点，不进入 Step 6。**
 
@@ -149,10 +152,37 @@ git pull origin master
 
 ### 4.1 记忆检索（按优先级）
 
+**记忆召回机制**：根据 prompt 模板中的【记忆召回机制（本地/在线/全部）】选项决定检索范围。
+
+| 选项 | 检索范围 | 说明 |
+|------|----------|------|
+| **本地** | 仅本地 `docs/memory/` | 不连接 IMA MCP |
+| **在线** | 仅 IMA 知识库（MCP `ima-knowledge`） | 不读本地 case 文件 |
+| **全部**（默认） | 本地 + IMA 知识库 | 先本地后在线，合并结果 |
+
+#### 本地检索（选项 = 本地 / 全部）
+
 1. **Read `docs/memory/business-rules.md`** → 确认业务约束（如「费用审核人与结算人分离」「手术申请 MASTER+RECORD 双表同步」）
 2. **按表名/页面路由查 `docs/memory/index.md` 反向索引** → 找到相关 case
 3. **读相关 case 文件** → 获取实现细节和踩坑记录
 4. 若无匹配 → 正常分析，交付后沉淀新 case
+
+#### 在线检索（选项 = 在线 / 全部）
+
+对接全局 Skill **`ima-knowledge`**（`~/.cursor/skills/ima-knowledge/SKILL.md`，工作流 A）：
+
+1. 判断当前任务的 category（需求开发/问题排查）+ domain（收费&医保/医嘱&药剂/其他）
+2. 调用 `list_kb_content(knowledge_base_id)` 获取文件夹列表
+3. 找到对应文件夹的 `folder_id`
+4. 调用 `list_kb_content(folder_id=xxx, knowledge_base_id)` 查看历史笔记标题
+5. 如有相关笔记，调用 `get_note_content(note_id=xxx)` 读取详情
+6. 合并本地与在线结果，去重后输出
+
+#### 检索结果合并（选项 = 全部）
+
+- 本地 case 与在线笔记按**禅道号/关键词**去重
+- 输出时标注来源：`[本地]` / `[在线]`
+- 若同一 case 本地与在线均有，优先展示本地（内容更完整）
 
 ### 4.2 代码地图
 
@@ -163,8 +193,24 @@ git pull origin master
 3. 验证调用链（页面 → API → Controller → Service → Dao → 表）  
 4. 识别参数体系（系统参数 / 页面参数 / 无）与数据流  
 5. **MCP 字段核验（按需）**：涉及表名、拟改 SQL 列、Dao.xml 字段或实体属性且**未从现有代码确认**时，调用 MCP `user-zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**，以返回列名为准写入短期记忆「数据库」或「需求分析要点」；外部分析无法调 MCP 时标「待 Cursor Step 4 MCP 核验」  
-6. **复杂需求**：写入 [docs/memory/short-term/{禅道号}-{slug}.md](memory/short-term/_template.md)  
+6. **复杂需求**：写入短期记忆（命名见下方 **4.3**）  
 7. **简单需求**：在回复中说明「Step 4 与 Step 2 合并，跳过短期记忆文件」
+
+### 4.3 短期记忆 / Spec 文档命名（硬约束）
+
+Step 4 分析与 Step 5 spec **共用同一 short-term 文件**（禁止另建 spec 文件）。
+
+| 项 | 规则 | 示例 |
+|----|------|------|
+| **文件名** | `{禅道号}-{功能描述}+{关键索引}.md` | `206295-医嘱申请条数+docOderQuery-停嘱时间.md` |
+| **功能描述** | 中文需求简称（与禅道标题或页面功能一致） | 医嘱申请条数 |
+| **关键索引** | 1～3 个检索词：页面路由、主接口、核心表 | `docOderQuery-停嘱时间` |
+| **文档 H1** | `# [禅道号] {功能描述}`，与文件名「功能描述」一致 | `# [206295] 医嘱申请条数展示与停嘱时间过滤` |
+| **唯一性** | **同一禅道号进行中只保留一个 short-term**；返工、spec 修订在原文件追加/更新，不新建第二份 | — |
+| **需求 Skill** | `.cursor/skills/{禅道号}-{关键索引}/SKILL.md`（与 short-term 同步；Step 12 删除） | `.cursor/skills/206295-docOderQuery/SKILL.md` |
+
+- 模板：[docs/memory/short-term/_template.md](memory/short-term/_template.md)  
+- 旧版 `{禅道号}-{英文slug}.md` 仍可读；**新需求一律中文命名**
 
 **Agent 必须输出：**
 
@@ -184,7 +230,12 @@ git pull origin master
 - 新建表或改核心流水  
 - 业务规则不明确  
 
-Spec 可写在短期记忆同一文件，或直接在回复中（简单改动）。
+**Spec 写入位置（硬约束）：**
+
+- 与 Step 4 **同一 short-term 文件**的 `## Spec` 章节（见 [4.3 命名规范](#43-短期记忆--spec-文档命名硬约束)）  
+- **禁止**另建独立 spec 文件；简单改动可在回复中说明并跳过 spec 章节  
+
+**Spec 章节标题**：全部使用**中文**（与下方模板一致）；确认后将文件头 `状态` 更新为 `spec-confirmed`。
 
 ### Spec 模板（Agent 填写）
 
@@ -322,7 +373,7 @@ Spec 可写在短期记忆同一文件，或直接在回复中（简单改动）
 ## Step 9 — 人工审查（Git 门禁）
 
 **Agent：** 汇总 diff 要点，**停止一切 git 写操作**，等待用户。  
-**用户：** 在 diff 上确认业务与回归范围；若有补充意见，可写入短期记忆末栏 **「人工审核意见（选填）」**（Agent 协助更新对应 `short-term/{禅道号}-*.md`）。
+**用户：** 在 diff 上确认业务与回归范围；若有补充意见，可写入短期记忆末栏 **「人工审核意见（选填）」**（Agent 协助更新对应 `short-term/{禅道号}-*.md`，按 [4.3](#43-短期记忆--spec-文档命名硬约束) 中文命名文件）。
 
 | 用户反馈 | Agent 动作 |
 |----------|------------|
@@ -508,18 +559,30 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 ### 何时写长期 case
 
 - 新踩坑、新表流转、非显而易见改法  
-- 与既有 case 重复 → 只更新原 case，不新建  
+- **同一禅道号** → 只更新原 case，追加「改造记录」，**禁止**再建新文件  
 - 纯一次性文案修改 → 可跳过，进度清单注明「无沉淀」
 - **默认执行**：交付闭环后 Agent **自动**写 case + 更新 index，无需用户另说「沉淀经验」
+
+### 文件命名（硬约束）
+
+| 项 | 规则 | 示例 |
+|----|------|------|
+| **文件名** | `{禅道号}-{功能描述}+{关键索引}.md`（**有禅道号时必填前缀**） | `206301-入院登记主管医生同步医疗组+hospitalizationForm-clinicGroup.md` |
+| **无禅道号** | 省略前缀，仍用 `{功能描述}+{关键索引}.md` | `追溯码使用记录查询+traceCodeUsageQuery-医保追溯.md` |
+| **文档 H1** | `# [禅道号] {功能描述}`（无号则 H1 不写方括号号） | `# [206301] 入院登记/住院信息修改选择主管医生同步医疗组` |
+| **唯一性** | 同一禅道号只保留一个 case；后续追加「改造记录」 | — |
+
+- 旧版 `YYYY-MM-<slug>.md` 已全部迁移为中文+禅道号命名
 
 ### Agent 操作
 
 1. **新需求前**（可选）：Read [docs/memory/index.md](memory/index.md)，按页面/表/禅道号检索  
-2. **交付后**：用 [docs/memory/cases/_template.md](memory/cases/_template.md) 新建 `cases/YYYY-MM-<slug>.md`  
-3. 更新 [docs/memory/index.md](memory/index.md) 一行  
+2. **交付后**：先按禅道号查 index；**已存在** → 打开原 case 追加改造记录；**不存在** → 用 [cases/_template.md](memory/cases/_template.md) 新建中文命名文件  
+3. 更新 [docs/memory/index.md](memory/index.md)（同禅道号只保留一行，日期/关键词可合并更新；**同步 IMA 时填写 `IMA note_id` 列**）  
 4. **更新 `docs/memory/business-rules.md`**（见下方更新机制）  
 5. **删除** 本次 `docs/memory/short-term/{禅道号}-*.md`（内容已提炼进 case 或无需保留）  
 6. 若建议升格 workflow/skill/rule → 在 case 中勾选「升格建议」，**不自动改** 权威文档  
+7. **（可选）同步 IMA**：按全局 Skill `ima-knowledge` 工作流 B；**去重必遵** `~/.cursor/skills/ima-knowledge/dedup.md` 三重校验；成功后回写 case 元数据 + index
 
 ### 业务规则速查表更新机制（Step 12 自动执行）
 

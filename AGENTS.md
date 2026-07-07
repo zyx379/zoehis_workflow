@@ -18,6 +18,8 @@
 | MCP / traceId 可达 | Skill **his-log-diagnosis** + MCP `user-zoe-his-mcp`（workflow 分支 A） |
 | **现场库不可达** | [docs/排查/现场离线排查流程.md](docs/排查/现场离线排查流程.md)（分支 B，产出 SELECT 脚本，验证前不改代码） |
 
+> **子仓库路径**：所有后端代码均在本地子目录（如 `onelink-micro-charge-fj-common/`），排查时直接 Read/Grep，不要误判为"代码不在本地"。完整映射见 Skill `zoehis-code-map`。
+
 ## Git 约定摘要
 
 - 实现期：只改代码 + master pull，不提交

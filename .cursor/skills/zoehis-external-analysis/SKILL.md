@@ -87,18 +87,21 @@ description: >
 
 ### 子仓库对照
 
-| 仓库 | 域 |
-|------|-----|
-| onelink-web-outp-fj-common | 门诊前端 |
-| onelink-web-pres-fj-common | 医嘱前端 |
-| onelink-web-his-charge-fj-common | 收费前端 |
-| onelink-web-his-drug-fj-common | 药库前端 |
-| onelink-web-his-fj-component | 公共组件 |
-| onelink-web-cis-common | CIS 公共组件（npm 包） |
-| onelink-micro-pres-fj-common | 医嘱后端 |
-| onelink-micro-charge-fj-common | 收费服务 |
-| onelink-micro-optimus-fj-common | 基础服务 |
-| onelink-micro-insurance-fj-ybcommon | 医保服务 |
+> **定位方法**：所有子仓库均位于工作区根目录 `{workspaceRoot}/` 下。
+> **禁止**用 Glob `**/{repo-name}/**` 搜索子仓库（会返回空）。应直接 `LS {workspaceRoot}/{repo-name}/` 访问。
+
+| 仓库 | 域 | 实际路径 |
+|------|-----|----------|
+| onelink-web-outp-fj-common | 门诊前端 | `{workspaceRoot}/onelink-web-outp-fj-common/` |
+| onelink-web-pres-fj-common | 医嘱前端 | `{workspaceRoot}/onelink-web-pres-fj-common/` |
+| onelink-web-his-charge-fj-common | 收费前端 | `{workspaceRoot}/onelink-web-his-charge-fj-common/` |
+| onelink-web-his-drug-fj-common | 药库前端 | `{workspaceRoot}/onelink-web-his-drug-fj-common/` |
+| onelink-web-his-fj-component | 公共组件 | `{workspaceRoot}/onelink-web-his-fj-component/` |
+| onelink-web-cis-common | CIS 公共组件（npm 包） | `{workspaceRoot}/onelink-web-cis-common/` |
+| onelink-micro-pres-fj-common | 医嘱后端 | `{workspaceRoot}/onelink-micro-pres-fj-common/` |
+| onelink-micro-charge-fj-common | 收费服务 | `{workspaceRoot}/onelink-micro-charge-fj-common/` |
+| onelink-micro-optimus-fj-common | 基础服务 | `{workspaceRoot}/onelink-micro-optimus-fj-common/` |
+| onelink-micro-insurance-fj-ybcommon | 医保服务 | `{workspaceRoot}/onelink-micro-insurance-fj-ybcommon/` |
 
 **不确定涉及哪个仓 → 列出待确认点。**
 
@@ -114,7 +117,7 @@ description: >
 2. 验证调用链（页面 → API → Controller → Service → Dao → 表）
 3. 识别参数体系（系统参数 / 页面参数 / 无）与数据流
 4. **表/SQL 字段**：涉及表名或拟改列且未从源码确认时，标「待 Cursor Step 4 MCP get_table_schema」；**禁止**猜测列名（由 Cursor 调 MCP 核验）
-5. **复杂需求**：写入 `docs/memory/short-term/{禅道号}-{slug}.md`（含末栏「人工审核意见（选填）」）
+5. **复杂需求**：写入 `docs/memory/short-term/{禅道号}-{功能描述}+{关键索引}.md`（H1 用中文标题；含末栏「人工审核意见（选填）」；命名见 `zoehis-code-map` Skill）
 6. **简单需求**：在回复中说明「Step 4 与 Step 2 合并，跳过短期记忆文件」
 
 **必须输出：**
@@ -175,7 +178,7 @@ description: >
 [禅道号]【项目名称】
 
 【短期记忆文件】
-docs/memory/short-term/xxx.md（或说明已合并到 Step 2）
+docs/memory/short-term/{禅道号}-{功能描述}+{关键索引}.md（或说明已合并到 Step 2）
 
 【代码地图摘要】
 | 仓库 | 路径 | 角色 | 置信度 |
@@ -230,5 +233,5 @@ docs/memory/short-term/xxx.md（或说明已合并到 Step 2）
 - **禁止**编造表名、SQL 列名、接口 URL
 - 遵守 `.cursor/rules/zoehis-*.mdc`（Read 仓库内文件，不要猜测）
 - 存疑时标「待 MCP get_table_schema」留给 Cursor
-- 分析结果写入 `docs/memory/short-term/{禅道号}-{slug}.md`（复杂需求）
+- 分析结果写入 `docs/memory/short-term/{禅道号}-{功能描述}+{关键索引}.md`（复杂需求；Step 5 spec 同文件 `## Spec` 节）
 - 最终 spec 确认与改码仅在 Cursor 完成

@@ -19,18 +19,21 @@ description: >
 
 ## 工作区子仓库
 
-| 仓库 | 域 |
-|------|-----|
-| onelink-web-outp-fj-common | 门诊前端 |
-| onelink-web-pres-fj-common | 医嘱前端 |
-| onelink-web-his-charge-fj-common | 收费前端 |
-| onelink-web-his-drug-fj-common | 药库前端 |
-| onelink-web-his-fj-component | 公共组件 |
-| onelink-web-cis-common | CIS 公共组件（npm 包；**Git 仅 push master**） |
-| onelink-micro-pres-fj-common | 医嘱后端 |
-| onelink-micro-charge-fj-common | 收费服务 |
-| onelink-micro-optimus-fj-common | 基础服务 |
-| onelink-micro-insurance-fj-ybcommon | 医保服务 |
+> **定位方法**：所有子仓库均位于工作区根目录 `{workspaceRoot}/` 下（如 `d:\zoe_work_space\fj-common\onelink-web-pres-fj-common`）。
+> **禁止**用 Glob `**/{repo-name}/**` 搜索子仓库（会返回空）。应直接 `LS {workspaceRoot}/{repo-name}/` 或 `Read {workspaceRoot}/{repo-name}/...` 访问。
+
+| 仓库 | 域 | 实际路径 |
+|------|-----|----------|
+| onelink-web-outp-fj-common | 门诊前端 | `{workspaceRoot}/onelink-web-outp-fj-common/` |
+| onelink-web-pres-fj-common | 医嘱前端 | `{workspaceRoot}/onelink-web-pres-fj-common/` |
+| onelink-web-his-charge-fj-common | 收费前端 | `{workspaceRoot}/onelink-web-his-charge-fj-common/` |
+| onelink-web-his-drug-fj-common | 药库前端 | `{workspaceRoot}/onelink-web-his-drug-fj-common/` |
+| onelink-web-his-fj-component | 公共组件 | `{workspaceRoot}/onelink-web-his-fj-component/` |
+| onelink-web-cis-common | CIS 公共组件（npm 包；**Git 仅 push master**） | `{workspaceRoot}/onelink-web-cis-common/` |
+| onelink-micro-pres-fj-common | 医嘱后端 | `{workspaceRoot}/onelink-micro-pres-fj-common/` |
+| onelink-micro-charge-fj-common | 收费服务 | `{workspaceRoot}/onelink-micro-charge-fj-common/` |
+| onelink-micro-optimus-fj-common | 基础服务 | `{workspaceRoot}/onelink-micro-optimus-fj-common/` |
+| onelink-micro-insurance-fj-ybcommon | 医保服务 | `{workspaceRoot}/onelink-micro-insurance-fj-ybcommon/` |
 
 ## 领域 Skill 按需加载策略
 
@@ -39,6 +42,8 @@ description: >
 | Step 2 定位结果 | 加载的 Skill（Read） |
 |----------------|---------------------|
 | Step 4 需求分析 | `zoehis-code-map` |
+| Step 4 记忆召回=在线/全部 | `ima-knowledge`（全局 `~/.cursor/skills/ima-knowledge/`） |
+| Step 12 经验沉淀 + IMA 同步 | `ima-knowledge` |
 | 仅前端文件（pages/、components/、api/） | `zoehis-frontend` |
 | 仅后端文件（Controller/Service/Dao/Dao.xml） | `zoehis-backend` + `zoehis-business` |
 | 仅改 SQL/Dao.xml 且无业务变更 | `zoehis-backend` |
@@ -100,7 +105,30 @@ Agent 在 Step 0 判定后输出：
 
 ### 4. 默认沉淀一次经验（Step 12）
 
-交付闭环后默认写经验 `docs/memory/cases/YYYY-MM-<slug>.md`，更新 `docs/memory/index.md`。
+交付闭环后默认写/更新长期 case，更新 `docs/memory/index.md`。
+
+**命名与唯一性（硬约束）：**
+
+1. **同一禅道号只保留一个 case 文件**；后续改造、补丁、返工在原文档追加「改造记录」章节，**禁止**同禅道号再建新文件
+2. **文件名用中文 + 禅道号前缀（有则必填）**：`{禅道号}-{功能描述}+{关键索引}.md`  
+   - 无禅道号时省略前缀：`{功能描述}+{关键索引}.md`  
+   - **文档 H1**：`# [禅道号] {功能描述}`，与文件名「功能描述」一致  
+   - 示例：`206301-入院登记主管医生同步医疗组+hospitalizationForm-clinicGroup.md`
+
+**写入前**：Read `docs/memory/index.md`，按禅道号检索；已存在 → 更新原文件；不存在 → 新建。
+
+### 5. Step 4/5 短期记忆与 Spec（硬约束）
+
+Step 4 代码地图与 Step 5 spec **共用同一 short-term 文件**（详见 workflow Step 4.3 / 5）：
+
+| 项 | 规则 | 示例 |
+|----|------|------|
+| **文件名** | `{禅道号}-{功能描述}+{关键索引}.md` | `206295-医嘱申请条数+docOderQuery-停嘱时间.md` |
+| **文档 H1** | `# [禅道号] {功能描述}` | `# [206295] 医嘱申请条数展示与停嘱时间过滤` |
+| **唯一性** | 同一禅道号进行中只保留一个 short-term；spec 写在 `## Spec` 节 | — |
+| **Spec 子标题** | 全部中文（改造计划、涉及子仓库、文件清单…） | 见 `short-term/_template.md` |
+
+Skill：`zoehis-code-map`（Step 4 写入）；Step 12 删除 short-term 及 `.cursor/skills/{禅道号}-*/`。
 
 ## 输出要求
 

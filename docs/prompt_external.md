@@ -23,13 +23,21 @@
 【禅道&项目】
 [禅道号]【项目名称】
 
+【记忆召回机制（本地/在线/全部）】
+全部
+
 【约束】
 - 只输出初步分析，最终 spec 与实现在 Cursor 完成
 - 遵守 .cursor/rules/zoehis-*.mdc（Read 仓库内文件，不要猜测表名/接口）
 - Step 4 按 .cursor/skills/zoehis-code-map/SKILL.md 产出代码地图
-- 检索 docs/memory/index.md 找类似 case
-- 分析结果写入 docs/memory/short-term/{禅道号}-{slug}.md
+- 按【记忆召回机制】选项检索记忆库（见下方说明）
+- 分析结果写入 docs/memory/short-term/{禅道号}-{功能描述}+{关键索引}.md
 ```
+
+**记忆召回机制说明：**
+- **本地**：仅检索 `docs/memory/` 本地 case 文件
+- **在线**：仅检索 IMA 知识库（MCP `ima-knowledge`；Skill `~/.cursor/skills/ima-knowledge/`）
+- **全部**（默认）：本地 + IMA 知识库，按禅道号/关键词去重，标注来源 `[本地]` / `[在线]`
 
 ---
 
@@ -56,12 +64,36 @@ Read Skill：` .cursor/skills/zoehis-code-map/SKILL.md`
 
 1. **代码地图表**（仓库、路径、角色、置信度）
 2. **调用关系**（页面 → API → 后端 → 表）
-3. **记忆库命中**（index/cases 链接与一句可复用结论）
+3. **记忆库命中**（按【记忆召回机制】选项输出，格式见下方）
 4. **待确认问题**（业务不清、低置信度路径）
-5. 写入 `docs/memory/short-term/{禅道号}-{slug}.md`（含末栏「人工审核意见（选填）」）
+5. 写入 `docs/memory/short-term/{禅道号}-{功能描述}+{关键索引}.md`（H1 中文标题；含末栏「人工审核意见（选填）」；Step 5 spec 同文件）
 6. **表/SQL 字段**：外部分析不调 MCP；存疑时标「待 Cursor Step 4 MCP get_table_schema」
 
 **禁止**：编造表名、SQL 列名、接口 URL。
+
+### 记忆库命中输出格式（按召回机制选项）
+
+**选项 = 本地：**
+```markdown
+### 记忆库命中（本地）
+- [本地] docs/memory/cases/xxx.md — 禅道#XXXXX — 一句可复用结论
+- [本地] docs/memory/cases/yyy.md — 禅道#YYYYY — 一句可复用结论
+```
+
+**选项 = 在线：**
+```markdown
+### 记忆库命中（在线）
+- [在线] IMA note_id: XXXXX — 禅道#XXXXX — 一句可复用结论
+- [在线] IMA note_id: YYYYY — 禅道#YYYYY — 一句可复用结论
+```
+
+**选项 = 全部（默认）：**
+```markdown
+### 记忆库命中（全部）
+- [本地] docs/memory/cases/xxx.md — 禅道#XXXXX — 一句可复用结论
+- [在线] IMA note_id: YYYYY — 禅道#YYYYY — 一句可复用结论
+- [本地+在线] 禅道#ZZZZZ — 本地与在线均有，优先本地
+```
 
 ---
 

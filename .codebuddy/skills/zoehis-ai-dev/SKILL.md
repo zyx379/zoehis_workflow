@@ -21,18 +21,21 @@ description: >
 
 ## 工作区子仓库
 
-| 仓库 | 域 |
-|------|-----|
-| onelink-web-outp-fj-common | 门诊前端 |
-| onelink-web-pres-fj-common | 医嘱前端 |
-| onelink-web-his-charge-fj-common | 收费前端 |
-| onelink-web-his-drug-fj-common | 药库前端 |
-| onelink-web-his-fj-component | 公共组件 |
-| onelink-web-cis-common | CIS 公共组件（npm 包；Git 仅 push master） |
-| onelink-micro-pres-fj-common | 医嘱后端 |
-| onelink-micro-charge-fj-common | 收费服务 |
-| onelink-micro-optimus-fj-common | 基础服务 |
-| onelink-micro-insurance-fj-ybcommon | 医保服务 |
+> **定位方法**：所有子仓库均位于工作区根目录 `{workspaceRoot}/` 下（如 `d:\zoe_work_space\fj-common\onelink-web-pres-fj-common`）。
+> **禁止**用 Glob `**/{repo-name}/**` 搜索子仓库（会返回空）。应直接 `LS {workspaceRoot}/{repo-name}/` 或 `Read {workspaceRoot}/{repo-name}/...` 访问。
+
+| 仓库 | 域 | 实际路径 |
+|------|-----|----------|
+| onelink-web-outp-fj-common | 门诊前端 | `{workspaceRoot}/onelink-web-outp-fj-common/` |
+| onelink-web-pres-fj-common | 医嘱前端 | `{workspaceRoot}/onelink-web-pres-fj-common/` |
+| onelink-web-his-charge-fj-common | 收费前端 | `{workspaceRoot}/onelink-web-his-charge-fj-common/` |
+| onelink-web-his-drug-fj-common | 药库前端 | `{workspaceRoot}/onelink-web-his-drug-fj-common/` |
+| onelink-web-his-fj-component | 公共组件 | `{workspaceRoot}/onelink-web-his-fj-component/` |
+| onelink-web-cis-common | CIS 公共组件（npm 包；Git 仅 push master） | `{workspaceRoot}/onelink-web-cis-common/` |
+| onelink-micro-pres-fj-common | 医嘱后端 | `{workspaceRoot}/onelink-micro-pres-fj-common/` |
+| onelink-micro-charge-fj-common | 收费服务 | `{workspaceRoot}/onelink-micro-charge-fj-common/` |
+| onelink-micro-optimus-fj-common | 基础服务 | `{workspaceRoot}/onelink-micro-optimus-fj-common/` |
+| onelink-micro-insurance-fj-ybcommon | 医保服务 | `{workspaceRoot}/onelink-micro-insurance-fj-ybcommon/` |
 
 ## CodeBuddy 默认模式：外部分析（Step 0-4）
 
@@ -60,7 +63,7 @@ Read `@.cursor/skills/zoehis-code-map/SKILL.md`
 2. **调用关系**（页面 → API → 后端 → 表）
 3. **记忆库命中**（index/cases 链接与一句可复用结论）
 4. **待确认问题**（业务不清、低置信度路径）
-5. 写入 `docs/memory/short-term/{禅道号}-{slug}.md`（含末栏「人工审核意见（选填）」）
+5. 写入 `docs/memory/short-term/{禅道号}-{功能描述}+{关键索引}.md`（含末栏「人工审核意见（选填）」；命名见 zoehis-code-map）
 6. 表/SQL 字段存疑时标「待 Cursor Step 4 MCP get_table_schema」（外部分析不调 MCP）
 
 **禁止**：编造表名、SQL 列名、接口 URL。

@@ -17,30 +17,101 @@ description: >
 - 外部编辑器（Trae/CodeBuddy）做初步分析时，按本 Skill 输出格式交接给 Cursor
 - Codegraph 不可用或未索引时，**本 Skill 为首选**定位手段
 
+## 子仓库定位（关键）
+
+> **所有子仓库均位于工作区根目录下**（如 `d:\zoe_work_space\fj-common\onelink-web-pres-fj-common`）。
+> **禁止**用 Glob `**/{repo-name}/**` 搜索子仓库（会返回空）。
+> **正确方式**：直接 `LS {workspaceRoot}/{repo-name}/` 或 `Read {workspaceRoot}/{repo-name}/pages/...`。
+
+| 仓库 | 域 | 实际路径 |
+|------|-----|----------|
+| onelink-web-outp-fj-common | 门诊前端 | `{workspaceRoot}/onelink-web-outp-fj-common/` |
+| onelink-web-pres-fj-common | 医嘱前端 | `{workspaceRoot}/onelink-web-pres-fj-common/` |
+| onelink-web-his-charge-fj-common | 收费前端 | `{workspaceRoot}/onelink-web-his-charge-fj-common/` |
+| onelink-web-his-drug-fj-common | 药库前端 | `{workspaceRoot}/onelink-web-his-drug-fj-common/` |
+| onelink-web-his-fj-component | 公共组件 | `{workspaceRoot}/onelink-web-his-fj-component/` |
+| onelink-web-cis-common | CIS 公共组件 | `{workspaceRoot}/onelink-web-cis-common/` |
+| onelink-micro-pres-fj-common | 医嘱后端 | `{workspaceRoot}/onelink-micro-pres-fj-common/` |
+| onelink-micro-charge-fj-common | 收费服务 | `{workspaceRoot}/onelink-micro-charge-fj-common/` |
+| onelink-micro-optimus-fj-common | 基础服务 | `{workspaceRoot}/onelink-micro-optimus-fj-common/` |
+| onelink-micro-insurance-fj-ybcommon | 医保服务 | `{workspaceRoot}/onelink-micro-insurance-fj-ybcommon/` |
+
 ## 收集顺序（按优先级）
 
-1. **长期记忆**：Read `docs/memory/index.md`，按页面/表/禅道/关键词找相关 `cases/`
-2. **用户线索**：开场模板中的已知路径、接口名、截图、报错
-3. **路径约定**（见 `zoehis-naming` Rule）：
-   - 页面 `pages/{camelCase}/`、`components/{同名}/`
-   - API `api/{kebab-service}/.../{PascalCase}.js`
-   - 后端 `Controller → Service → Dao → *Dao.xml`
-4. **定向搜索**：Grep 类名/方法名/路由/`baseUrl`/`dictName`（小范围，带仓库前缀）
-5. **Read 关键文件**：仅读 Step 2 候选清单，不整文件通读大 Service
-6. **Codegraph（可选）**：索引就绪且符号名明确时，可 `codegraph_explore` 补全调用链；**非强制**
-7. **MCP 字段核验（按需，Cursor Step 4）**：代码地图涉及**表名、拟改 SQL 列、Dao.xml 字段、实体/DTO 属性**且未从已读源码确认时：
-   - 调用 MCP `user-zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**
-   - 以返回**真实列名**写入短期记忆「数据库」表或「需求分析要点」
-   - 在回复中摘要：`已核对 <表名>：字段 xxx, yyy, ...`
-   - 纯前端、不涉及表/SQL → 注明「Step 4 不涉及 MCP 字段核验」
-   - 外部分析（Trae/CodeBuddy）无法调 MCP 时标「待 Cursor Step 4 MCP 核验」，**禁止**猜测列名写入 spec
+> **线索优先原则**：必须严格按以下顺序执行，**禁止跳过线索直接 Glob 搜索**。
+> 每一步必须产出明确结论后才能进入下一步。
+
+### 0. 提取线索（必做，第一步）
+
+从 prompt 模板中提取所有可用线索，按优先级排序：
+
+| 优先级 | 线索来源 | 示例 | 直接动作 |
+|--------|----------|------|----------|
+| **P0** | **已知线索**（git 标题/commit 信息） | `[XXX]【福州市第一总院】医嘱申请条数展示与页面展示不一致问题系停嘱时间与执行时间问题` | 提取关键词 → 直接 Grep 定位 |
+| **P1** | **需求描述中的页面/功能名** | `医嘱申请`、`停嘱时间` | 映射到子仓库 → 直接 Read 对应文件 |
+| **P2** | **截图/报错信息** | 截图中的组件名、URL、接口名 | 直接定位对应 Vue/JS/Dao.xml |
+| **P3** | **疑似线索** | 用户提供的表名、接口名 | 直接 Read 验证 |
+| **P4** | **禅道号/项目名** | `203656`、`漳州市医院` | 检索记忆库找类似 case |
+| **P5** | **路径约定** | `pages/{camelCase}/`、`api/{kebab-service}/` | 按约定路径直接 Read |
+| **P6** | **定向 Grep** | 类名/方法名/路由 | 小范围 Grep（带仓库前缀） |
+| **P7** | **Codegraph（可选）** | 符号名明确时 | `codegraph_explore` 补全调用链 |
+| **P8** | **MCP 字段核验（按需）** | 涉及表名/SQL 列时 | `get_table_schema` 核验 |
+
+**关键规则**：
+- **P0 线索必须首先处理**。git 标题中通常包含：问题现象 + 根因关键词 + 涉及模块，可直接定位到具体文件
+- **禁止在 P0-P4 有可用线索时，使用 Glob `**/{repo-name}/**` 搜索子仓库**（会返回空且浪费时间）
+- 子仓库定位：直接 `LS {workspaceRoot}/{repo-name}/` 或 `Read {workspaceRoot}/{repo-name}/...`
+
+### 1. 长期记忆
+
+Read `docs/memory/index.md`，按页面/表/禅道/关键词找相关 `cases/`
+
+### 2. 用户线索
+
+开场模板中的已知路径、接口名、截图、报错
+
+### 3. 路径约定（见 `zoehis-naming` Rule）
+
+- 页面 `pages/{camelCase}/`、`components/{同名}/`
+- API `api/{kebab-service}/.../{PascalCase}.js`
+- 后端 `Controller → Service → Dao → *Dao.xml`
+
+### 4. 定向搜索
+
+Grep 类名/方法名/路由/`baseUrl`/`dictName`（小范围，带仓库前缀）
+
+### 5. Read 关键文件
+
+仅读 Step 2 候选清单，不整文件通读大 Service
+
+### 6. Codegraph（可选）
+
+索引就绪且符号名明确时，可 `codegraph_explore` 补全调用链；**非强制**
+
+### 7. MCP 字段核验（按需，Cursor Step 4）
+
+代码地图涉及**表名、拟改 SQL 列、Dao.xml 字段、实体/DTO 属性**且未从已读源码确认时：
+- 调用 MCP `user-zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**
+- 以返回**真实列名**写入短期记忆「数据库」表或「需求分析要点」
+- 在回复中摘要：`已核对 <表名>：字段 xxx, yyy, ...`
+- 纯前端、不涉及表/SQL → 注明「Step 4 不涉及 MCP 字段核验」
+- 外部分析（Trae/CodeBuddy）无法调 MCP 时标「待 Cursor Step 4 MCP 核验」，**禁止**猜测列名写入 spec
 
 ## 必须输出（写入短期记忆 + 需求 Skill）
 
-1. **短期记忆**：`docs/memory/short-term/{禅道号}-{slug}.md`（模板见该目录 `_template.md`）
-2. **需求 Skill**：`.cursor/skills/{禅道号}-{slug}/SKILL.md`（与短期记忆同步；Step 12 交付后删除 Skill 目录）
+### 文件命名（硬约束）
 
-**Agent 会话标题**：用**中文**写需求的简单描述（例：`特殊病种白名单前缀匹配开方校验`），写在 Skill 正文首段 `> **Agent 会话标题（中文）**` 行。
+| 项 | 规则 | 示例 |
+|----|------|------|
+| **短期记忆** | `{禅道号}-{功能描述}+{关键索引}.md` | `206295-医嘱申请条数+docOderQuery-停嘱时间.md` |
+| **文档 H1** | `# [禅道号] {功能描述}` | `# [206295] 医嘱申请条数展示与停嘱时间过滤` |
+| **唯一性** | 同一禅道号进行中只保留一个 short-term；Step 5 spec 写在同一文件 `## Spec` 节 | — |
+| **需求 Skill** | `.cursor/skills/{禅道号}-{关键索引}/SKILL.md` | `.cursor/skills/206295-docOderQuery/SKILL.md` |
+
+1. **短期记忆**：按上表命名，模板见 `docs/memory/short-term/_template.md`
+2. **需求 Skill**：与短期记忆同步；Step 12 交付后删除 Skill 目录
+
+**Agent 会话标题**：用**中文**写需求的简单描述（与文件名「功能描述」一致），写在 Skill 正文首段 `> **Agent 会话标题（中文）**` 行。
 
 ```markdown
 ## 代码地图

@@ -23,17 +23,20 @@ description: >
 
 ## 工作区子仓库列表
 
-| 序号 | 仓库名 | 简称 |
-|------|--------|------|
-| 1 | onelink-web-outp-fj-common | 门诊前端 |
-| 2 | onelink-web-pres-fj-common | 医嘱前端 |
-| 3 | onelink-web-his-charge-fj-common | 收费前端 |
-| 4 | onelink-web-his-drug-fj-common | 药库前端 |
-| 5 | onelink-web-his-fj-component | 公共组件 |
-| 6 | onelink-micro-pres-fj-common | 医嘱后端 |
-| 7 | onelink-micro-charge-fj-common | 收费服务 |
-| 8 | onelink-micro-optimus-fj-common | 基础服务 |
-| 9 | onelink-micro-insurance-fj-ybcommon | 医保服务 |
+> **定位方法**：所有子仓库均位于工作区根目录 `{workspaceRoot}/` 下。
+> **禁止**用 Glob `**/{repo-name}/**` 搜索子仓库（会返回空）。应直接 `cd {workspaceRoot}/{repo-name}` 进入。
+
+| 序号 | 仓库名 | 简称 | 实际路径 |
+|------|--------|------|----------|
+| 1 | onelink-web-outp-fj-common | 门诊前端 | `{workspaceRoot}/onelink-web-outp-fj-common/` |
+| 2 | onelink-web-pres-fj-common | 医嘱前端 | `{workspaceRoot}/onelink-web-pres-fj-common/` |
+| 3 | onelink-web-his-charge-fj-common | 收费前端 | `{workspaceRoot}/onelink-web-his-charge-fj-common/` |
+| 4 | onelink-web-his-drug-fj-common | 药库前端 | `{workspaceRoot}/onelink-web-his-drug-fj-common/` |
+| 5 | onelink-web-his-fj-component | 公共组件 | `{workspaceRoot}/onelink-web-his-fj-component/` |
+| 6 | onelink-micro-pres-fj-common | 医嘱后端 | `{workspaceRoot}/onelink-micro-pres-fj-common/` |
+| 7 | onelink-micro-charge-fj-common | 收费服务 | `{workspaceRoot}/onelink-micro-charge-fj-common/` |
+| 8 | onelink-micro-optimus-fj-common | 基础服务 | `{workspaceRoot}/onelink-micro-optimus-fj-common/` |
+| 9 | onelink-micro-insurance-fj-ybcommon | 医保服务 | `{workspaceRoot}/onelink-micro-insurance-fj-ybcommon/` |
 
 ## 执行步骤
 

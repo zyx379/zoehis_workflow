@@ -55,7 +55,7 @@
 约束：
 - 功能代码与 *BizSysParam.jsonl 分两个 commit
 - 参数 commit 标题：`[*111111*]增加系统参数【paramEnglishName】【禅道号】`（`[*111111*]` 固定，勿写真实禅道号）
-- creatorName / checkerName = 需求负责人（非 zoehis-ai）
+- creatorName / checkerName / creatorCode = 需求负责人（**本工作区默认 `zhouyanxi`**；禁止 `zoehis-ai`）
 
 master 顺序：
   1. push 功能 commit

@@ -71,7 +71,7 @@ flowchart LR
 | **短期** | `docs/memory/short-term/` | 外部分析或 Cursor Step 4–5 | 需求完成后删除 |
 | **长期** | `docs/memory/cases/` | Cursor Step 12 | 保留、可升格 |
 
-外部分析产出可先写入 `short-term/{禅道号}-{slug}.md`，Cursor 接手后在此基础上补 spec。
+外部分析产出可先写入 `short-term/{禅道号}-{功能描述}+{关键索引}.md`，Cursor 接手后在同一文件 `## Spec` 节补 spec。
 
 ---
 

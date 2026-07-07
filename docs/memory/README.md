@@ -25,10 +25,10 @@ docs/memory/
 ├── optimization-log.md    # 升格/归档记录
 ├── short-term/            # 短期记忆（需求进行中，交付后删除）
 │   ├── README.md
-│   └── {禅道号}-{slug}.md
+│   └── {禅道号}-{功能描述}+{关键索引}.md   # 中文命名；旧版 {禅道号}-{slug}.md 仍保留
 ├── cases/                 # 长期记忆（已验证、可复用）
 │   ├── _template.md
-│   └── YYYY-MM-<slug>.md
+│   └── {禅道号}-{功能描述}+{关键索引}.md   # 有禅道号时；无号则省略前缀
 └── archive/
     └── YYYY-MM-DD/
 ```
@@ -47,6 +47,18 @@ docs/memory/
 ## 一条经验的写法（cases）
 
 **只记录已验证事实**，不写猜测。模板见 [cases/_template.md](cases/_template.md)。
+
+**IMA 同步标识**（防重复上传）：case 元数据区填写 `IMA 已上传` / `IMA note_id` / `IMA 目录` / `IMA 上传日期`；与 [index.md](index.md) 的 `IMA note_id` 列双重校验。上传与去重见全局 Skill **`ima-knowledge`** 的 `dedup.md`（`~/.cursor/skills/ima-knowledge/`，跨项目通用）。
+
+### 命名与唯一性
+
+| 规则 | 说明 |
+|------|------|
+| **一禅道一号一文档** | 同一禅道号的后续改造、补丁、返工在**原 case 追加**，禁止同号新建第二份 |
+| **中文文件名** | `{禅道号}-{功能描述}+{关键索引}.md`（**有禅道号时文件名与 H1 均含号**） |
+| **无禅道号** | 省略 `{禅道号}-` 前缀；H1 仍写功能描述 | `追溯码使用记录查询+traceCodeUsageQuery-医保追溯.md` |
+| **文档 H1** | `# [禅道号] {功能描述}` | `# [206301] 入院登记主管医生同步医疗组` |
+| **改造记录** | 文档内用「改造记录」表或分节（V1/V2…）区分多次交付 |
 
 必填：
 
@@ -75,8 +87,8 @@ flowchart LR
 
 在 [workflow.md](../workflow.md) Step 11 测试造数之后：
 
-1. 若本次有**可复用**经验（新表流转、踩坑、规范补充）→ 新增 `cases/YYYY-MM-<slug>.md`
-2. 更新 [index.md](index.md) 一行索引
+1. 若本次有**可复用**经验 → 先按禅道号查 index：**已有 case 则追加**；否则新建 `cases/{禅道号}-{功能描述}+{关键索引}.md`（无禅道号则省略前缀）
+2. 更新 [index.md](index.md)（同禅道号保持一行）
 3. **不**把长文塞进 alwaysApply Rule
 
 ### 定期优化（建议双周或每月）

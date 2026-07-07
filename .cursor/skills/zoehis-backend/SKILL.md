@@ -13,6 +13,20 @@ description: >
 
 福建通用 HIS 后端开发规范。负责 Spring Boot + MyBatis 接口开发。
 
+## 子仓库定位（关键）
+
+> **所有子仓库均位于工作区根目录 `{workspaceRoot}/` 下**（如 `d:\zoe_work_space\fj-common\onelink-micro-pres-fj-common`）。
+> **禁止**用 Glob `**/{repo-name}/**` 搜索子仓库（会返回空）。应直接 `LS {workspaceRoot}/{repo-name}/` 或 `Read {workspaceRoot}/{repo-name}/...` 访问。
+
+后端子仓库：
+
+| 仓库 | 域 | 实际路径 |
+|------|-----|----------|
+| onelink-micro-pres-fj-common | 医嘱后端 | `{workspaceRoot}/onelink-micro-pres-fj-common/` |
+| onelink-micro-charge-fj-common | 收费服务 | `{workspaceRoot}/onelink-micro-charge-fj-common/` |
+| onelink-micro-optimus-fj-common | 基础服务 | `{workspaceRoot}/onelink-micro-optimus-fj-common/` |
+| onelink-micro-insurance-fj-ybcommon | 医保服务 | `{workspaceRoot}/onelink-micro-insurance-fj-ybcommon/` |
+
 ## 技术栈
 
 - **框架**：Spring Boot 2.3 + MyBatis

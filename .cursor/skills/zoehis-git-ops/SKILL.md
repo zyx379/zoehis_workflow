@@ -17,18 +17,21 @@ description: >
 
 10 个独立 Git 子仓库（根目录无 Git）。操作时须进入具体子仓库。
 
-| 仓库 | 域 | Step 10 备注 |
-|------|-----|--------------|
-| onelink-web-outp-fj-common | 门诊前端 | 可 merge + tag |
-| onelink-web-pres-fj-common | 医嘱前端 | 可 merge + tag |
-| onelink-web-his-charge-fj-common | 收费前端 | 可 merge + tag |
-| onelink-web-his-drug-fj-common | 药库前端 | 可 merge + tag |
-| onelink-web-his-fj-component | 公共组件 | 可 merge + tag |
-| **onelink-web-cis-common** | **CIS 公共组件（npm 包）** | **仅 10.1 push master；跳过 merge/tag** |
-| onelink-micro-pres-fj-common | 医嘱后端 | 可 merge + tag |
-| onelink-micro-charge-fj-common | 收费服务 |
-| onelink-micro-optimus-fj-common | 基础服务 |
-| onelink-micro-insurance-fj-ybcommon | 医保服务 |
+> **定位方法**：所有子仓库均位于工作区根目录 `{workspaceRoot}/` 下（如 `d:\zoe_work_space\fj-common\onelink-web-pres-fj-common`）。
+> **禁止**用 Glob `**/{repo-name}/**` 搜索子仓库（会返回空）。应直接 `cd {workspaceRoot}/{repo-name}` 进入。
+
+| 仓库 | 域 | 实际路径 | Step 10 备注 |
+|------|-----|----------|--------------|
+| onelink-web-outp-fj-common | 门诊前端 | `{workspaceRoot}/onelink-web-outp-fj-common/` | 可 merge + tag |
+| onelink-web-pres-fj-common | 医嘱前端 | `{workspaceRoot}/onelink-web-pres-fj-common/` | 可 merge + tag |
+| onelink-web-his-charge-fj-common | 收费前端 | `{workspaceRoot}/onelink-web-his-charge-fj-common/` | 可 merge + tag |
+| onelink-web-his-drug-fj-common | 药库前端 | `{workspaceRoot}/onelink-web-his-drug-fj-common/` | 可 merge + tag |
+| onelink-web-his-fj-component | 公共组件 | `{workspaceRoot}/onelink-web-his-fj-component/` | 可 merge + tag |
+| **onelink-web-cis-common** | **CIS 公共组件（npm 包）** | `{workspaceRoot}/onelink-web-cis-common/` | **仅 10.1 push master；跳过 merge/tag** |
+| onelink-micro-pres-fj-common | 医嘱后端 | `{workspaceRoot}/onelink-micro-pres-fj-common/` | 可 merge + tag |
+| onelink-micro-charge-fj-common | 收费服务 | `{workspaceRoot}/onelink-micro-charge-fj-common/` | 可 merge + tag |
+| onelink-micro-optimus-fj-common | 基础服务 | `{workspaceRoot}/onelink-micro-optimus-fj-common/` | 可 merge + tag |
+| onelink-micro-insurance-fj-ybcommon | 医保服务 | `{workspaceRoot}/onelink-micro-insurance-fj-ybcommon/` | 可 merge + tag |
 
 ## 分支策略
 
@@ -74,13 +77,14 @@ git checkout master
 | `【漳州二院】` | `release-1.166` |
 
 - 匹配优先最长关键词
+- **无医院关键词（未知项目）**：**跳过 10.2 merge**（不合并 release-1.166/1.168）；在 **master** 上打 **`release-0.0.{max+1}`** tag 触发 CI 编译（见 10.3）
 - 冲突优先 **cherry-pick** 本次 commit（而非全量 merge）
 - **`onelink-web-cis-common` 跳过本步**
 
-### 10.3 打 Tag（在项目分支）
+### 10.3 打 Tag（在项目分支或 master）
 
 ```bash
-git checkout <项目分支>
+git checkout <项目分支>          # 已知医院项目
 git pull origin <项目分支>
 # 取当前分支最大 tag，版本号 +1
 git tag <新版本号>
@@ -88,7 +92,18 @@ git push origin <新版本号>
 git checkout master
 ```
 
-- 版本规则：**当前项目分支上已有 tag 的最大值 + 1**
+**未知项目（commit 无 `【漳州市医院】` / `【漳州二院】` 等医院关键词）：**
+
+```bash
+git checkout master
+git pull origin master
+# 取全仓 release-0.0.* 最大序号 +1，例：release-0.0.1375 → release-0.0.1376
+git tag release-0.0.<序号>
+git push origin release-0.0.<序号>
+```
+
+- **已知医院**：在对应 **release-*** 分支上打 tag，格式 `release-1.168.x` / `release-1.166.x`（以该分支已有 tag 为准）
+- **未知项目**：在 **master** 上打 tag，格式 **`release-0.0.{max+1}`**（全仓 `release-0.0.*` 序号最大值 +1）
 - 每仓 tag 独立计算
 - **`onelink-web-cis-common` 跳过本步**
 
@@ -127,7 +142,7 @@ git reset --hard $new
 
 1. **master**：功能 commit 先 push；参数 **单独 commit** 后 push
 2. **commit 标题**：`[*111111*]增加系统参数【参数英文名】【禅道号】`
-3. **作者/审核人**：`creatorName`、`checkerName` 写需求负责人姓名（如 `zhouyanxi`），禁止 `zoehis-ai`
+3. **作者/审核人**：`creatorName`、`checkerName`、`creatorCode` 填需求负责人姓名；**本工作区默认 `zhouyanxi`**（用户未另行指定时），禁止 `zoehis-ai`
 4. **合并到项目分支**：参数 commit 可与 release 上其他参数变更一并 merge（jsonl 冲突时保留双方参数行）
 
 ## 用户触发语
@@ -135,7 +150,7 @@ git reset --hard $new
 | 触发语 | Agent 执行 |
 |--------|-----------|
 | **审查通过，提交并 push** | 仅 10.1（push master） |
-| **审查通过，提交并发布** | 10.1 + 10.2 + 10.3 |
+| **审查通过，提交并发布** | 10.1 + 10.2 + 10.3（已知医院 merge release-* + 分支 tag；**未知项目** master 上 `release-0.0.{max+1}`） |
 | **审查通过，合并到 release-1.166** | 10.1 + 合并到指定分支 |
 | **只生成 commit message** | 仅起草，不执行 git |
 

@@ -1,4 +1,4 @@
-# Workflow / Skill / Rule 优化日志
+﻿# Workflow / Skill / Rule 优化日志
 
 记录从经验库**升格**或**归档**的操作，便于追溯。
 
@@ -37,7 +37,7 @@
 - **变更**：
   - `zoehis-ai-dev` SKILL：默认提交后编译（不确认）、默认 Step 12 沉淀
   - `workflow.md` Step 10/12、`AGENTS.md` 同步
-  - 新增 `cases/2026-06-nonMedicalCost-no-default-patient.md`，更新 `index.md`
+  - 新增 `cases/201533-住院非医疗收费不默认患者+nonMedicalCost-dept-patient-tree.md`，更新 `index.md`
 
 ### 2026-06-05 — 初始化经验记忆库
 
@@ -73,9 +73,31 @@
 ### 2026-06-10 — 读卡 bundle 双标识排查升格（202226 复测）
 
 - **触发**：202226 首修后测试仍失败，prompt1 排查任务
-- **来源 case**：[cases/2026-06-patientList-disease-fee-audit-icons.md](cases/2026-06-patientList-disease-fee-audit-icons.md)
+- **来源 case**：[cases/202226-选择病人弹窗费单标识+onelinkPatientList-cis-common.md](cases/202226-选择病人弹窗费单标识+onelinkPatientList-cis-common.md)
 - **变更**：
   - skill：`zoehis-ai-dev/patterns/common-patterns.md` 新增 §1.10 读卡 bundle 列宽模式
   - case：更正根因（YSK HTML 表遗漏），补修 CSS 说明
   - index：202226 关键词增加 READ_CARD_VERSION
+- **确认人**：团队
+
+### 2026-06-25 — [204961] 手术申请嘱托医嘱只显示主手术名称
+
+- **触发**：需求交付后 Step 12 记忆闭环
+- **来源 case**：[cases/204961-手术嘱托医嘱仅主手术名+shou_shen_zhu_tuo_pres_only_main.md](cases/204961-手术嘱托医嘱仅主手术名+shou_shen_zhu_tuo_pres_only_main.md)
+- **变更**：
+  - case：新建长期 case（参数双 commit、仅住院改造、测试要点）
+  - `business-rules.md`：新增「手术申请嘱托医嘱命名」
+  - `index.md`：主索引 + `COM_BIZ_SYS_PARAM` / `PRES_INP_PRES_RECORD` / `operationApplication.vue` 反向索引
+- **短期记忆**：删除 `short-term/204961-operation-entrust-main-name.md`
+- **确认人**：团队
+
+### 2026-06-24 — [202235] 手术申请预计手术时间为空闭环
+
+- **触发**：需求交付后 Step 12 记忆闭环（临床路径 NPE + 选类别不自动填时间）
+- **来源 case**：[cases/202235-手术申请空日期NPE闭环+operationDate-send-NPE.md](cases/202235-手术申请空日期NPE闭环+operationDate-send-NPE.md)、[cases/202235-手术申请预计手术时间默认为空+oper_date_default_empty-pageParam.md](cases/202235-手术申请预计手术时间默认为空+oper_date_default_empty-pageParam.md)
+- **变更**：
+  - case：闭环 case 补全组件结构、三仓 commit/tag、测试要点；首改 case 加交叉链接
+  - `business-rules.md`：新增「手术申请空日期全链路」；页面参数模式补充「所有写入点」
+  - `index.md`：反向索引增加 `operateApplication.vue`；202235 闭环行标 business-rules
+- **短期记忆**：无 `short-term/202235-*`（Trae 交接在 prompt_space，未建短期文件）
 - **确认人**：团队
