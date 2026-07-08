@@ -33,8 +33,8 @@
 | **唯一性** | 同一禅道号进行中**只保留一个** short-term；返工、spec 修订在原文件更新 | — |
 | **Spec** | 写在同一文件 `## Spec` 节，**禁止**另建 spec 文件；子标题全部中文 | 见 `_template.md` |
 | **模板** | [_template.md](_template.md) | — |
-| **需求 Skill** | Step 4 同步 `.cursor/skills/{禅道号}-{关键索引}/SKILL.md`；Step 12 删除 | `.cursor/skills/206295-docOderQuery/` |
-| **Agent 会话标题** | 中文需求简称，写在 Skill 正文 `> **Agent 会话标题（中文）**` 行 | 与「功能描述」一致 |
+
+> **禁止**创建 `.cursor/skills/{禅道号}-*/` 或 `dev/skills/{禅道号}-*/`（Rule `zoehis-no-ticket-skill`）。Agent 会话标题写在 short-term H1 / 需求摘要即可。
 
 旧版 `{禅道号}-{英文slug}.md` 仍保留可读；**新需求一律中文命名**。
 
@@ -43,7 +43,6 @@
 1. 将 **已验证** 条目提炼进 `cases/{禅道号}-{功能描述}+{关键索引}.md`（同禅道号已有 case 则追加，不新建；无禅道号则省略前缀）
 2. 更新 `index.md`
 3. **删除** 本目录对应该需求的 `short-term/{禅道号}-*.md`
-4. **删除** 对应 `.cursor/skills/{禅道号}-*/` 需求 Skill 目录
-5. 进度清单注明「短期记忆已清理」
+4. 进度清单注明「短期记忆已清理」
 
 Agent **不得** 把短期记忆全文复制进 alwaysApply Rule。

@@ -70,7 +70,7 @@ description: >
  9. 等待人工审查
 10. Git 交付（push → merge → tag）
 11. MCP 测试库造数 + 验证
-12. 经验沉淀（长期 cases + 清理 short-term 与需求 Skill）
+12. 经验沉淀（长期 cases + 清理 short-term）
 13. 会话收尾（Usage 查看 token；Agent 汇报范围统计）
 ```
 
@@ -128,7 +128,7 @@ Step 4 代码地图与 Step 5 spec **共用同一 short-term 文件**（详见 w
 | **唯一性** | 同一禅道号进行中只保留一个 short-term；spec 写在 `## Spec` 节 | — |
 | **Spec 子标题** | 全部中文（改造计划、涉及子仓库、文件清单…） | 见 `short-term/_template.md` |
 
-Skill：`zoehis-code-map`（Step 4 写入）；Step 12 删除 short-term 及 `dev/skills/{禅道号}-*/`（经 `.cursor/skills` 联接）。
+Skill：`zoehis-code-map`（Step 4 写入 short-term）；Step 12 删除 short-term 文件。
 
 ## 输出要求
 
@@ -137,7 +137,7 @@ Skill：`zoehis-code-map`（Step 4 写入）；Step 12 删除 short-term 及 `de
 3. 业务校验点
 4. 审查通过后 Git 交付（逐仓）
 5. MCP 测试库造数
-6. 可复用经验写入 `docs/memory/cases/`；清理 `docs/memory/short-term/` 及对应 `dev/skills/{禅道号}-*/` 需求 Skill
+6. 可复用经验写入 `docs/memory/cases/`；清理 `docs/memory/short-term/` 对应文件
 
 ## 技术栈
 

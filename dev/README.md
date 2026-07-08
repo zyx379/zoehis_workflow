@@ -29,10 +29,7 @@
 | **his-log-diagnosis** | `dev/skills/his-log-diagnosis/SKILL.md` | **生产排查**（traceId、日志/SQL 链路）；验证前不改代码 |
 | **zoehis-daily-report** | `dev/skills/zoehis-daily-report/SKILL.md` | 生成当日工作日报（多仓 Git commit 汇总） |
 
-**需求级临时 Skill**（与 `docs/memory/short-term/` 同步，Step 12 删除）：
-
-`dev/skills/{禅道号}-{关键索引}/SKILL.md`  
-例：`dev/skills/206295-docOderQuery/SKILL.md`
+> **禁止**按禅道号在 `dev/skills/` 下建临时 Skill（见 Rule `zoehis-no-ticket-skill`）。需求进行中只写 `docs/memory/short-term/`。
 
 关联文档（不在 `dev/`，但配置时需 Read）：
 

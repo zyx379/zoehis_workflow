@@ -1,0 +1,35 @@
+---
+description: 禁止按禅道号/需求号在 dev/skills 下创建临时 Skill 目录
+alwaysApply: true
+---
+
+# 禁止需求级 Skill 目录
+
+## 硬约束
+
+**禁止**在 `dev/skills/`（及 `.cursor/skills/` 联接目录）下为单个需求创建目录或 `SKILL.md`，包括但不限于：
+
+- `dev/skills/{禅道号}-*/SKILL.md`
+- `dev/skills/{禅道号}{功能名}/SKILL.md`
+- 任何以禅道号、需求号、工单号命名的 Skill 子目录
+
+`dev/skills/` **仅允许**长期、可复用的领域 Skill（如 `zoehis-ai-dev`、`zoehis-code-map`、`zoehis-frontend` 等）。
+
+## 需求进行中写什么
+
+| 内容 | 唯一落点 |
+|------|----------|
+| 代码地图、spec、待确认 | `docs/memory/short-term/{禅道号}-{功能描述}+{关键索引}.md` |
+| 可复用经验（交付后） | `docs/memory/cases/` + `docs/memory/index.md` |
+
+**禁止**为同一需求再建 Skill 文件；短期记忆与 spec 共用 short-term 文件即可。
+
+## Agent 行为
+
+- Step 4 / Step 5：只写或更新 `docs/memory/short-term/`，**不**创建 `dev/skills/{禅道号}-*/`
+- Step 12：删除对应 short-term；**无**需求 Skill 目录需清理
+- 若发现误建的 `{禅道号}-*` Skill 目录：**删除**，内容已沉淀则保留 case，未沉淀则合并进 short-term 或 case
+
+## 历史说明
+
+旧版 workflow 曾要求「需求 Skill 与 short-term 同步、Step 12 删除」——已废止；以本 Rule 为准。

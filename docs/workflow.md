@@ -207,7 +207,8 @@ Step 4 分析与 Step 5 spec **共用同一 short-term 文件**（禁止另建 s
 | **关键索引** | 1～3 个检索词：页面路由、主接口、核心表 | `docOderQuery-停嘱时间` |
 | **文档 H1** | `# [禅道号] {功能描述}`，与文件名「功能描述」一致 | `# [206295] 医嘱申请条数展示与停嘱时间过滤` |
 | **唯一性** | **同一禅道号进行中只保留一个 short-term**；返工、spec 修订在原文件追加/更新，不新建第二份 | — |
-| **需求 Skill** | `dev/skills/{禅道号}-{关键索引}/SKILL.md`（与 short-term 同步；Step 12 删除） | `dev/skills/206295-docOderQuery/SKILL.md` |
+
+> **禁止**在 `dev/skills/` 下为单个需求建 `{禅道号}-*/SKILL.md`（见 Rule `zoehis-no-ticket-skill`）。Step 4/5 只写 short-term。
 
 - 模板：[docs/memory/short-term/_template.md](memory/short-term/_template.md)  
 - 旧版 `{禅道号}-{英文slug}.md` 仍可读；**新需求一律中文命名**
