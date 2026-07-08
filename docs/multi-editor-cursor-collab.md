@@ -42,8 +42,8 @@ flowchart LR
 |------|------|------|
 | 完整工作流 | `docs/workflow.md` | Cursor 侧权威步骤 |
 | 外部分析流程 | `docs/prompt_external.md` | Trae/CodeBuddy 开场模板 |
-| 命名/业务规范 | `.cursor/rules/zoehis-*.mdc` | 分析时遵守约束 |
-| 代码地图 Skill | `.cursor/skills/zoehis-code-map/SKILL.md` | Step 4 输出格式 |
+| 命名/业务规范 | `dev/rules/zoehis-*.mdc` | 分析时遵守约束 |
+| 代码地图 Skill | `dev/skills/zoehis-code-map/SKILL.md` | Step 4 输出格式 |
 | 长期记忆索引 | `docs/memory/index.md` | 检索类似需求 |
 | 协作说明 | 本文档 | 分工与交接 |
 
@@ -53,10 +53,10 @@ flowchart LR
 
 | MCP | Cursor | Trae / CodeBuddy |
 |-----|--------|------------------|
-| `user-zoe-his-mcp` | ✅ 测试造数、查表结构 | 可选：仅 **SELECT / get_table_schema** 做分析 |
+| `zoe-his-mcp` | ✅ 测试造数、查表结构（`dev/mcp/zoe-his-mcp/`） | 可选：仅 **SELECT / get_table_schema** 做分析 |
 | `user-codegraph` | 可选辅助 | 通常不需要；用 `zoehis-code-map` 即可 |
 
-生产排查仍走个人 Skill `his-log-diagnosis`（linx 工作区），与功能开发分离。
+生产排查走 **`dev/skills/his-log-diagnosis`** + MCP `zoe-his-mcp`，与功能开发分离。
 
 ### 3. Skill
 
@@ -102,7 +102,7 @@ Cursor Agent 收到后：
 ## 多设备同步
 
 workflow、skill、rule、memory 通过 Git 同步，见 [multi-device-sync.md](multi-device-sync.md)。  
-外部编辑器打开 **同一 fj-common 工作区路径**，即可 Read 相同 `docs/` 与 `.cursor/`。
+外部编辑器打开 **同一 fj-common 工作区路径**，即可 Read 相同 `docs/` 与 `dev/`（Cursor 另需 `link-cursor-dev.ps1` 挂载 `.cursor/`）。
 
 ---
 

@@ -28,8 +28,8 @@
 
 【约束】
 - 只输出初步分析，最终 spec 与实现在 Cursor 完成
-- 遵守 .cursor/rules/zoehis-*.mdc（Read 仓库内文件，不要猜测表名/接口）
-- Step 4 按 .cursor/skills/zoehis-code-map/SKILL.md 产出代码地图
+- 遵守 dev/rules/zoehis-*.mdc（Read 仓库内文件，不要猜测表名/接口）
+- Step 4 按 dev/skills/zoehis-code-map/SKILL.md 产出代码地图
 - 按【记忆召回机制】选项检索记忆库（见下方说明）
 - 分析结果写入 docs/memory/short-term/{禅道号}-{功能描述}+{关键索引}.md
 ```
@@ -58,7 +58,7 @@
 
 ## Step 4 输出要求
 
-Read Skill：` .cursor/skills/zoehis-code-map/SKILL.md`
+Read Skill：`dev/skills/zoehis-code-map/SKILL.md`
 
 必须包含：
 

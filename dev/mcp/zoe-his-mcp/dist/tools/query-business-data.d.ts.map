@@ -1,0 +1,1 @@
+{"version":3,"file":"query-business-data.d.ts","sourceRoot":"","sources":["../../src/tools/query-business-data.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,OAAO,EAAE,UAAU,EAAe,MAAM,aAAa,CAAC;AAoGtD,wBAAsB,iBAAiB,CAAC,IAAI,EAAE;IAC5C,GAAG,EAAE,MAAM,CAAC;IACZ,WAAW,EAAE,MAAM,CAAC;IACpB,YAAY,CAAC,EAAE,MAAM,CAAC;CACvB,GAAG,OAAO,CAAC,UAAU,CAAC,CAoEtB"}

@@ -1,0 +1,80 @@
+{
+  "_meta": {
+    "description": "各医院 GitLab 仓库名不统一，禁止按 fj-common 命名规则臆测。未登记项目用 default；已登记项目仅用本项目数组中的显式 repositoryUrl。",
+    "defaultPrefix": "http://gitlab.zoesoft.com.cn/onelink/fj-common",
+    "projectPrefixes": {
+      "nasyy": "http://gitlab.zoesoft.com.cn/fj-nasyy",
+      "zzsyy": "http://gitlab.zoesoft.com.cn/fj-zzsyy"
+    }
+  },
+  "default": [
+    {
+      "name": "医嘱后端",
+      "repositoryUrl": "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-micro-pres-fj-common",
+      "servicePatterns": "pres-service,prescription,医嘱,pres",
+      "defaultBranch": "master"
+    },
+    {
+      "name": "收费后端",
+      "repositoryUrl": "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-micro-charge-fj-common",
+      "servicePatterns": "charge-service,收费,charge,split-charge,zoe-split-charge",
+      "defaultBranch": "master"
+    },
+    {
+      "name": "公共后端",
+      "repositoryUrl": "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-micro-optimus-fj-common",
+      "servicePatterns": "optimus-service,common-service,公共,optimus",
+      "defaultBranch": "master"
+    },
+    {
+      "name": "临床路径前端",
+      "repositoryUrl": "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-web-clinicpath-fj-common",
+      "servicePatterns": "clinicpath,临床路径",
+      "defaultBranch": "master"
+    },
+    {
+      "name": "收费前端",
+      "repositoryUrl": "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-web-his-charge-fj-common",
+      "servicePatterns": "charge-web,收费前端",
+      "defaultBranch": "master"
+    },
+    {
+      "name": "药剂前端",
+      "repositoryUrl": "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-web-his-drug-fj-common",
+      "servicePatterns": "drug-web,药剂",
+      "defaultBranch": "master"
+    },
+    {
+      "name": "门诊前端",
+      "repositoryUrl": "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-web-outp-fj-common",
+      "servicePatterns": "outp-web,门诊,outp",
+      "defaultBranch": "master"
+    },
+    {
+      "name": "医嘱前端",
+      "repositoryUrl": "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-web-pres-fj-common",
+      "servicePatterns": "pres-web,医嘱前端",
+      "defaultBranch": "master"
+    }
+  ],
+  "nasyy": [
+    {
+      "name": "南安医保拆服务（福建区域）",
+      "repositoryUrl": "http://gitlab.zoesoft.com.cn/fj-fy/zoe-split-insurance-fj",
+      "servicePatterns": "zoe-split-insurance-service,zoe-split-insurance,split-insurance,insurance-service,医保,insur,JY20,2203",
+      "packagePatterns": "com.zoe.optimus.service.insurance,com.zoe.insurance,zoeinsur",
+      "sqlIdPatterns": "InsOutpTradeLog,OUTP_TRADE,INS_OUTP,ins_outp",
+      "defaultBranch": "master",
+      "notes": "南安旧架构医保独立仓 fj-fy/zoe-split-insurance-fj；2203A/JY2010/diseinfo 在此"
+    },
+    {
+      "name": "Optimus 后端（收费/结算/预交金）",
+      "repositoryUrl": "http://gitlab.zoesoft.com.cn/fj-nasyy/zoe-optimus-nasyy",
+      "servicePatterns": "zoe-split-charge-service,charge-service,charge,split-charge,settle,prepay,结算,dict/settle",
+      "packagePatterns": "com.zoe.optimus.service.dict,com.zoe.optimus.service.dao",
+      "sqlIdPatterns": "InpPrepayRecordDao,InpChargeDetailDao,InpPrepayAccountDao,SettleManage,getCheckSettleState,getUnSettleUnReturnList",
+      "defaultBranch": "master",
+      "notes": "单体仓 fj-nasyy/zoe-optimus-nasyy；医保接口见 fj-fy/zoe-split-insurance-fj"
+    }
+  ]
+}

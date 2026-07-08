@@ -3,7 +3,7 @@ name: zoehis-ai-dev
 description: >
   ZOEHIS full-stack workflow orchestrator for CodeBuddy. Use for feature delivery spanning
   frontend + backend + DB + business in the fj-common multi-repo workspace. Automatically
-  references .cursor/rules/ and .cursor/skills/ for domain knowledge. Follows docs/workflow.md
+  references dev/rules/ and dev/skills/ (Cursor loads via .cursor/ junction). Follows docs/workflow.md
   step-by-step. Default scope in CodeBuddy: Step 0-4 external analysis (output Cursor handoff
   block); extends to full workflow when user explicitly requests implementation in CodeBuddy.
   Triggers: 新功能, 改造, 全栈, 端到端, 需求开发, Bug修复, 功能开发, 功能改造, 代码地图, 需求分析
@@ -11,7 +11,7 @@ description: >
 
 # ZOEHIS AI 开发编排器（CodeBuddy 版）
 
-福建通用 HIS 聚合工作区。命名、风格、业务、表结构、Git 由 **`@.cursor/rules/zoehis-*.mdc`** 自动约束。
+福建通用 HIS 聚合工作区。命名、风格、业务、表结构、Git 由 **`dev/rules/zoehis-*.mdc`** 约束。
 
 **本 Skill 是编排器**，收到需求后：
 1. 按 `docs/workflow.md` 逐步执行

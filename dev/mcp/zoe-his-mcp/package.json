@@ -1,0 +1,45 @@
+{
+  "name": "zoe-his-mcp",
+  "version": "1.0.0",
+  "description": "ZoeDevOps MCP Server - HIS智能运维诊断工具集",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "zoe-devops-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "inspect": "npx @modelcontextprotocol/inspector dist/index.js",
+    "pkg": "pkg . --targets node20-win-x64 --output zoe-his-mcp.exe",
+    "pkg:prepare": "npm run build && npm install --no-dev",
+    "package": "npm run build && node package-dist.js"
+  },
+  "keywords": [
+    "mcp",
+    "his",
+    "devops",
+    "troubleshooting"
+  ],
+  "author": "ZoeDevOps Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "ioredis": "^5.4.1",
+    "odbc": "^2.5.0",
+    "oracledb": "^6.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/oracledb": "^6.10.4",
+    "pkg": "^5.8.1",
+    "typescript": "^5.3.0"
+  },
+  "pkg": {
+    "assets": [
+      "node_modules/oracledb/build/Release/oracledb-6.6.0-win32-x64.node"
+    ],
+    "outputPath": "release"
+  }
+}

@@ -14,8 +14,11 @@
 | `docs/ai-dev-setup-workflow.md` | 配置说明 |
 | `docs/multi-device-sync.md` | 本文件 |
 | `docs/memory/**` | 经验库（cases、index、archive、optimization-log） |
-| `.cursor/rules/*.mdc` | 自动生效规则 |
-| `.cursor/skills/zoehis-ai-dev/**` | 项目 Skill |
+| `dev/rules/*.mdc` | 自动生效规则（**源文件**） |
+| `dev/skills/**` | 项目 Skill（**源文件**） |
+| `dev/mcp/zoe-his-mcp/` | HIS MCP 服务（**源目录**；`.env` 不提交） |
+| `dev/mcp/mcp.json.example` | Cursor MCP 模板 |
+| `scripts/link-cursor-dev.ps1` | clone 后创建 rules/skills 联接 + 生成 `.cursor/mcp.json` |
 | `AGENTS.md` | 工作区 Agent 入口 |
 
 ### 不要提交（本机或私密）
@@ -27,7 +30,7 @@
 | `.idea/` | IDE 个人配置 |
 | `docs/prompt临时区` | 个人草稿（可选忽略） |
 | API Key、MCP Token | 放 Cursor 用户设置或环境变量 |
-| `~/.cursor/skills/his-log-diagnosis/` | **个人**排查 Skill，另仓或 dotfiles |
+| `~/.cursor/skills/his-log-diagnosis/` | 已迁入 **`dev/skills/his-log-diagnosis/`**，与配置仓同步 |
 
 ### 可选
 
@@ -43,7 +46,7 @@
 
 ### 优点
 
-- 与当前目录结构一致，Cursor 直接读 `.cursor/`、`docs/`
+- 与当前目录结构一致，Cursor 经 `.cursor/` 联接读 `dev/rules`、`dev/skills`
 - 一台机器 `git pull` 即更新 workflow / rule / memory
 - 与 9 个业务仓 **互不干扰**（子目录内仍各自 `git pull`）
 
@@ -55,8 +58,10 @@ cd d:\zoe_work_space\fj-common
 git init
 # 使用仓库根目录已提供的 .gitignore（排除 onelink-* 等）
 
-git add AGENTS.md docs/ .cursor/
-git status   # 确认没有出现 onelink-* 下的大量文件
+git add AGENTS.md docs/ dev/ scripts/link-cursor-dev.ps1 .cursor/README.md
+git status   # 确认没有出现 onelink-* 下的大量文件；勿提交 .cursor/rules、.cursor/skills（本地联接）
+
+.\scripts\link-cursor-dev.ps1
 
 git commit -m "[-]【通用】初始化 fj-common AI 配置仓（workflow/skill/rule/memory）"
 
@@ -76,6 +81,7 @@ git clone https://github.com/zyx379/zoehis_workflow.git .
 # 若目录非空，改为 clone 到临时目录再复制 .cursor、docs、AGENTS.md、.gitignore
 
 git pull origin master
+.\scripts\link-cursor-dev.ps1
 ```
 
 之后每台机器日常：
@@ -88,6 +94,7 @@ git checkout master && git pull origin master
 # AI 配置（fj-common 根目录）
 cd d:\zoe_work_space\fj-common
 git pull origin master
+.\scripts\link-cursor-dev.ps1
 ```
 
 ---
@@ -100,8 +107,11 @@ git pull origin master
 
    ```
    AGENTS.md
-   .cursor/
+   dev/
    docs/
+   scripts/link-cursor-dev.ps1
+   scripts/link-cursor-dev.ps1
+   .cursor/README.md
    ```
 
 2. 每台机器用脚本拉取并覆盖到工作区根目录（PowerShell 示例）：
@@ -110,9 +120,11 @@ git pull origin master
    $cfgRepo = "$env:USERPROFILE\zoehis_workflow"
    $workspace = "d:\zoe_work_space\fj-common"
    git -C $cfgRepo pull
-   Copy-Item -Recurse -Force "$cfgRepo\.cursor" "$workspace\.cursor"
+   Copy-Item -Recurse -Force "$cfgRepo\dev" "$workspace\dev"
    Copy-Item -Recurse -Force "$cfgRepo\docs" "$workspace\docs"
    Copy-Item -Force "$cfgRepo\AGENTS.md" "$workspace\AGENTS.md"
+   Copy-Item -Force "$cfgRepo\scripts\link-cursor-dev.ps1" "$workspace\scripts\link-cursor-dev.ps1"
+   & "$workspace\scripts\link-cursor-dev.ps1"
    ```
 
 ---
@@ -121,10 +133,10 @@ git pull origin master
 
 | 项 | 位置 | 说明 |
 |----|------|------|
-| Cursor MCP | Settings → MCP | `user-zoe-his-mcp`、`user-codegraph` |
+| Cursor MCP | `.cursor/mcp.json`（由 `dev/mcp/mcp.json.example` 生成） | `zoe-his-mcp`、`ima-knowledge`、`user-codegraph` |
 | Codegraph 索引 | 工作区 `.codegraph/` | 每台 `codegraph init` 或自动重建 |
 | DeepSeek / 其它 API Key | Cursor Models | 仅本机 UI |
-| `his-log-diagnosis` | `~/.cursor/skills/` | 个人 Skill，可用私有 Git 同步 |
+| `his-log-diagnosis` | `dev/skills/his-log-diagnosis/` | 生产排查 Skill，随配置仓 pull |
 | Maven / JDK 路径 | 本机环境 | 见 rule 中仅为参考 |
 
 建议在团队文档或 `docs/mcp-setup-checklist.md` 中列 MCP 名称与必填环境变量名（**不写密钥值**）。
@@ -137,7 +149,7 @@ git pull origin master
 |------|------|
 | 改 workflow / rule | 在配置仓分支改 → PR/评审 → merge master |
 | 新增 memory case | 直接 commit case + 更新 `index.md` |
-| 升格 rule | 改 `.cursor/rules` + `optimization-log.md` + `archive/` 快照 |
+| 升格 rule | 改 `dev/rules` + `optimization-log.md` + `archive/` 快照 |
 | 与业务代码同一需求 | **两次提交**：子仓库 `[禅道]【项目】…`；配置仓 `[-]【通用】workflow：…` |
 
 避免多人同时改同一 `.mdc`：大改前先 `git pull`。
@@ -162,8 +174,9 @@ git pull origin master
 - [ ] Cursor 打开文件夹为 **fj-common 根目录**
 - [ ] MCP 已启用，测试库 `dataSourceId` 正确
 - [ ] Codegraph 可用（可选）
-- [ ] 能读到 `docs/workflow.md`、`.cursor/rules/zoehis-*.mdc`
-- [ ] 个人 Skill `his-log-diagnosis` 已安装（排查用）
+- [ ] 已执行 `.\scripts\link-cursor-dev.ps1`（`.cursor/rules` 联接 `dev/rules`）
+- [ ] 能读到 `docs/workflow.md`、`dev/rules/zoehis-*.mdc`（或 `.cursor/rules`）
+- [ ] Skill `dev/skills/his-log-diagnosis` 可 Read（生产排查）
 
 ---
 

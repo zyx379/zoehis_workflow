@@ -32,13 +32,13 @@
 **已具备、`.trae` 未写明的增强能力：**
 
 - **Codegraph MCP（可选）**：符号名明确时可 `codegraph_explore`；**首选** Step 4 Skill `zoehis-code-map`（记忆库 + 定向 Grep）。  
-- **HIS 日志 MCP**：生产排查用个人 Skill `his-log-diagnosis` + `user-zoe-his-mcp`（与本地改代码流程分离）。
+- **HIS 日志 MCP**：生产排查用个人 Skill `his-log-diagnosis` + `zoe-his-mcp`（与本地改代码流程分离）。
 
 ---
 
 ## 二、需要哪些 Rule（Cursor）
 
-`.trae/rules/*.md` 内容 **可直接迁移** 到 `.cursor/rules/*.mdc`，建议 **5 条 alwaysApply**，与 Trae 设计一致。
+`.trae/rules/*.md` 内容 **可直接迁移** 到 `dev/rules/*.mdc`，经 `scripts/link-cursor-dev.ps1` 联接至 `.cursor/rules/` 供 Cursor 加载。
 
 | 规则文件（建议名） | 来源 | 作用 | 甄别说明 |
 |-------------------|------|------|----------|
@@ -88,11 +88,11 @@
 
 ## 三、需要哪些 Skill（Cursor）
 
-### 3.1 项目级（建议放在 `.cursor/skills/`）
+### 3.1 项目级（`dev/skills/`，经 `.cursor/skills` 联接）
 
 | Skill | 来源 | 何时触发 | 甄别结论 |
 |-------|------|----------|----------|
-| **`zoehis-ai-dev`** | `.trae/skills/zoehis-ai-dev/` | 新功能、改页面、写 Dao、规范检查、业务流程咨询 | **必需**。从 Trae 迁入，改路径引用为 `.cursor/rules` 与本文档。 |
+| **`zoehis-ai-dev`** | `.trae/skills/zoehis-ai-dev/` | 新功能、改页面、写 Dao、规范检查、业务流程咨询 | **必需**。源文件在 `dev/skills/`；路径引用 `dev/rules` 与本文档。 |
 | 子文档（随 Skill 目录迁移） | `docs/dev-workflow.md` | 嵌入 Skill「工作流」章节 | **必需**（内容以本文第四节为准做一次合并更新）。 |
 | | `patterns/his-business-patterns.md` | 门诊/住院/收费数据流细节 | **推荐**，比 Rule 更细，按需 Read。 |
 | | `patterns/common-patterns.md` | 通用代码模式 | **可选**，覆盖度低时可后补。 |
@@ -114,12 +114,12 @@ description: >-
 
 | Skill | 路径 | 场景 |
 |-------|------|------|
-| **`his-log-diagnosis`** | `~/.cursor/skills/his-log-diagnosis/` | traceId 排查、日志/SQL/链路、GitLab 读代码（**不用**本地 Grep 代替） |
+| **`his-log-diagnosis`** | `dev/skills/his-log-diagnosis/` | traceId 排查、日志/SQL/链路、GitLab 读代码（**不用**本地 Grep 代替） |
 
 与 `zoehis-ai-dev` 的分工：
 
 - **改代码 / 做需求** → `zoehis-ai-dev` + 项目 Rules + Codegraph  
-- **查生产问题** → `his-log-diagnosis` + `user-zoe-his-mcp`，结论验证前不改代码
+- **查生产问题** → `his-log-diagnosis` + `zoe-his-mcp`，结论验证前不改代码
 
 ### 3.3 不需要为「创建本项目」单独建的 Skill
 
@@ -229,16 +229,16 @@ Spec 至少包含：
 
 ## 五、从 `.trae` 迁移到 Cursor 的检查清单
 
-- [x] 创建 `.cursor/rules/`，5 个 `.mdc`（内容来自 `.trae/rules/`，补 Git Agent 边界段）  
-- [x] 创建 `.cursor/skills/zoehis-ai-dev/`，迁移 `SKILL.md` + `docs/` + `patterns/` + `examples/`  
-- [x] 更新 Skill 内链接：`.trae/rules` → `.cursor/rules`，工作流 → `docs/dev-workflow.md`  
+- [x] 创建 `dev/rules/`，8 个 `.mdc`；`scripts/link-cursor-dev.ps1` 联接 `.cursor/rules`
+- [x] 创建 `dev/skills/zoehis-ai-dev/`，迁移 `SKILL.md` + `docs/` + `patterns/` + `examples/`
+- [x] 更新 Skill 内链接：`.trae/rules` → `dev/rules`，工作流 → `docs/workflow.md`  
 - [ ] 确认 Codegraph 已 `codegraph init`（本工作区已有 `.codegraph`）  
-- [ ] 确认 `user-zoe-his-mcp` 在 Cursor MCP 中启用（排查用）  
+- [ ] 确认 `dev/mcp/zoe-his-mcp/.env` 已配置；Cursor MCP 中 `zoe-his-mcp` 已启用  
 - [x] 根目录 `AGENTS.md` 指向本文档与 Skill  
 - [x] 根目录 Meta Git + `.gitignore` + [multi-device-sync.md](multi-device-sync.md)  
 - [ ] GitHub 远程 `zoehis_workflow` 已 `push`（见 multi-device-sync 第二节）
 
-**可保留 `.trae/`：** 作为 Trae 历史备份，Cursor 以 `.cursor/` 为生效源。
+**可保留 `.trae/`：** 作为 Trae 历史备份；Cursor 以 `dev/` 为源、`.cursor/` 联接为加载入口。
 
 ---
 

@@ -118,7 +118,7 @@ flowchart LR
 
 | 库 | 位置 | 内容 |
 |----|------|------|
-| 生产排查案例 | 个人 Skill `his-log-diagnosis/cases.md` | traceId、日志、SQL 证伪 |
+| 生产排查案例 | `dev/skills/his-log-diagnosis/cases.md` | traceId、日志、SQL 证伪 |
 | **本库** | `docs/memory/cases/` | 功能开发、改码、测试造数、规范演进 |
 
 生产排查结论若影响开发规范，在 case 里加「升格建议」，回顾时再合并进 workflow。

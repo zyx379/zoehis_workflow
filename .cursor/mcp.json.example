@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "ima-knowledge": {
-      "command": "python",
-      "args": ["D:\\zoe_work_space\\ima_db\\run.py"],
-      "cwd": "D:\\zoe_work_space\\ima_db"
-    }
-  }
-}

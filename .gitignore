@@ -17,6 +17,14 @@ onelink-web-pres-fj-common/
 .trae/
 .cursor/mcp.json
 
+# .cursor/rules、.cursor/skills 为 dev/ 的目录联接，clone 后执行 scripts/link-cursor-dev.ps1
+.cursor/rules
+.cursor/skills
+
+# MCP 本地密钥与依赖（源目录 dev/mcp/zoe-his-mcp/）
+dev/mcp/zoe-his-mcp/.env
+dev/mcp/zoe-his-mcp/node_modules/
+
 # 个人草稿（可选：若需共享草稿则删除本行）
 docs/prompt临时区
 
@@ -25,3 +33,6 @@ Thumbs.db
 Desktop.ini
 *.log
 .DS_Store
+
+# Git 提交消息临时文件（Agent 用 commit-tree 时写入 .git/ 目录，禁止在仓库根目录生成）
+commit-msg*.txt

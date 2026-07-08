@@ -7,8 +7,8 @@
 ## 特性
 
 - [docs/workflow.md](docs/workflow.md) — 需求处理 Step 0–12（含 Git 两阶段、MCP 测试造数、经验沉淀）
-- `.cursor/rules/` — 命名、风格、业务、表结构、Git、审查、测试造数
-- `.cursor/skills/zoehis-ai-dev/` — 全栈开发 Skill + 业务模式文档
+- `dev/rules/` — 命名、风格、业务、表结构、Git、审查、测试造数（**源文件**；Cursor 经 `.cursor/rules` 联接加载）
+- `dev/skills/zoehis-ai-dev/` — 全栈开发 Skill + 业务模式文档（**源文件**；经 `.cursor/skills` 联接）
 - [docs/memory/](docs/memory/README.md) — 工作经验案例库与定期升格/归档
 
 ## 快速开始
@@ -19,7 +19,7 @@ git clone https://github.com/zyx379/zoehis_workflow.git
 
 将 clone 内容放到本地 **fj-common 工作区根目录**（与 `onelink-*` 业务子仓库并列），详见 [docs/multi-device-sync.md](docs/multi-device-sync.md)。
 
-Cursor 打开 **工作区根目录**，即可加载 `.cursor/rules` 与 Skill。
+Cursor 打开 **工作区根目录**。首次 clone 或 `git pull` 后若 `.cursor/rules` 不存在，执行 `.\scripts\link-cursor-dev.ps1` 创建联接，即可加载 Rule 与 Skill。
 
 ## 文档
 
@@ -35,7 +35,7 @@ Cursor 打开 **工作区根目录**，即可加载 `.cursor/rules` 与 Skill。
 
 - 业务源码（`onelink-*`）
 - API Key、MCP 密钥
-- 生产排查个人 Skill（`his-log-diagnosis`）
+- 生产排查 Skill（`dev/skills/his-log-diagnosis`）
 
 ## License
 

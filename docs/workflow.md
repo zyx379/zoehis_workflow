@@ -1,7 +1,7 @@
 # fj-common 需求处理工作流（最终版）
 
 > **每次处理需求必读。** Agent 须按本文件逐步执行并汇报进度；用户可用文末「开场模板」发起需求。  
-> 配置说明见 [ai-dev-setup-workflow.md](ai-dev-setup-workflow.md)；规范由 `.cursor/rules/zoehis-*.mdc` 自动生效。
+> 配置说明见 [ai-dev-setup-workflow.md](ai-dev-setup-workflow.md)；规范由 `dev/rules/zoehis-*.mdc` 自动生效（Cursor 经 `.cursor/rules` 联接加载）。
 
 ---
 
@@ -61,7 +61,7 @@ flowchart TD
 |------|--------------|------|
 | **功能改造** | ✅ 全流程 | 新需求、增强 |
 | **Bug 修复** | ✅ 全流程（可跳过 spec） | 先复现/定位根因 |
-| **生产排查** | ❌ 改走排查链路 | Skill `his-log-diagnosis` + MCP `user-zoe-his-mcp`；**验证前不改代码** |
+| **生产排查** | ❌ 改走排查链路 | Skill `dev/skills/his-log-diagnosis` + MCP `zoe-his-mcp`；**验证前不改代码** |
 | **现场离线排查** | ❌ 改走 [现场离线排查流程](排查/现场离线排查流程.md) | 库/MCP 生产不可达，凭截图产出 **SELECT 脚本**；**验证前不改代码** |
 
 有 **traceId** 且 MCP 生产可达 → **分支 A**，不走本工作流改码路径。  
@@ -188,11 +188,11 @@ git pull origin master
 
 **Agent 操作：**
 
-1. Read Skill **`.cursor/skills/zoehis-code-map/SKILL.md`**  
+1. Read Skill **`dev/skills/zoehis-code-map/SKILL.md`**  
 2. 检索 [docs/memory/index.md](memory/index.md) 与相关 cases  
 3. 验证调用链（页面 → API → Controller → Service → Dao → 表）  
 4. 识别参数体系（系统参数 / 页面参数 / 无）与数据流  
-5. **MCP 字段核验（按需）**：涉及表名、拟改 SQL 列、Dao.xml 字段或实体属性且**未从现有代码确认**时，调用 MCP `user-zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**，以返回列名为准写入短期记忆「数据库」或「需求分析要点」；外部分析无法调 MCP 时标「待 Cursor Step 4 MCP 核验」  
+5. **MCP 字段核验（按需）**：涉及表名、拟改 SQL 列、Dao.xml 字段或实体属性且**未从现有代码确认**时，调用 MCP `zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**，以返回列名为准写入短期记忆「数据库」或「需求分析要点」；外部分析无法调 MCP 时标「待 Cursor Step 4 MCP 核验」  
 6. **复杂需求**：写入短期记忆（命名见下方 **4.3**）  
 7. **简单需求**：在回复中说明「Step 4 与 Step 2 合并，跳过短期记忆文件」
 
@@ -207,7 +207,7 @@ Step 4 分析与 Step 5 spec **共用同一 short-term 文件**（禁止另建 s
 | **关键索引** | 1～3 个检索词：页面路由、主接口、核心表 | `docOderQuery-停嘱时间` |
 | **文档 H1** | `# [禅道号] {功能描述}`，与文件名「功能描述」一致 | `# [206295] 医嘱申请条数展示与停嘱时间过滤` |
 | **唯一性** | **同一禅道号进行中只保留一个 short-term**；返工、spec 修订在原文件追加/更新，不新建第二份 | — |
-| **需求 Skill** | `.cursor/skills/{禅道号}-{关键索引}/SKILL.md`（与 short-term 同步；Step 12 删除） | `.cursor/skills/206295-docOderQuery/SKILL.md` |
+| **需求 Skill** | `dev/skills/{禅道号}-{关键索引}/SKILL.md`（与 short-term 同步；Step 12 删除） | `dev/skills/206295-docOderQuery/SKILL.md` |
 
 - 模板：[docs/memory/short-term/_template.md](memory/short-term/_template.md)  
 - 旧版 `{禅道号}-{英文slug}.md` 仍可读；**新需求一律中文命名**
@@ -289,7 +289,7 @@ Step 4 分析与 Step 5 spec **共用同一 short-term 文件**（禁止另建 s
 | 业务 | POOL→执行→RECORD+删POOL；主细表；扣费+消费流水；`_OUTP_`/`_INP_` 对称 |
 | 参数 | 系统参数 vs 页面参数区分（Rule `zoehis-sys-param`）；jsonl **单独 commit**；新增参数先查同类页面已有体系 |
 
-详细表级流转：Read `.cursor/skills/zoehis-ai-dev/patterns/his-business-patterns.md`
+详细表级流转：Read `dev/skills/zoehis-ai-dev/patterns/his-business-patterns.md`
 
 ---
 
@@ -307,7 +307,7 @@ Step 4 分析与 Step 5 spec **共用同一 short-term 文件**（禁止另建 s
 
 ## Step 8 — AI 局部审查
 
-对 **本次 diff** 审查，未通过不得进入 Step 9。Rule：`.cursor/rules/zoehis-code-review.mdc`。
+对 **本次 diff** 审查，未通过不得进入 Step 9。Rule：`dev/rules/zoehis-code-review.mdc`。
 
 ### 8.1 规范与数据流
 
@@ -338,7 +338,7 @@ Step 4 分析与 Step 5 spec **共用同一 short-term 文件**（禁止另建 s
 
 **SQL / Dao.xml 字段存疑时（强制）：**
 
-1. 调用 MCP `user-zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**  
+1. 调用 MCP `zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**  
 2. 以返回的 **真实列名** 为准对比 diff 中的 SQL/实体字段  
 3. 不一致 → 修正代码后重新做 8.2、8.3  
 4. 审查结论中写明：`已核对 <表名>：字段 xxx, yyy, ...`
@@ -497,7 +497,7 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 ## Step 11 — 测试用例（MCP 测试库造数）
 
-在功能交付后，用 **MCP `user-zoe-his-mcp`** 在 **测试库** 准备数据并验证，支撑界面/接口手工测试。
+在功能交付后，用 **MCP `zoe-his-mcp`** 在 **测试库** 准备数据并验证，支撑界面/接口手工测试。
 
 ### 原则
 
@@ -601,7 +601,7 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 双周/月度由人发起，见 [docs/memory/README.md](memory/README.md)：
 
-- 提炼高频条目 → 升格 `workflow` / `.cursor/skills` / `.cursor/rules`  
+- 提炼高频条目 → 升格 `workflow` / `dev/skills` / `dev/rules`
 - 修改前将旧版复制到 `docs/memory/archive/YYYY-MM-DD/`  
 - 记入 [docs/memory/optimization-log.md](memory/optimization-log.md)  
 
@@ -631,8 +631,8 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 ## 分支 A：生产排查（MCP / traceId 可达）
 
-1. 使用 Skill **`his-log-diagnosis`**  
-2. MCP **`user-zoe-his-mcp`**：HTTP → RPC → SQL → 业务 SELECT  
+1. 使用 Skill **`dev/skills/his-log-diagnosis/SKILL.md`**  
+2. MCP **`zoe-his-mcp`**：HTTP → RPC → SQL → 业务 SELECT  
 3. 代码用 GitLab `get_code`，**不用本地 Grep 冒充生产代码**  
 4. 结论需日志+SQL+代码交叉验证；验证前不改代码  
 
@@ -654,14 +654,14 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 | 用途 | 位置 |
 |------|------|
-| 命名/风格/业务/表/Git/测试造数/AI 审查 | `.cursor/rules/zoehis-*.mdc` |
-| Skill 入口 | `.cursor/skills/zoehis-ai-dev/SKILL.md` |
-| 业务表流转细节 | `.cursor/skills/zoehis-ai-dev/patterns/his-business-patterns.md` |
+| 命名/风格/业务/表/Git/测试造数/AI 审查 | `dev/rules/zoehis-*.mdc`（`.cursor/rules` 联接） |
+| Skill 入口 | `dev/skills/zoehis-ai-dev/SKILL.md` |
+| 业务表流转细节 | `dev/skills/zoehis-ai-dev/patterns/his-business-patterns.md` |
 | 代码地图（Step 4） | Skill `zoehis-code-map`；Codegraph 可选 |
 | 多编辑器协作 | [multi-editor-cursor-collab.md](multi-editor-cursor-collab.md) |
-| 生产日志（分支 A） | `his-log-diagnosis` + `user-zoe-his-mcp`（仅 SELECT） |
+| 生产日志（分支 A） | `dev/skills/his-log-diagnosis` + `zoe-his-mcp`（仅 SELECT） |
 | 现场离线排查（分支 B） | [docs/排查/现场离线排查流程.md](排查/现场离线排查流程.md) |
-| 测试库造数 | `user-zoe-his-mcp`（测试 `dataSourceId`，INSERT/UPDATE/SELECT） |
+| 测试库造数 | `zoe-his-mcp`（`dev/mcp/zoe-his-mcp/`，测试 `dataSourceId`，INSERT/UPDATE/SELECT） |
 | 长期记忆 | [docs/memory/cases/](memory/cases/) + index |
 | 短期记忆 | [docs/memory/short-term/](memory/short-term/)（需求结束删除） |
 

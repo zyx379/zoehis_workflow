@@ -5,8 +5,8 @@
 ## 开发（改代码）
 
 1. **每次需求按步骤执行：** [docs/workflow.md](docs/workflow.md)（最终版 + 开场模板）
-2. 遵守 `.cursor/rules/zoehis-*.mdc`（含 Step 8：异常风险 + 幻觉 SQL 字段 MCP 查表；系统参数/页面参数规范 `zoehis-sys-param`）
-3. 使用 Skill **zoehis-ai-dev**；Step 4 代码地图用 **zoehis-code-map**（Codegraph 可选）
+2. 遵守 `dev/rules/zoehis-*.mdc`（Cursor 经 `.cursor/rules` 联接加载；含 Step 8、系统参数规范 `zoehis-sys-param`）
+3. 使用 Skill **zoehis-ai-dev**（`dev/skills/`，经 `.cursor/skills` 联接）；Step 4 代码地图用 **zoehis-code-map**
 4. 配置说明：[docs/ai-dev-setup-workflow.md](docs/ai-dev-setup-workflow.md)
 5. **多设备同步**：[docs/multi-device-sync.md](docs/multi-device-sync.md)（GitHub 配置仓）
 6. **多编辑器协作**：[docs/multi-editor-cursor-collab.md](docs/multi-editor-cursor-collab.md)（Trae/CodeBuddy → Cursor）
@@ -15,7 +15,7 @@
 
 | 场景 | 文档 |
 |------|------|
-| MCP / traceId 可达 | Skill **his-log-diagnosis** + MCP `user-zoe-his-mcp`（workflow 分支 A） |
+| MCP / traceId 可达 | Skill **`dev/skills/his-log-diagnosis`** + MCP **`zoe-his-mcp`**（`dev/mcp/zoe-his-mcp/`，workflow 分支 A） |
 | **现场库不可达** | [docs/排查/现场离线排查流程.md](docs/排查/现场离线排查流程.md)（分支 B，产出 SELECT 脚本，验证前不改代码） |
 
 > **子仓库路径**：所有后端代码均在本地子目录（如 `onelink-micro-charge-fj-common/`），排查时直接 Read/Grep，不要误判为"代码不在本地"。完整映射见 Skill `zoehis-code-map`。
@@ -32,7 +32,7 @@
 
 ## 测试造数
 
-- Step 11（默认跳过）：MCP `user-zoe-his-mcp` 在**测试库** INSERT/UPDATE 造数 + SELECT 验证（见 `docs/workflow.md`）
+- Step 11（默认跳过）：MCP **`zoe-his-mcp`**（`dev/mcp/zoe-his-mcp/`）在**测试库** INSERT/UPDATE 造数 + SELECT 验证（见 `docs/workflow.md`）
 
 ## 工作经验记忆库
 

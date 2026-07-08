@@ -1,0 +1,65 @@
+{
+  "_meta": {
+    "description": "各医院应用日志平台入参差异。architecture=legacy 为旧架构（南安等），需 timestamp + filterParamet(sortColumns 等)；architecture=onelink 为新架构。莆田 fjpt：legacy 路径 + legacySqlMsgidFilter=onelink（msgid SQL 专用）。"
+  },
+  "default": {
+    "architecture": "onelink",
+    "requireTimestamp": false,
+    "defaultTimeRangeDays": 3,
+    "indices": {
+      "http": "log-http*",
+      "sql": "log-sql*",
+      "dubbo": "log-dubbo*",
+      "param": "log-param*",
+      "normal": "log-normal*"
+    },
+    "logTypes": {
+      "http": "http",
+      "sql": "sql",
+      "dubbo": "dubbo",
+      "param": "param",
+      "normal": "normal"
+    }
+  },
+  "nasyy": {
+    "architecture": "legacy",
+    "requireTimestamp": true,
+    "defaultTimeRangeDays": 3,
+    "indices": {
+      "http": "log-req*",
+      "sql": "log-sql*",
+      "dubbo": "log-dubbo*",
+      "param": "log-param*",
+      "normal": "log-normal*"
+    },
+    "logTypes": {
+      "http": "req",
+      "sql": "sql",
+      "dubbo": "dubbo",
+      "param": "param",
+      "normal": "normal"
+    },
+    "notes": "南安旧架构：HTTP 用 log-req*；filterParamet 含 sortColumns/timestamp，勿用新架构 searchType/searchValue"
+  },
+  "fjpt": {
+    "architecture": "legacy",
+    "requireTimestamp": false,
+    "legacySqlMsgidFilter": "onelink",
+    "defaultTimeRangeDays": 3,
+    "indices": {
+      "http": "log-req*",
+      "sql": "log-sql*",
+      "dubbo": "log-dubbo*",
+      "param": "log-param*",
+      "normal": "log-normal*"
+    },
+    "logTypes": {
+      "http": "req",
+      "sql": "sql",
+      "dubbo": "dubbo",
+      "param": "param",
+      "normal": "normal"
+    },
+    "notes": "莆田：/log/search；HTTP/traceId 用 legacy+log-req*；医保 msgid SQL 检索须 onelink 风格 filterParamet（勿 legacy+ISO timestamp，否则 500 NPE）"
+  }
+}

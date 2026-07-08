@@ -1,0 +1,1 @@
+{"version":3,"file":"query-sql-log.d.ts","sourceRoot":"","sources":["../../src/tools/query-sql-log.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,OAAO,EAAE,UAAU,EAAE,MAAM,aAAa,CAAC;AAIzC,wBAAsB,WAAW,CAAC,IAAI,EAAE;IACtC,OAAO,EAAE,MAAM,CAAC;IAChB,KAAK,CAAC,EAAE,MAAM,CAAA;CACf,GAAG,OAAO,CAAC,UAAU,CAAC,CA2EtB"}
