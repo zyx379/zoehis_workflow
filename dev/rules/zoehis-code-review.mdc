@@ -1,5 +1,5 @@
 ---
-description: ZOEHIS AI 局部审查：异常风险、幻觉代码与 SQL 字段 MCP 核验
+description: ZOEHIS AI 局部审查：Java/Spring Boot 企业规范、异常风险、幻觉代码与 SQL 字段 MCP 核验
 alwaysApply: true
 ---
 
@@ -7,36 +7,104 @@ alwaysApply: true
 
 改动完成后、人工审查前，对 **本次 diff** 做局部审查并输出结论。详见 `docs/workflow.md` Step 8。
 
+> 本规则将「Java/Spring Boot 企业级代码生成约束」转换为 **审查视角** 的检查清单：生成阶段该遵守的，审查阶段逐条核对是否已遵守；命中即标记 **违规**，给出改法，结论置为 **需修改**，不得放行进入 Step 9。
+
 ## 1. 规范与数据流
 
 - 命名、代码风格（`dev/rules/zoehis-*.mdc`）
-- 池表/主细表/预交金/流水完整性
+- 池表 / 主细表 / 预交金 / 流水完整性（同 Step 7，针对改动点）
 
-## 2. 运行时异常风险（必查）
+## 2. Java/Spring Boot 企业级规范（必查）
+
+对新增/修改的 Java/Spring 代码逐项核查；命中任一项即标记 **违规** 并给出改法，不得进入 Step 9。
+
+### 2.1 异常处理（强制）
+- [ ] 禁止空 `catch`：`catch (Exception e) {}` → 必须记录日志并向上抛出
+- [ ] 禁止吞 cause：禁止 `throw new RuntimeException("失败")` 丢原异常 → 必须 `throw new RuntimeException("失败", e)`
+- [ ] 必须保留原始 cause、记录完整异常日志（含堆栈 `log.error("执行失败", e)`）
+- [ ] 禁止静默吞异常（catch 后不处理也不抛出，return 掩盖错误）
+
+### 2.2 事务规范（强制）
+- [ ] `@Transactional` 仅标注 **public** 方法；禁止 private/protected 方法加事务（不生效）
+- [ ] 必须声明 `rollbackFor = Exception.class`，禁止依赖默认回滚（默认仅回滚 RuntimeException）
+- [ ] 禁止同类内部 **self-invoke** 调用本类事务方法（事务失效）：改用 AOP 代理调用 / 抽取独立 Service / 注入自身代理
+- [ ] 多表写、池表删增未同事务 → 标记风险并提示
+
+### 2.3 afterCommit（最高优先级）
+- [ ] 若使用 `TransactionSynchronizationManager` / `afterCommit()` / `TransactionSynchronizationAdapter`
+- [ ] 其中任意 DB 写（insert/update/delete/save/saveBatch/Mapper/Repository）**必须** 新开物理事务，满足其一：
+  - ① `@Transactional(propagation = Propagation.REQUIRES_NEW)`
+  - ② `TransactionTemplate`
+  - ③ AOP 代理调用且代理方法声明 `REQUIRES_NEW`
+- [ ] 禁止 afterCommit 中直接写库而未开启新事务（主事务已提交，内部写不受控 / 事务失效）
+
+### 2.4 金额计算（强制）
+- [ ] 金额字段、金额运算必须使用 `BigDecimal`，禁止 `double/Double/float/Float`
+- [ ] 禁止金额 `==` 比较，必须用 `compareTo()` / `equals()`
+- [ ] 禁止浮点字面量参与金额运算（如 `1.1 * qty` → `new BigDecimal("1.1").multiply(...)`）
+
+### 2.5 线程安全
+- [ ] 禁止共享 `SimpleDateFormat`（静态共享变量）→ 改用 `DateTimeFormatter` 或局部变量/ThreadLocal
+- [ ] 禁止共享可变 `HashMap/ArrayList` 等非线程安全容器（线程间复用导致数据错乱）
+- [ ] 共享对象必须保证线程安全（或改为方法局部变量）
+
+### 2.6 异步任务
+- [ ] 出现 `@Async` 的类中，项目须存在 `@EnableAsync` 与 `ThreadPoolTaskExecutor` 配置；缺一则 `@Async` 不生效 → 补全配置或移除注解
+- [ ] 异步方法内异常需有明确兜底，避免静默丢失
+
+### 2.7 依赖注入
+- [ ] 统一 `@RequiredArgsConstructor` + 构造器注入；禁止 `@Autowired` 字段注入
+- [ ] 禁止在字段上直接 `@Autowired`（破坏不可变性与可测试性）
+
+### 2.8 日志
+- [ ] 参数化日志 `log.info("id={}", id)`；禁止字符串拼接 `log.info("id=" + id)`
+- [ ] 禁止 `System.out.println()` / `System.err.println()` / `printStackTrace()`
+- [ ] 异常日志必须输出完整堆栈（占位符处传入 `e`）
+
+### 2.9 空指针 NPE
+- [ ] 方法返回值、Map.get()、List.get()、RPC / Feign / HTTP 返回值、DTO 必须判空后再用
+- [ ] 禁止未判空链式调用（如 `user.getDept().getName()`）→ 用 `Optional` / 显式判空
+- [ ] 集合遍历 / 流式处理前确认非空非 null
+
+### 2.10 架构规范
+- [ ] Controller 仅负责：参数接收、参数校验、返回结果
+- [ ] 业务逻辑必须放入 Service；禁止 Controller 直接调 Mapper / Repository
+- [ ] 禁止在 Controller 内写业务规则、事务编排
+
+### 2.11 代码规范
+- [ ] 常量全大写；命名清晰无歧义
+- [ ] 删除废弃代码、不生成重复代码；保持单一职责
+
+## 3. 运行时异常风险（必查）
 
 针对新增/修改逻辑逐项说明是否已防护，未防护须标为 **风险** 并建议改法：
 
 | 类型 | 检查要点 |
 |------|----------|
-| **空指针 NPE** | 入参、查询结果、集合元素、`Optional` 链、MyBatis 返回 null、前端 `res.data` 未判空 |
-| **SQL 异常** | 字段名/表名是否存在；`#{}` 类型与库字段；动态 SQL 空 `IN ()`；达梦/Oracle 方言；主键冲突、违反非空 |
-| **索引越界** | 数组/List 下标、`substring`/`charAt`、前端表格行号、`split` 后取 `[0]` |
-| **类型/转换** | 数字格式、日期解析、`BigDecimal` 比较、前后端字段类型不一致 |
-| **并发/事务** | 多表写是否同事务；池表删增是否原子 |
+| **空指针 NPE** | 入参、DAO 返回值、集合元素、前端 `res`/`rows[i]`、链式调用每一环 |
+| **SQL 异常** | 表/列是否存在、绑定类型、动态 SQL 空集合、`IN ()`、达梦/Oracle 方言、非空/唯一约束 |
+| **索引越界** | List/数组下标、循环边界、`split`/`substring`、表格行号 |
+| **类型转换** | 数字/日期解析、`BigDecimal`、前后端字段类型不一致 |
+| **并发/事务** | 多表写是否同事务；池表删增是否原子；afterCommit 是否新开物理事务（见 §2.3） |
 
-## 3. 幻觉代码（必查）
+## 4. 幻觉代码（必查）
 
 禁止未经验证就写入的「猜测性」实现：
 
-- 不存在的 **类、方法、接口路径、配置项**
-- 不存在的 **表名、SQL 列名、resultMap 属性**
-- 编造的业务状态码、字典项、枚举值
+- 不存在的 **类、方法、接口 URL、配置 key**
+- 不存在的 **表名、SQL 列名、MyBatis `resultMap` 属性**
+- 编造的状态码、字典项、枚举值
 
-**SQL/Dao.xml 列名、表名存疑时：** 必须调用 MCP `zoe-his-mcp` → `get_table_schema(tableNamePattern)`，以返回字段为准；不符则修正后再进入 Step 9。
+**SQL / Dao.xml 字段存疑时（强制）：**
 
-**禁止** 仅凭记忆或相似表结构写列名；schema 结果须在审查结论中引用（表名 + 关键字段列表摘要）。
+1. 调用 MCP `zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**
+2. 以返回的 **真实列名** 为准对比 diff 中的 SQL/实体字段
+3. 不一致 → 修正代码后重新做 §2、§3、§4
+4. 审查结论中写明：`已核对 <表名>：字段 xxx, yyy, ...`
 
-## 4. 审查输出格式
+前端字段若对应后端 DTO/接口，应用 Codegraph 或读实际类定义核对，不得臆造属性名。
+
+## 5. 审查输出格式
 
 ```markdown
 ## AI 局部审查
@@ -44,14 +112,31 @@ alwaysApply: true
 ### 通过项
 - ...
 
-### 异常风险
-- [ ] 无 / 或列出项 + 建议
+### Java/Spring Boot 企业规范（§2）
+- [ ] 异常：无违规 / 或：【位置】问题 — 改法
+- [ ] 事务：无违规 / 或：...
+- [ ] afterCommit：无违规 / 或：...
+- [ ] 金额：无违规 / 或：...
+- [ ] 线程安全：无违规 / 或：...
+- [ ] @Async：无违规 / 或：...
+- [ ] 注入：无违规 / 或：...
+- [ ] 日志：无违规 / 或：...
+- [ ] NPE：无违规 / 或：...
+- [ ] 架构：无违规 / 或：...
+- [ ] 代码规范：无违规 / 或：...
 
-### 幻觉核验
-- [ ] 无幻觉 / 已用 get_table_schema 核对：<表名> → 字段 ...
+### 异常风险（§3）
+- 无 / 或：【类型】位置 — 风险 — 建议
+
+### 幻觉核验（§4）
+- 无幻觉 / 已用 get_table_schema 核对：<表名> → 字段 ...
 
 ### 结论
-通过 / 需修改（回到 Step 6）
+✅ 通过，可进入人工审查  /  ❌ 需修改（列出项）
 ```
 
-存在 **未修复的高风险** 或 **未核验的存疑 SQL 字段** → 结论为 **需修改**，不得进入 Step 9。
+存在以下任一项 → 结论 **需修改**，不得进入 Step 9：
+
+- 未修复的 Java/Spring Boot 规范违规（§2 任一项）
+- 未修复的高风险运行时异常（§3）
+- 未核验的存疑 SQL 字段（§4）

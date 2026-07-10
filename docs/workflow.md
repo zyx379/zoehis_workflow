@@ -334,7 +334,25 @@ Step 4 分析与 Step 5 spec **共用同一 short-term 文件**（禁止另建 s
 
 发现高风险且未改 → 结论 **需修改**，回到 Step 6。
 
-### 8.3 幻觉代码排除（必查）
+### 8.3 Java/Spring Boot 企业级规范（必查）
+
+对新增/修改的 Java/Spring 代码逐项核查，命中任一项即 **违规**，结论置 **需修改**。完整清单见 Rule `dev/rules/zoehis-code-review.mdc` §2：
+
+- **异常**：禁空 `catch`、禁吞 cause（必须 `throw new RuntimeException(msg, e)`）、记完整堆栈 `log.error("...", e)`
+- **事务**：`@Transactional` 仅标 public + 必须 `rollbackFor = Exception.class`；禁同类 self-invoke 导致事务失效
+- **afterCommit（最高优先级）**：其内部 DB 写须 `REQUIRES_NEW` / `TransactionTemplate` / 代理 REQUIRES_NEW，禁直接写库而无新物理事务
+- **金额**：`BigDecimal`，禁 `double/Double/float/Float`，禁 `==` 比较
+- **线程安全**：禁共享 `SimpleDateFormat`、禁共享可变 `HashMap/ArrayList`
+- **@Async**：项目须存在 `@EnableAsync` + `ThreadPoolTaskExecutor`，否则 `@Async` 不生效
+- **注入**：`@RequiredArgsConstructor` 构造器注入，禁 `@Autowired` 字段注入
+- **日志**：参数化 `log.info("id={}", id)`，禁字符串拼接、`System.out`/`printStackTrace`
+- **NPE**：返回值 / `Map.get` / `List.get` / RPC / Feign / HTTP / DTO 必判空，禁未判空链式调用
+- **架构**：Controller 仅收参、校验、返回；业务入 Service，禁 Controller 直调 Mapper/Repository
+- **代码规范**：常量大写、单一职责、无废弃/重复代码
+
+发现违规 → 结论 **需修改**，回到 Step 6。
+
+### 8.4 幻觉代码排除（必查）
 
 下列内容 **不得猜测**；无依据则视为幻觉，必须修正或 MCP 核实：
 
@@ -346,12 +364,12 @@ Step 4 分析与 Step 5 spec **共用同一 short-term 文件**（禁止另建 s
 
 1. 调用 MCP `zoe-his-mcp` → **`get_table_schema(tableNamePattern)`**  
 2. 以返回的 **真实列名** 为准对比 diff 中的 SQL/实体字段  
-3. 不一致 → 修正代码后重新做 8.2、8.3  
+3. 不一致 → 修正代码后重新做 8.2、8.3、8.4  
 4. 审查结论中写明：`已核对 <表名>：字段 xxx, yyy, ...`
 
 前端字段若对应后端 DTO/接口，应用 Codegraph 或读实际类定义核对，不得臆造属性名。
 
-### 8.4 审查输出（Agent 必须给出）
+### 8.5 审查输出（Agent 必须给出）
 
 ```markdown
 ## AI 局部审查

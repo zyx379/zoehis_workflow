@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "zoe-his-mcp": {
+      "type": "stdio",
+      "command": "D:\\dev\\nvm\\v20.18.3\\node.exe",
+      "args": ["D:\\zoe_work_space\\fj-common\\dev\\mcp\\zoe-his-mcp\\dist\\index.js"],
+      "cwd": "D:\\zoe_work_space\\fj-common\\dev\\mcp\\zoe-his-mcp",
+      "env": {
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0",
+        "ZOE_PROJECT_CODE": "seyy"
+      },
+      "description": "ZoeDevOps HIS 智能运维诊断工具集（查表结构、测试库 SQL、traceId 日志、GitLab 读码）"
+    },
+    "ima-knowledge": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["D:\\zoe_work_space\\ima_db\\run.py"],
+      "cwd": "D:\\zoe_work_space\\ima_db",
+      "description": "IMA 知识库检索"
+    }
+  }
+}
