@@ -42,6 +42,7 @@
 | 2026-07-04 | 194551/core | Git/CI | release-1.166、编译失败、cherry-pick、194551 Long、SettleRateTypeCheckParam、分支回退、release-1.166.156 | [cases/194551-release166编译失败分支回退+SettleRateTypeCheckParam-cherry-pick.md](cases/194551-release166编译失败分支回退+SettleRateTypeCheckParam-cherry-pick.md) | — | — |
 | 2026-07-06 | 202606 | 医保/收费/六号文 | sin_dos_dscr、used_frqu_dscr、中药、一剂、1日1剂分N次、chnFlag、charge/insurance双端对齐 | [cases/202606-六号文中药上传字段+sinDosDscr-usedFrquDscr.md](cases/202606-六号文中药上传字段+sinDosDscr-usedFrquDscr.md) | — | — |
 | 2026-07-06 | 206668 | 住院/手术申请/导航 | guideDoctor、expertPersonnel、watchOtherPersonnel、EAV、PRES_OPERATION_APPLY_DETAIL、页面参数130201、operateApplication、手术记录同步 | [cases/206668-手术申请导航字段前置+guideDoctor-operationApplication.md](cases/206668-手术申请导航字段前置+guideDoctor-operationApplication.md) | — | — |
+| 2026-07-09 | 206291 | 门诊/医保/医嘱开单 | 特殊病种、OUTP_INP_CODE、getOutpPatDiseaseRegister、PatientDiseaseRegisterDao、getDefaultDisease | [cases/206291-门诊特殊病种过滤住院类型+getOutpPatDiseaseRegister-DIC_INSUR_SPECIAL_DISEASE.md](cases/206291-门诊特殊病种过滤住院类型+getOutpPatDiseaseRegister-DIC_INSUR_SPECIAL_DISEASE.md) | — | — |
 
 ---
 

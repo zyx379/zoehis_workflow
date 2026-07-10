@@ -116,12 +116,15 @@ flowchart LR
 
 ## 与 his-log-diagnosis 的分工
 
-| 库 | 位置 | 内容 |
-|----|------|------|
-| 生产排查案例 | `dev/skills/his-log-diagnosis/cases.md` | traceId、日志、SQL 证伪 |
-| **本库** | `docs/memory/cases/` | 功能开发、改码、测试造数、规范演进 |
+| 库 | 位置 | 内容 | 何时写 |
+|----|------|------|--------|
+| **生产排查 CASE** | `dev/skills/his-log-diagnosis/cases.md` | traceId、日志证伪、防误导模式 | 用户确认可复用后 |
+| **开发长期 case** | `docs/memory/cases/` | 改码、造数、规范演进 | workflow Step 12（Bug/功能交付后） |
+| **排查 short-term** | — | **禁止** | 排查类不建 short-term |
 
-生产排查结论若影响开发规范，在 case 里加「升格建议」，回顾时再合并进 workflow。
+**召回**：排查类走 [workflow 排查记忆召回](../workflow.md#记忆召回排查专用)（index ≤2 case + cases.md 简表 + 可选 IMA 问题排查），**不走** Step 4 全套代码地图。
+
+生产排查结论若影响开发规范，在 CASE 或开发 case 里加「升格建议」，回顾时再合并进 workflow。
 
 ---
 

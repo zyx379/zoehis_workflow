@@ -9,7 +9,7 @@
 
 ```
 需求处理进度:
-- [ ] 0. 任务分流（功能 / Bug / 生产排查 / **现场离线排查**）
+- [ ] 0. 任务分流（功能 / Bug / 生产排查 / 现场离线排查 / 纯 Git 发布 → 见分支 C）
 - [ ] 1. 需求理解（业务域、数据流、待确认点）
 - [ ] 2. 代码定位（文件清单 + 子仓库清单）
 - [ ] 3. Git 同步（各子仓库 master pull）
@@ -61,11 +61,16 @@ flowchart TD
 |------|--------------|------|
 | **功能改造** | ✅ 全流程 | 新需求、增强 |
 | **Bug 修复** | ✅ 全流程（可跳过 spec） | 先复现/定位根因 |
-| **生产排查** | ❌ 改走排查链路 | Skill `dev/skills/his-log-diagnosis` + MCP `zoe-his-mcp`；**验证前不改代码** |
-| **现场离线排查** | ❌ 改走 [现场离线排查流程](排查/现场离线排查流程.md) | 库/MCP 生产不可达，凭截图产出 **SELECT 脚本**；**验证前不改代码** |
+| **生产排查** | ❌ 改走 **分支 A** | Skill `his-log-diagnosis` + MCP `zoe-his-mcp`；**验证前不改代码** |
+| **现场离线排查** | ❌ 改走 **分支 B** | [现场离线排查流程](排查/现场离线排查流程.md)；只读代码逻辑分析；**验证前不改代码** |
+| **纯 Git 发布** | ❌ 改走 **分支 C** | 代码已在 master（已 push / 自行提交）；仅做 merge / tag / 合并到指定分支 |
 
-有 **traceId** 且 MCP 生产可达 → **分支 A**，不走本工作流改码路径。  
-现场库不可达、仅有截图/报错 → **分支 B**（见上表链接）。
+有 **traceId** 且 MCP 生产可达 → **分支 A**。  
+现场库不可达、仅有截图/报错 → **分支 B**。  
+代码已就绪、无需改码只想发布 → **分支 C**。
+
+排查类 **不走** Step 1–13 开发主流程；记忆召回与沉淀见下方 **[排查类共用约定](#排查类共用约定分支-a--b)**（**≠** Step 4 / Step 12）。  
+**分支 C** 同样不走 Step 1–9 / Step 10.1，仅复用 **[Step 10.2](#102-合并到项目分支先-master再按提交关键词匹配)** / **[Step 10.3](#103-打-tag在项目分支上当前分支最大-tag--1)** 的 Git 发布动作。
 
 ---
 
@@ -630,24 +635,87 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 ---
 
+## 排查类共用约定（分支 A + B）
+
+> **目的**：少 token、少步骤复述；排查与开发 **记忆机制分离**。
+
+### 记忆召回（排查专用）
+
+| 顺序 | 来源 | 约束 |
+|------|------|------|
+| 1 | 用户 `@` 的 case / 线索 | 优先 |
+| 2 | [docs/memory/index.md](memory/index.md) 关键词 | 最多打开 **2** 个 case，只读「结论 / 改造记录 / 排查要点」段 |
+| 3 | 分支 A：`his-log-diagnosis/cases.md` 简表 | 仅作 **待验证假设**，须用当前 trace 交叉印证 |
+| 4 | 在线（prompt 选 在线/全部） | IMA `category=问题排查`；`search_kb_content` **≤3 条**，每条摘要 **≤2 句** |
+
+**禁止**：为排查建 `short-term/`；在回复中粘贴整篇 case；走 Step 4 代码地图全套输出。
+
+### 输出（精简）
+
+**一次回复**完成，**不逐步勾选**开发/离线进度清单（除非用户要求详细模式）。
+
+| 区块 | 上限 |
+|------|------|
+| 一句话结论 | ≤30 字 |
+| 关键证据 | 3–5 条 |
+| 代码链路 | 表格 **≤5 行** 或关键片段 **≤15 行** |
+| 处置建议 | ≤3 条 |
+| 待补充线索 | 缺什么写什么，不凑字数 |
+
+**禁止默认输出**：大段 SELECT 脚本包、完整数据流长文、逐步 progress 清单复述。  
+需现场核数据时：用 **一行** 说明「查哪张表、哪几个字段、什么条件」，**不写** SQL 脚本文件。
+
+### 沉淀（排查专用，≠ Step 12）
+
+| 结果 | 动作 |
+|------|------|
+| 纯排查、**未改码** | **不**写 `docs/memory/cases/`，**不**跑 Step 12，**不**建 short-term |
+| 可复用日志/trace 模式 | **用户确认后** → `his-log-diagnosis/cases.md` 追加简短 CASE |
+| 离线/MCP 确认代码缺陷 → 改码交付 | 转 **Bug 修复** 主流程，Step 12 写 **开发 case** |
+| IMA 同步 | 仅用户点名或新增 CASE 时；folder=问题排查 |
+
+---
+
 ## 分支 A：生产排查（MCP / traceId 可达）
 
-1. 使用 Skill **`dev/skills/his-log-diagnosis/SKILL.md`**  
-2. MCP **`zoe-his-mcp`**：HTTP → RPC → SQL → 业务 SELECT  
-3. 代码用 GitLab `get_code`，**不用本地 Grep 冒充生产代码**  
-4. 结论需日志+SQL+代码交叉验证；验证前不改代码  
+1. Read Skill **`dev/skills/his-log-diagnosis/SKILL.md`**（含精简结论格式）  
+2. 先 **[排查记忆召回](#记忆召回排查专用)**，再 MCP：HTTP → RPC → SQL → 业务 SELECT  
+3. 代码：`get_code` 本地优先；**不用本地 Grep 冒充生产代码**  
+4. 按 **[排查输出](#输出精简)** 一次给结论；验证前不改代码  
 
 ---
 
 ## 分支 B：现场离线排查（库不可达）
 
-**适用：** 现场生产库、VPN 或 MCP 生产数据源不可达；仅有截图、报错、界面字段、Network 等线索。
+**适用：** 现场生产库、VPN 或 MCP 生产不可达；仅有截图、报错、界面字段、Network 等。
 
-1. 严格按 **[docs/排查/现场离线排查流程.md](排查/现场离线排查流程.md)** 逐步执行  
-2. **只读**分析本地代码 + 记忆库；MCP 仅用于测试库 **`get_table_schema`** 核对列名  
-3. 产出 **排查 SQL 脚本包**（默认仅 SELECT）+ 非 SQL 建议（参数、版本、权限等）  
-4. 结论需 **代码链路 + 假设 + 预期 SQL 结果** 交叉验证；验证前不改代码  
-5. 现场回传 SQL 结果后：数据/参数类由现场处置；确认代码缺陷 → 转本 workflow **Bug 修复**（Step 1 起）
+1. 严格按 **[docs/排查/现场离线排查流程.md](排查/现场离线排查流程.md)**  
+2. **[排查记忆召回](#记忆召回排查专用)** + **只读**本地代码（Read/Grep）；**禁止** `get_code`、改代码、git 写操作  
+3. **只做代码逻辑分析**；需核数据时用一行「查表/字段/条件」描述，**不产出 SELECT 脚本包**  
+4. 按 **[排查输出](#输出精简)** 给结论；确认代码缺陷 → 转 **Bug 修复**（Step 1 起）
+
+---
+
+## 分支 C：纯 Git 发布操作（merge / tag / 合并到指定分支）
+
+> **适用：** 代码已在 master 上（已 push 或由用户自行提交完成），**无需**需求分析、编码、审查（Step 1–9），仅需 AI 协助执行 Git 发布动作。
+
+**典型意图：**
+
+- 把某仓 master 合并到指定项目分支（`release-*`）  
+- 在项目分支上打 tag（max+1 或用户指定版本）  
+- 仅 merge 不 tag，或仅 tag 不 merge  
+- 多仓统一发布 / 单仓单独发布  
+
+**执行（复用 Step 10，但跳过 10.1）：**
+
+1. **不重复 commit**：代码已在 master，跳过 **Step 10.1**。若 master 尚未 push，先 `git push origin master` 再继续  
+2. 复用 **[Step 10.2](#102-合并到项目分支先-master再按提交关键词匹配)**：按 commit 关键词匹配项目分支，或用户显式指定分支（如 `release-1.166` / `release-1.168`）  
+3. 复用 **[Step 10.3](#103-打-tag在项目分支上当前分支最大-tag--1)**：tag = 当前分支最大 tag + 1，或用户指定版本  
+4. **`onelink-web-cis-common` 例外**：该仓无发布分支/tag 序列，即使走分支 C 也**仅 push master**，不打 tag / 不 merge（同 10.1 例外）  
+5. 有冲突：仅在项目分支解决，完成后 push 并切回 master；cherry-pick 后须过 **[10.4](#104-cherry-pick-后格式审核强制)** 格式审核  
+
+**默认（无需再确认）：** 完成后 Agent 直接回报各仓 **tag 号**，不追问「是否编译」（CI 自动打包）。
 
 ---
 
@@ -660,8 +728,10 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 | 业务表流转细节 | `dev/skills/zoehis-ai-dev/patterns/his-business-patterns.md` |
 | 代码地图（Step 4） | Skill `zoehis-code-map`；Codegraph 可选 |
 | 多编辑器协作 | [multi-editor-cursor-collab.md](multi-editor-cursor-collab.md) |
-| 生产日志（分支 A） | `dev/skills/his-log-diagnosis` + `zoe-his-mcp`（仅 SELECT） |
+| 排查记忆/输出/沉淀 | 本节 [排查类共用约定](#排查类共用约定分支-a--b) |
+| 生产日志（分支 A） | `dev/skills/his-log-diagnosis` + `zoe-his-mcp` |
 | 现场离线排查（分支 B） | [docs/排查/现场离线排查流程.md](排查/现场离线排查流程.md) |
+| 纯 Git 发布（分支 C） | Step 10.2 merge + Step 10.3 tag（跳过 10.1；cis-common 仅 push master） |
 | 测试库造数 | `zoe-his-mcp`（`dev/mcp/zoe-his-mcp/`，测试 `dataSourceId`，INSERT/UPDATE/SELECT） |
 | 长期记忆 | [docs/memory/cases/](memory/cases/) + index |
 | 短期记忆 | [docs/memory/short-term/](memory/short-term/)（需求结束删除） |
@@ -675,7 +745,7 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 ```text
 请严格按 docs/workflow.md 执行，逐步汇报进度清单。
 
-【任务类型】功能改造 / Bug 修复
+【任务类型】功能改造 / Bug 修复 / spec规划（外部分析：仅 Step 0–4，Cursor 接力 spec）
 【需求描述】
 （页面/菜单、期望行为、验收标准）
 
@@ -695,6 +765,30 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 **Cursor 专用开场：** [docs/prompt_cursor](prompt_cursor)（占位，可复制 workflow 开场模板）  
 **Trae/CodeBuddy 专用：** [docs/prompt_external.md](prompt_external.md)（仅 Step 0–4）
 
+**排查类开场（分支 A / B，精简输出）：**
+
+```text
+请按 docs/workflow.md 排查类共用约定 + 对应分支执行；一次回复给结论，不要逐步勾选进度清单。
+
+【任务类型】生产排查 / 现场离线排查
+【记忆召回】本地 / 在线 / 全部（默认本地即可）
+【页面/现象】
+【线索】traceId / 截图 / 报错 / @case 路径 / release 分支
+【约束】验证前不改代码；不要输出 SELECT 脚本包
+```
+
+**纯 Git 发布开场（分支 C，不做需求分析/改码）：**
+
+```text
+请按 docs/workflow.md 分支 C 执行：仅做 Git 发布操作，不做需求分析与改码。
+
+【操作类型】合并 / 打 tag / 合并+打 tag
+【目标分支】release-1.166 / release-1.168 / 指定分支（如 release-1.170）
+【子仓库】repo-a, repo-b（或"全部有改动仓"、"仅 cis-common"）
+【版本】（可选，不填则取 max+1）1.166.20
+【约束】代码已在 master 并已 push，不要重复 commit；cis-common 仅 push master
+```
+
 审查通过后追加（按需选一）：
 
 ```text
@@ -713,4 +807,22 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 ---
 
-*版本：2026-06-15（新增分支 B 现场离线排查）| 权威执行文档：`docs/workflow.md`*
+## 【任务类型】spec规划（外部分析快捷 token）
+
+> `spec规划` 是「外部分析（Step 0–4）」的**任务类型快捷 token**，等价于粘贴整段 `prompt_external.md` 指令。Trae / CodeBuddy 开场写 `【任务类型】spec规划` 即可一键触发，无需写长段说明。
+
+Agent 按此 token 须执行：
+
+- 仅执行 **Step 0–4**（任务分流 → 需求理解 → 代码定位 → 需求分析 / 代码地图）  
+- **禁止** 改代码、Git pull / commit / push、spec 最终确认  
+- 遵守 `dev/rules/zoehis-*.mdc`（Read 仓库内文件，不猜测表名 / 接口）  
+- Step 4 按 `dev/skills/zoehis-code-map/SKILL.md` 产出代码地图  
+- 检索 `docs/memory/index.md` 找类似 case（按【记忆召回机制】选项）  
+- 分析结果写入 `docs/memory/short-term/{禅道号}-{功能描述}+{关键索引}.md`  
+- 最终 spec 与实现在 **Cursor** 完成（交接块格式见 [prompt_external.md](prompt_external.md) 与 [multi-editor-cursor-collab.md](multi-editor-cursor-collab.md)）
+
+**意义**：纯外部分析不复用分支 A/B/C；它走主流程的 Step 0–4，由 Cursor 从 Step 5 接力。完整进度清单与 Cursor 交接块见 [prompt_external.md](prompt_external.md)。
+
+---
+
+*版本：2026-07-10（新增分支 C：纯 Git 发布操作 merge/tag；新增【任务类型】spec规划 快捷 token）| 权威执行文档：`docs/workflow.md`*

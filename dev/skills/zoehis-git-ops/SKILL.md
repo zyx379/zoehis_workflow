@@ -4,9 +4,11 @@ description: >
   ZOEHIS Git delivery: commit, push, merge to release branches, cherry-pick, create
   tags. Use when committing code to master, pushing to remote, merging from master
   to release-1.166/1.168 branches, cherry-picking specific commits, tagging releases,
-  or handling system parameter (jsonl) separate commits.
+  or handling system parameter (jsonl) separate commits. Also manages the workspace
+  repo inventory: remembers all sub-repos long-term and auto-clones missing ones.
   Keywords: 提交, push, 合并, merge, 发布, release, tag, cherry-pick,
-  commit, 推送, 打tag, 系统参数, jsonl
+  commit, 推送, 打tag, 系统参数, jsonl, 同步gitlab仓库, 重新记忆gitlab仓库,
+  clone仓库, 仓库清单, 拉取仓库
 ---
 
 # ZOEHIS Git 交付
@@ -156,6 +158,42 @@ rm -f .git/COMMIT_MSG_FEATURE.txt   # 提交后立即删除临时文件
 | **审查通过，提交并发布** | 10.1 + 10.2 + 10.3（已知医院 merge release-* + 分支 tag；**未知项目** master 上 `release-0.0.{max+1}`） |
 | **审查通过，合并到 release-1.166** | 10.1 + 合并到指定分支 |
 | **只生成 commit message** | 仅起草，不执行 git |
+| **重新记忆gitlab仓库** | 「仓库清单管理」→ 重新扫描工作区，刷新长期记忆清单（见下） |
+| **同步gitlab仓库** | 「仓库清单管理」→ 对照清单自动 git clone 缺失仓库（见下） |
+
+## 仓库清单管理（长期记忆 + 自动克隆）
+
+维护工作区下所有 Git 子仓库的**长期记忆**：记录每个仓库的目录名与 `origin` clone URL。
+当本地缺目录（如误删 `onelink-web-cis-common`）时，能据此自动 `git clone` 还原。
+
+### 长期记忆文件
+
+`{skillDir}/repos-manifest.json`（JSON 数组，每项 `{ "name", "url" }`）：
+- **重新记忆gitlab仓库**：扫描 `{workspaceRoot}/` 下所有含 `.git` 的子目录，提取 `origin` URL，覆写清单。
+- 非仓库目录（`dev/`、`docs/`、`prompt_space/`、`scripts/` 等无 `.git`）自动排除。
+
+### 自动克隆（同步）
+
+- **同步gitlab仓库**：读取 `repos-manifest.json`，逐项检查 `{workspaceRoot}/{name}` 是否存在：
+  - 已存在 → 跳过
+  - 缺失且有 `url` → `git -C {workspaceRoot} clone {url} {name}`
+  - 缺失无 `url` → 告警跳过
+- 清单不存在时，`sync` 会自动先 `rescan` 再执行。
+
+### 执行脚本
+
+`{skillDir}/sync-repos.ps1`（PowerShell，Windows）：
+
+```powershell
+# 重新记忆：扫描工作区所有子仓库，刷新 repos-manifest.json
+powershell -ExecutionPolicy Bypass -File "{skillDir}/sync-repos.ps1" -Action rescan
+
+# 同步：对照清单，克隆本地缺失的仓库
+powershell -ExecutionPolicy Bypass -File "{skillDir}/sync-repos.ps1" -Action sync
+```
+
+> **路径定位**：脚本自 `dev/skills/zoehis-git-ops/` 向上 3 级定位工作区根 `fj-common`，无需硬编码路径。
+> **新增仓库**：若工作区新增了一个 Git 子仓库，先执行 `rescan` 把它写入长期记忆，后续 `sync` 才会在缺目录时自动克隆。
 
 ## 关联
 

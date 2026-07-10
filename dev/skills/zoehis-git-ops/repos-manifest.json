@@ -1,0 +1,42 @@
+﻿[
+    {
+        "name":  "onelink-micro-charge-fj-common",
+        "url":  "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-micro-charge-fj-common.git"
+    },
+    {
+        "name":  "onelink-micro-insurance-fj-ybcommon",
+        "url":  "http://gitlab.zoesoft.com.cn/onelink/fj-ybcommon/onelink-micro-insurance-fj-ybcommon.git"
+    },
+    {
+        "name":  "onelink-micro-optimus-fj-common",
+        "url":  "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-micro-optimus-fj-common.git"
+    },
+    {
+        "name":  "onelink-micro-pres-fj-common",
+        "url":  "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-micro-pres-fj-common.git"
+    },
+    {
+        "name":  "onelink-web-cis-common",
+        "url":  "http://gitlab.zoesoft.com.cn/onelink/common/onelink-web-cis-common.git"
+    },
+    {
+        "name":  "onelink-web-his-charge-fj-common",
+        "url":  "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-web-his-charge-fj-common.git"
+    },
+    {
+        "name":  "onelink-web-his-drug-fj-common",
+        "url":  "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-web-his-drug-fj-common.git"
+    },
+    {
+        "name":  "onelink-web-his-fj-component",
+        "url":  "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-web-his-fj-component.git"
+    },
+    {
+        "name":  "onelink-web-outp-fj-common",
+        "url":  "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-web-outp-fj-common.git"
+    },
+    {
+        "name":  "onelink-web-pres-fj-common",
+        "url":  "http://gitlab.zoesoft.com.cn/onelink/fj-common/onelink-web-pres-fj-common.git"
+    }
+]

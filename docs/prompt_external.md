@@ -3,6 +3,7 @@
 > **范围**：只做任务分流 → 需求理解 → 代码定位 → **需求分析（代码地图）**。  
 > **不做**：Git pull、改代码、spec 最终确认、commit/push。  
 > 完整流程与 Cursor 分工见 [multi-editor-cursor-collab.md](multi-editor-cursor-collab.md)。
+> **快捷 token**：开场用 `【任务类型】spec规划` 即等价本模板整段指令（定义见 [workflow.md](workflow.md) 的「【任务类型】spec规划」章节）。
 
 ---
 

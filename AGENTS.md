@@ -16,7 +16,7 @@
 | 场景 | 文档 |
 |------|------|
 | MCP / traceId 可达 | Skill **`dev/skills/his-log-diagnosis`** + MCP **`zoe-his-mcp`**（`dev/mcp/zoe-his-mcp/`，workflow 分支 A） |
-| **现场库不可达** | [docs/排查/现场离线排查流程.md](docs/排查/现场离线排查流程.md)（分支 B，产出 SELECT 脚本，验证前不改代码） |
+| **现场库不可达** | [docs/排查/现场离线排查流程.md](docs/排查/现场离线排查流程.md)（分支 B，只读代码逻辑分析，验证前不改代码） |
 
 > **子仓库路径**：所有后端代码均在本地子目录（如 `onelink-micro-charge-fj-common/`），排查时直接 Read/Grep，不要误判为"代码不在本地"。完整映射见 Skill `zoehis-code-map`。
 
@@ -36,5 +36,6 @@
 
 ## 工作经验记忆库
 
-- **长期**：[docs/memory/cases/](docs/memory/cases/) + index — Step 12 沉淀；定期升格 workflow/skill/rule  
-- **短期**：[docs/memory/short-term/](docs/memory/short-term/) — Step 4–5 分析/spec；交付后删除
+- **长期**：[docs/memory/cases/](docs/memory/cases/) + index — **开发交付** Step 12 沉淀  
+- **短期**：[docs/memory/short-term/](docs/memory/short-term/) — Step 4–5 分析/spec；交付后删除  
+- **排查类**（分支 A/B）：召回见 workflow「排查类共用约定」；纯排查 **不写 cases**；可复用模式 → `his-log-diagnosis/cases.md`
