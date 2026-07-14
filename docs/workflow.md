@@ -23,6 +23,7 @@
 - [ ] 11. MCP 测试库造数 + 验证（INSERT/UPDATE/SELECT）
 - [ ] 12. 经验沉淀（长期 cases + index；清理 short-term）
 - [ ] 13. 会话收尾（可选：用户于 Cursor Usage 查看 token）
+- [ ] 14. 前端展示自测（可选：仅用户主动要求时抽纯函数 + jest 单测）
 ```
 
 > **外部分析**：Trae / CodeBuddy 仅做 Step 0–4，见 [prompt_external.md](prompt_external.md) 与 [multi-editor-cursor-collab.md](multi-editor-cursor-collab.md)。
@@ -686,6 +687,31 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 
 ---
 
+## Step 14 — 前端展示自测（可选 · 仅用户主动要求）
+
+> **触发条件（硬约束）**：**只有用户主动要求**时才执行本步（如「帮我自测下这次展示改对了没」「把展示拼接抽纯函数加单测」）。默认流程**不**包含本步，Agent **不得主动套用**，也不得在未获明确要求前为前端展示需求抽纯函数 / 加单测。
+
+### 适用场景
+
+- 纯前端展示 / 文案拼接（如术前诊断补方位 `diagDirectionCode + diagPartCode + diagName`、诊断名组合等）：AI 能改对代码，但无法证明界面真的显示预期结果。
+- 目标：把散落的内联拼接抽成**纯函数** + **jest 单测**，交付后跑 `npm test` 自证「拼接确实产出预期文本」。
+
+### 做法
+
+1. 在子仓库内（仓库已内置 jest：`jest.config.js` + `@vue/test-utils` + `babel-jest`，无需引入框架）新建共享展示工具模块（如 `utils/presDiagDisplay.js`）。
+2. 把当前内联拼接逻辑抽为纯函数（如 `buildPreopDiagText(diags)`），**100% 复刻现有行为**；可对 `undefined` / `null` 字段做安全兜底（符合 `isNullOrEmpty` 语义），顺手修复潜在 `"undefined"` bug。
+3. 配套 `test/presDiagDisplay.spec.js` 单测，覆盖：正常拼接含方位、多条目分号连接、空数组返回 `''`、`undefined` 字段不出现 `"undefined"`。
+4. 3 处及以上重复的同类拼接点统一改用该纯函数（重构不改变业务语义）。
+5. `jest.config.js` 若有 `collectCoverageFrom` 限制，增补 `utils/**` 纳入覆盖率；跑 `npm test` 自证。
+
+### 约束
+
+- 非用户主动要求 → **跳过**，不写纯函数、不加单测。
+- 不改变调用点业务语义；纯函数须通过单测。
+- 框架已存在则复用，不重复引入；单仓库内多处拼接可逐步收敛到同一共享模块，抽完即复用。
+
+---
+
 ## 排查类共用约定（分支 A + B）
 
 > **目的**：少 token、少步骤复述；排查与开发 **记忆机制分离**。
@@ -784,6 +810,7 @@ cherry-pick 解决冲突后，**必须**对改动文件做语法/格式审核，
 | 现场离线排查（分支 B） | [docs/排查/现场离线排查流程.md](排查/现场离线排查流程.md) |
 | 纯 Git 发布（分支 C） | Step 10.2 merge + Step 10.3 tag（跳过 10.1；cis-common 仅 push master） |
 | 测试库造数 | `zoe-his-mcp`（`dev/mcp/zoe-his-mcp/`，测试 `dataSourceId`，INSERT/UPDATE/SELECT） |
+| 前端展示自测（可选） | Step 14：仅用户主动要求时抽纯函数 + jest 单测 |
 | 长期记忆 | [docs/memory/cases/](memory/cases/) + index |
 | 短期记忆 | [docs/memory/short-term/](memory/short-term/)（需求结束删除） |
 
