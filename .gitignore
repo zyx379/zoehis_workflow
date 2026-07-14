@@ -1,10 +1,11 @@
 # fj-common 根目录 Meta Git：只跟踪 AI 配置，不跟踪业务子仓库
 
-# 9 个独立 Git 子仓库（各自 pull/push）
+# 10 个独立 Git 子仓库（各自 pull/push；勿做成 submodule）
 onelink-micro-charge-fj-common/
 onelink-micro-insurance-fj-ybcommon/
 onelink-micro-optimus-fj-common/
 onelink-micro-pres-fj-common/
+onelink-web-cis-common/
 onelink-web-his-charge-fj-common/
 onelink-web-his-drug-fj-common/
 onelink-web-his-fj-component/
