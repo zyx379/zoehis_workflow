@@ -5,6 +5,69 @@
 
 ---
 
+## 0. 初始化 dev 环境（一条指令触发）
+
+> 在任何编辑器对 AI 说「初始化 dev 环境」时，AI 按本节能自动完成三步：
+> **一、同步 GitLab 仓库 → 二、挂载 AI 开发环境 → 三、注册 zoe-his-mcp 并验证**。
+> 原则：单一事实来源是 `dev/`，**不复制 Rule/Skill 全文**到编辑器配置仓；不提交 `.env` / `node_modules` / `.cursor/mcp.json`；不改业务子仓库 `onelink-*`。
+
+### 直接复制给 AI 的指令
+
+```text
+初始化 dev 环境（工作区根目录：D:\zoe_work_space\fj-common）：
+
+一、同步 GitLab 仓库
+- 配置仓（fj-common 根目录 git）：git pull origin master
+- 业务子仓库（9 个 onelink-*，各自 GitLab）：对每个子仓库执行 git checkout master && git pull origin master
+
+二、挂载 AI 开发环境（源目录均为 dev/，不要复制 Rule/Skill 全文到编辑器配置仓）
+1. Read dev/README.md、docs/workflow.md、AGENTS.md
+2. 按编辑器类型执行：
+   - Cursor：运行 .\scripts\link-cursor-dev.ps1；确认 .cursor/rules、.cursor/skills 为联接且指向 dev/；确认 .cursor/mcp.json 含 zoe-his-mcp（入口 dev/mcp/zoe-his-mcp/dist/index.js）
+   - Trae/CodeBuddy/Mimo：在对话中约定 Read dev/rules/zoehis-*.mdc 与 dev/skills/*/SKILL.md；功能开发交接给 Cursor
+3. MCP：检查 dev/mcp/zoe-his-mcp/.env 是否存在；缺失则从 .env.example 说明需人工填写的项（GITLAB_TOKEN、ZOE_*_API_BASE_URL、ZOE_DB_* 等）；node_modules 缺失则 npm ci
+4. 校验：能 Read dev/rules/zoehis-naming.mdc、dev/skills/zoehis-ai-dev/SKILL.md、docs/memory/index.md
+5. 汇报挂载结果表（Rule / Skill / MCP 是否可达），不要改业务子仓库 onelink-*
+
+三、注册 zoe-his-mcp 并验证
+- 服务目录：D:\zoe_work_space\fj-common\dev\mcp\zoe-his-mcp
+- 入口：dist/index.js，Node 建议 v20（见 dev/mcp/mcp.json.example）
+- 复制并填写 .env（不提交 Git）：从 .env.example 生成 dev/mcp/zoe-his-mcp/.env，由人工补密钥
+- Cursor 合并到 .cursor/mcp.json；其他编辑器按各自 MCP 配置格式填写
+- 注册后用 get_table_schema 测一张表（如 DIC_DRUG_DICT）验证
+
+【约束】单一事实来源：只改 dev/ 下源文件；勿提交 .env、node_modules、.cursor/mcp.json；业务流程不清列待确认点，禁止编造表名/接口。
+```
+
+### 各阶段细则
+
+**一、同步 GitLab 仓库** — 见 [docs/multi-device-sync.md](../docs/multi-device-sync.md)
+- 配置仓：根目录 `git pull origin master` + `.\scripts\link-cursor-dev.ps1`
+- 业务子仓库（9 个 `onelink-*`）：分别 `cd <子仓库> && git checkout master && git pull origin master`
+
+**二、挂载 AI 开发环境** — 详见 [§4 各编辑器如何挂载](#4-各编辑器如何挂载)。
+
+**三、注册 zoe-his-mcp** — 见 [dev/mcp/README.md](mcp/README.md)。要点：
+
+| 步骤 | 命令 / 操作 |
+|------|------|
+| 生成 .env | `copy dev\mcp\zoe-his-mcp\.env.example dev\mcp\zoe-his-mcp\.env`（人工补密钥，不提交） |
+| 安装依赖 | `cd dev\mcp\zoe-his-mcp && npm ci` |
+| Cursor 注册 | 合并 `dev/mcp/mcp.json.example` 到 `.cursor/mcp.json`（路径绝对化，Node v20） |
+| 其他编辑器 | 按各自 MCP 格式填写（command 指向 `node` / `绝对路径/node.exe`，args 为 `dist/index.js` 绝对路径） |
+| 验证 | 调 `get_table_schema('DIC_DRUG_DICT')`，能返回列名即注册成功 |
+
+### 挂载结果表（汇报模板）
+
+| 项 | 是否可达 | 说明 |
+|----|----------|------|
+| Rule（`dev/rules/zoehis-*.mdc`） | ✅ / ❌ | 联接指向 dev/ 或可直接 Read |
+| Skill（`dev/skills/*/SKILL.md`） | ✅ / ❌ | 联接指向 dev/ 或可直接 Read |
+| MCP（zoe-his-mcp） | ✅ / ❌ | `get_table_schema` 验证结果 |
+| memory（`docs/memory/index.md`） | ✅ / ❌ | 校验 Read 成功 |
+
+---
+
 ## 1. 目录结构
 
 | 路径 | 内容 | 提交 Git |
@@ -55,7 +118,9 @@
 
 ---
 
-## 3. 新环境初始化（人工 checklist）
+## 3. 初始化命令速查（手动 / 脚本版）
+
+> AI 驱动的一键流程见 [§0 初始化 dev 环境](#0-初始化-dev-环境一条指令触发)。本段是等价的手动命令，适合直接在终端执行或排查时使用。
 
 ```powershell
 cd D:\zoe_work_space\fj-common   # 工作区根目录，与 onelink-* 并列
@@ -102,33 +167,10 @@ New-Item -ItemType Junction -Path ".codebuddy\skills\zoehis-ai-dev" -Target "$PW
 
 ---
 
-## 5. 复制给 AI 编辑器的配置 Prompt
+## 5. 初始化指令汇总（指向 §0）
 
-新机器或新编辑器第一次打开 fj-common 时，将下面整段粘贴给 Agent，让其协助完成挂载与校验。
+> 完整「初始化 dev 环境」指令（同步仓库 + 挂载 + 注册 MCP 并验证）已统一到 **[§0 初始化 dev 环境](#0-初始化-dev-环境一条指令触发)**，直接复制该段给任意编辑器 AI 即可，避免与 §0 分叉维护。
 
-```text
-请在 fj-common 工作区完成 AI 开发环境挂载（源目录均为 dev/，不要复制 Rule/Skill 全文到编辑器配置仓）。
-
-【工作区根目录】
-D:\zoe_work_space\fj-common
-
-【当前编辑器】
-（填：Cursor / Trae / CodeBuddy / Mimo / 其他）
-
-【任务】
-1. Read dev/README.md、docs/workflow.md、AGENTS.md
-2. 按编辑器类型执行：
-   - Cursor：运行 .\scripts\link-cursor-dev.ps1；确认 .cursor/rules、.cursor/skills 为联接且指向 dev/；确认 .cursor/mcp.json 含 zoe-his-mcp（路径 dev/mcp/zoe-his-mcp/dist/index.js）
-   - Trae/CodeBuddy/Mimo：在对话中约定 Read dev/rules/zoehis-*.mdc 与 dev/skills/ 下 SKILL.md；功能开发交接给 Cursor
-3. MCP：检查 dev/mcp/zoe-his-mcp/.env 是否存在；缺失则从 .env.example 说明需人工填写的项；node_modules 缺失则 npm ci
-4. 校验：能 Read dev/rules/zoehis-naming.mdc、dev/skills/zoehis-ai-dev/SKILL.md、docs/memory/index.md
-5. 汇报挂载结果表（Rule / Skill / MCP 是否可达），不要改业务子仓库 onelink-*
-
-【约束】
-- 单一事实来源：只改 dev/ 下源文件
-- 勿提交 .env、node_modules、.cursor/mcp.json
-- 业务流程不清列待确认点，禁止编造表名/接口
-```
 
 ---
 

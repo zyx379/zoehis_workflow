@@ -1,0 +1,15 @@
+{
+  "patientId": "5000017600",
+  "newId": "56813F2FF7C248FAE063D103A8C0FC59",
+  "inserted": true,
+  "verify": [
+    {
+      "OUTP_APPT_RECORD_ID": "56813F2FF7C248FAE063D103A8C0FC59",
+      "PATIENT_ID": "5000017600",
+      "APPT_WAY": "channel_health",
+      "APPT_STATUS_CODE": "0",
+      "OPERATED_TIME": "2026-07-13T16:04:36.000Z"
+    }
+  ],
+  "committed": true
+}

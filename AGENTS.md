@@ -27,7 +27,7 @@
 - **禁止** commit 含 `Co-authored-by: Cursor` / `cursoragent@cursor.com`（见 Rule `zoehis-git-branch`）
 - 人审后：「审查通过，提交并 push」→ 各仓 push master
 - 「审查通过，提交并发布」→ push master → 按 commit 关键词 merge（【漳州二院】→ release-1.166；【漳州市医院】→ release-1.168）→ **项目分支** tag 最大值 +1；**无需再确认**是否编译，直接回报 tag 号（CI 自动打包）
-- **`onelink-web-cis-common`**：无论何种交付触发语，**仅 push master**，不 merge 项目分支、不打 tag
+- **`onelink-web-cis-common`**：push master 后，**在 master 打 `release-1.0.{max+1}` tag**（默认 release-1.0 系列，不打医院 release-* 分支）；2026-07-13 用户明确覆盖旧「仅 push master」规则（曾误改 release-0.0，同日纠正）
 - 交付后 **默认** Step 12 写 `docs/memory/cases/`（见 Skill **zoehis-ai-dev**）
 
 ## 测试造数

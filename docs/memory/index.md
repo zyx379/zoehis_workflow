@@ -18,7 +18,7 @@
 | 2026-06-11 | 203170 | 药库/处方重制 | 煎药确认申请单、CHINESE_COOKING_CONFIRM_APPLY、重制次数、cooking_print_repeat_count、DispenseReset | [cases/203170-煎药确认申请单重制打印次数+DispenseReset-cooking.md](cases/203170-煎药确认申请单重制打印次数+DispenseReset-cooking.md) | `7476479407443423` | — |
 | 2026-06-11 | 203177 | 住院/摆药回退 | 无需提药、batchBackResiLayOrBill、docOderQuery、applyInvalidReturn | [cases/203177-摆药回退连带无需提药+docOderQuery-oneSelfDrugFlag.md](cases/203177-摆药回退连带无需提药+docOderQuery-oneSelfDrugFlag.md) | `7476456963721862` | — |
 | 2026-06-11 | 203174 | 住院/病人管理 | 出院病人查询、主管医生、PAT_IN_HOSPITAL、getDischargeHospitalPat | [cases/203174-出院病人主管医生+PAT_IN_HOSPITAL-directorDoctor.md](cases/203174-出院病人主管医生+PAT_IN_HOSPITAL-directorDoctor.md) | `7476456988889729` | — |
-| 2026-06-12 | 203283 | 门诊/预约 | 预约渠道、APPT_WAY、channel_health、卫健委、OutpApptRecord.get | [cases/203283-门诊诊病预约渠道显示+APPT_WAY-healthDisplay.md](cases/203283-门诊诊病预约渠道显示+APPT_WAY-healthDisplay.md) | `7476479852041413` | — |
+| 2026-06-12 | 203283 | 门诊/预约 | 预约渠道、APPT_WAY、channel_health、卫健委、OutpApptRecord.get、cis-common徽标、release-1.166 cherry-pick、cis升级1.0.3950、release-1.166.36、**页面参数**（非系统参数）getPageControlMap(14)、appt_way_health_show/query | [cases/203283-门诊诊病预约渠道显示+APPT_WAY-healthDisplay.md](cases/203283-门诊诊病预约渠道显示+APPT_WAY-healthDisplay.md)、[cases/203283-门诊诊病预约渠道卫健委徽标+apptWay-healthBadge.md](cases/203283-门诊诊病预约渠道卫健委徽标+apptWay-healthBadge.md) | `7476479852041413` | — |
 | 2026-06-12 | 203305 | 门诊/住院/毒麻处方 | 红处方、代办人、findStaffUserByPage、StaffDao、poisonousHempPrescription | [cases/203305-红处方代办人职工下拉+poisonousHempPrescription-staff.md](cases/203305-红处方代办人职工下拉+poisonousHempPrescription-staff.md) | `7476457043415692` | — |
 | 2026-06-11 | 202860 | 住院/手术 | 手术导航、排台、登记、PRES_OPERATION_APPLY_RECORD、状态同步、updateOperationPlatoon | [cases/202860-手术导航排台登记状态同步+PRES_OPERATION_APPLY_RECORD.md](cases/202860-手术导航排台登记状态同步+PRES_OPERATION_APPLY_RECORD.md) | `7476457106331092` | — |
 | 2026-06-12 | 202857 | 住院/手术申请 | operat_apply_check_catalog_id、知情同意书、多模板类别、getPatEmrListByCatalogId | [cases/202857-手术申请知情同意书多类别+operat_apply_check_catalog_id.md](cases/202857-手术申请知情同意书多类别+operat_apply_check_catalog_id.md) | `7476457135690571` | — |
@@ -92,6 +92,7 @@
 |-----------------|-----------|
 | `/charge/billingFeeManage/nonMedicalCost` | [201533](cases/201533-住院非医疗收费不默认患者+nonMedicalCost-dept-patient-tree.md) |
 | `components/presManage/operationApplication.vue` | [202235](cases/202235-手术申请预计手术时间默认为空+oper_date_default_empty-pageParam.md)、[202235 闭环](cases/202235-手术申请空日期NPE闭环+operationDate-send-NPE.md)、[202858](cases/202858-手术申请术前诊断方位同步+preopDiags-operationApplication.md)、[204961](cases/204961-手术嘱托医嘱仅主手术名+shou_shen_zhu_tuo_pres_only_main.md)、[205369](cases/205369-手术申请扩展字段+EAV-PRES_OPERATION_APPLY_DETAIL.md)、[206668](cases/206668-手术申请导航字段前置+guideDoctor-operationApplication.md) |
+| `components/operateManage/operationApplyCon.vue` | [202858](cases/202858-手术申请术前诊断方位同步+preopDiags-operationApplication.md)（术前诊断详情展示补方位 getApplyDetails） |
 | `components/operateManage/operateApplication.vue` | [202235 闭环](cases/202235-手术申请空日期NPE闭环+operationDate-send-NPE.md)、[205369](cases/205369-手术申请扩展字段+EAV-PRES_OPERATION_APPLY_DETAIL.md)、[206668](cases/206668-手术申请导航字段前置+guideDoctor-operationApplication.md) |
 | `pages/operateManage/operationNavigation.vue` | [202860](cases/202860-手术导航排台登记状态同步+PRES_OPERATION_APPLY_RECORD.md)、[204008](cases/204008-手术导航用药时间默认为空+drug_time_default_empty-pageParam.md) |
 | `pages/stockBillManage/storeQuery/index.vue` | [202505](cases/202505-配药池释放库存跳过有效期+release_stock_skip_valid_check.md)、[204348 院内药品编码参考](cases/204348-药品字典院内编码显示+internalDrugCode-DIC_DRUG_DICT_EXTEND.md) |
@@ -99,7 +100,7 @@
 | `pages/stockBillManage/earlyWarning.vue` | [205101](cases/205101-库存预警可分配库存口径+distributableQuantity-theWarn.md) |
 | `components/presManage/docOderQuery.vue` | [203177](cases/203177-摆药回退连带无需提药+docOderQuery-oneSelfDrugFlag.md)、[203656](cases/203656-医嘱申请条数停嘱过滤+docOderQuery-applyNum.md) |
 | `components/common/deptPatientTreeNew.vue` | [203656](cases/203656-医嘱申请条数停嘱过滤+docOderQuery-applyNum.md) |
-| `pages/outpatientTreatment/main.vue` | [203283](cases/203283-门诊诊病预约渠道显示+APPT_WAY-healthDisplay.md) |
+| `pages/outpatientTreatment/main.vue` | [203283](cases/203283-门诊诊病预约渠道显示+APPT_WAY-healthDisplay.md)、[203283 徽标](cases/203283-门诊诊病预约渠道卫健委徽标+apptWay-healthBadge.md) |
 | `pages/charge/prePayManage/selfTakeDrug.vue` | [202510](cases/202510-自助机取药凭证预览放大+selfTakeDrug-preview-remark.md) |
 | `pages/presManage/presPrint` | [202227](cases/202227-医嘱打印护士电子签名+presPrint-checkNurse.md) |
 | `pages/patientManage/referralRegistration.vue` | [203042](cases/203042-双向转诊表单优化+TRANSFER_REASON-referralForm.md) |

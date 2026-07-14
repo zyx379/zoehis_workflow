@@ -1,0 +1,69 @@
+{
+  "partitionKeyCols": [
+    {
+      "COLUMN_NAME": "OPERATED_TIME",
+      "COLUMN_POSITION": 1
+    }
+  ],
+  "partType": [
+    {
+      "PARTITIONING_TYPE": "RANGE",
+      "COLUMN_NAME": "OPERATED_TIME",
+      "TOTAL": 1
+    }
+  ],
+  "sample": [
+    {
+      "OUTP_APPT_RECORD_ID": "55ce5f2321fa499c846ee4334b483b08",
+      "PATIENT_ID": "5000028207",
+      "APPT_WAY": "channel_area",
+      "APPT_STATUS_CODE": "0"
+    }
+  ],
+  "dateCols": [
+    {
+      "COLUMN_NAME": "CALL_TIME",
+      "DATA_TYPE": "DATE"
+    },
+    {
+      "COLUMN_NAME": "DOWN_SCREEN_TIME",
+      "DATA_TYPE": "DATE"
+    },
+    {
+      "COLUMN_NAME": "UP_SCREEN_TIME",
+      "DATA_TYPE": "DATE"
+    },
+    {
+      "COLUMN_NAME": "MED_BEG_TIME",
+      "DATA_TYPE": "DATE"
+    },
+    {
+      "COLUMN_NAME": "MED_END_TIME",
+      "DATA_TYPE": "DATE"
+    },
+    {
+      "COLUMN_NAME": "CHANGE_OPERATOR_TIME",
+      "DATA_TYPE": "DATE"
+    },
+    {
+      "COLUMN_NAME": "SIGN_TIME",
+      "DATA_TYPE": "DATE"
+    },
+    {
+      "COLUMN_NAME": "APPT_TIME",
+      "DATA_TYPE": "DATE"
+    },
+    {
+      "COLUMN_NAME": "OPERATED_TIME",
+      "DATA_TYPE": "DATE"
+    },
+    {
+      "COLUMN_NAME": "CANCEL_OPERATED_TIME",
+      "DATA_TYPE": "DATE"
+    },
+    {
+      "COLUMN_NAME": "APPT_TIME_QUANTUM",
+      "DATA_TYPE": "VARCHAR2"
+    }
+  ]
+}

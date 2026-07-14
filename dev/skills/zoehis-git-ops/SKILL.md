@@ -29,7 +29,7 @@ description: >
 | onelink-web-his-charge-fj-common | 收费前端 | `{workspaceRoot}/onelink-web-his-charge-fj-common/` | 可 merge + tag |
 | onelink-web-his-drug-fj-common | 药库前端 | `{workspaceRoot}/onelink-web-his-drug-fj-common/` | 可 merge + tag |
 | onelink-web-his-fj-component | 公共组件 | `{workspaceRoot}/onelink-web-his-fj-component/` | 可 merge + tag |
-| **onelink-web-cis-common** | **CIS 公共组件（npm 包）** | `{workspaceRoot}/onelink-web-cis-common/` | **仅 10.1 push master；跳过 merge/tag** |
+| **onelink-web-cis-common** | **CIS 公共组件（npm 包）** | `{workspaceRoot}/onelink-web-cis-common/` | **10.1 push master；不打医院 release-* 分支、按 release-1.0.{max+1} 打 tag（见 §「cis-common 默认 release-1」）** |
 | onelink-micro-pres-fj-common | 医嘱后端 | `{workspaceRoot}/onelink-micro-pres-fj-common/` | 可 merge + tag |
 | onelink-micro-charge-fj-common | 收费服务 | `{workspaceRoot}/onelink-micro-charge-fj-common/` | 可 merge + tag |
 | onelink-micro-optimus-fj-common | 基础服务 | `{workspaceRoot}/onelink-micro-optimus-fj-common/` | 可 merge + tag |
@@ -59,7 +59,12 @@ git push origin master
 - **commit 标题**：`[禅道号]【项目名称】需求标题`（无禅道号用 `[-]` 占位）
 - 每步汇报 `git status`
 
-**`onelink-web-cis-common` 例外：** 无 `release-*` 分支与 tag 序列；无论触发「提交并 push」或「提交并发布」，**只执行 10.1**，不 merge、不打 tag。回报注明「cis-common 已 push master，不参与项目分支编译」。
+**`onelink-web-cis-common` 默认 release-1（release-1.0 系列 tag，用户 2026-07-13 明确，覆盖旧「仅 push master」规则）：**
+- 无 `release-1.166`/`release-1.168` 等医院项目分支；**跳过 10.2** merge（不打医院 release-* 分支 tag）。
+- **10.1 push master 后，按 10.3「cis-common」在 master 上打 `release-1.0.{max+1}` tag 触发 CI 编译**（cis-common 自身 release-1.0 序列，非通用 `release-0.0.*`）。
+- 现网最新序号参考：`release-1.0.3949` → 下一个 `release-1.0.3950`（以 `git tag --list "release-1.0.*"` 实际最大值为准）。
+- 回报注明「cis-common 已 push master 并在 master 打 tag `release-1.0.{新序号}`」。
+- 历史：旧规则为「仅 push master 不打 tag」；先被误改为 release-0.0 系列，同日由用户纠正为 release-1.0 系列。
 
 ### 10.2 合并到项目分支
 
@@ -106,8 +111,9 @@ git push origin release-0.0.<序号>
 
 - **已知医院**：在对应 **release-*** 分支上打 tag，格式 `release-1.168.x` / `release-1.166.x`（以该分支已有 tag 为准）
 - **未知项目**：在 **master** 上打 tag，格式 **`release-0.0.{max+1}`**（全仓 `release-0.0.*` 序号最大值 +1）
+- **onelink-web-cis-common**：在 **master** 上打 tag，格式 **`release-1.0.{max+1}`**（cis-common 自身 `release-1.0.*` 序号最大值 +1，不打医院 release-* 分支）
 - 每仓 tag 独立计算
-- **`onelink-web-cis-common` 跳过本步**
+- **`onelink-web-cis-common` 适用「未知项目」tag 规则**（默认 release-0；不打医院项目分支 tag）
 
 ## Windows / Cursor Agent 提交技巧
 

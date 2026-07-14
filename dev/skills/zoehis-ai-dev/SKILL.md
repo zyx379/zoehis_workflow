@@ -29,7 +29,7 @@ description: >
 | onelink-web-his-charge-fj-common | 收费前端 | `{workspaceRoot}/onelink-web-his-charge-fj-common/` |
 | onelink-web-his-drug-fj-common | 药库前端 | `{workspaceRoot}/onelink-web-his-drug-fj-common/` |
 | onelink-web-his-fj-component | 公共组件 | `{workspaceRoot}/onelink-web-his-fj-component/` |
-| onelink-web-cis-common | CIS 公共组件（npm 包；**Git 仅 push master**） | `{workspaceRoot}/onelink-web-cis-common/` |
+| onelink-web-cis-common | CIS 公共组件（npm 包；**Git：push master + 默认 release-1.0.{max+1} tag，不打医院 release-* 分支**） | `{workspaceRoot}/onelink-web-cis-common/` |
 | onelink-micro-pres-fj-common | 医嘱后端 | `{workspaceRoot}/onelink-micro-pres-fj-common/` |
 | onelink-micro-charge-fj-common | 收费服务 | `{workspaceRoot}/onelink-micro-charge-fj-common/` |
 | onelink-micro-optimus-fj-common | 基础服务 | `{workspaceRoot}/onelink-micro-optimus-fj-common/` |

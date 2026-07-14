@@ -104,5 +104,5 @@ Agent Step 4 需求分析时按以下顺序检索：
 | 规则 | 说明 | 相关 case |
 |------|------|-----------|
 | **release 合并策略** | 全量 merge 易冲突时，优先 **cherry-pick** 单 commit | 多个 case |
-| **cis-common 发布** | 无 release 分支与 tag，仅 push master | workflow §10.1 |
+| **cis-common 发布** | 默认 `release-1.0` 系列：push master 后在 master 打 `release-1.0.{max+1}` tag（不打医院 release-* 分支）；2026-07-13 用户明确覆盖旧「仅 push master」规则（曾误改 release-0.0，同日纠正） | zoehis-git-ops §「cis-common 默认 release-1」 |
 | **误打 tag 处理** | 用下一序号 tag 指向含修复的 commit，以新 tag 发布 | [201533](cases/201533-住院非医疗收费不默认患者+nonMedicalCost-dept-patient-tree.md) |

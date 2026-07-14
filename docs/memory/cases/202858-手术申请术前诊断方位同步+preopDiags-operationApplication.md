@@ -64,6 +64,15 @@ obj.preopDiags = this.$refs.opApplicationRef.formData.preopDiags || [];
 - 类似场景：子组件通过 API 获取数据回填表单字段，父组件保存时遗漏该字段
 - **同一字段多处拼接展示**（保存 vs 列表回显）须逐一核对；修一处不代表另一处已对齐
 
+## 改造记录（2026-07-13）
+
+- **需求**：手术申请单详情（查看弹窗）术前诊断显示缺方位，需为「方位+部位+诊断名称(+说明)」
+- **根因**：`operationApplyCon.vue` 的 `getApplyDetails()` 组装 `res.preopDiagName` 时只拼了 `diagPartCode + diagName + diagNote`，漏拼 `diagDirectionCode`；而同模块表单（`operateApplication.vue` L3321）与列表（`presManage/operationApplication.vue` L915）回显已含方位
+- **修复**：两处拼接前补 `item.diagDirectionCode`，与兄弟展示对齐
+- **涉及文件**：`onelink-web-pres-fj-common/components/operateManage/operationApplyCon.vue`
+- **发布**：`[202858]【漳州二院】手术申请单详情术前诊断显示补充方位` → master `0b9650e0` → 合并 `release-1.166`（`de8dfbf2`）→ tag **`release-1.166.41`**
+- **合并冲突**：合并 master→release-1.166 时 `westernPrescribe.vue` 系统参数列表/赋值冲突（与本次需求无关，参数 167–173 索引对齐），已采用 master 超集解决
+
 ## 升格建议
 
 - [ ] 无需升格，保留 case 即可

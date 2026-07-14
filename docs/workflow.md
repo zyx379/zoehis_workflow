@@ -9,7 +9,7 @@
 
 ```
 需求处理进度:
-- [ ] 0. 任务分流（功能 / Bug / 生产排查 / 现场离线排查 / 纯 Git 发布 → 见分支 C）
+- [ ] 0. 任务分流（功能改造 / Bug 修复 / spec规划 / 生产排查 / 现场离线排查 / 纯 Git 发布 → 见分支 A/B/C）
 - [ ] 1. 需求理解（业务域、数据流、待确认点）
 - [ ] 2. 代码定位（文件清单 + 子仓库清单）
 - [ ] 3. Git 同步（各子仓库 master pull）
@@ -501,6 +501,39 @@ git checkout master
 | 10.3 | release-* | tag = max(tag)+1，push tag |
 
 **默认（无需再确认）：** Step 10 完成后 GitLab CI 由 tag/分支自动打包编译；Agent 直接回报各仓 **tag 号**，不再追问「是否 push / 是否编译」。`release-*` 全量 merge 冲突时优先 **cherry-pick** 本次 commit。
+
+### 交付完成输出格式（Agent 回报模板）
+
+Step 10 收尾时，Agent **必须**按以下模板一次性回报（无省略、无追问）。多仓逐行列出；未涉及参数为「无」。
+
+```markdown
+## 交付完成报告
+
+**需求**：`[禅道号]【项目名】需求标题`
+
+**Tag**：
+- {仓库简称/中文名}：`release-x.y.z`（基于 `release-x.y` 最大 tag N + 1）
+- {仓库2}：`release-a.b.c`（如有）
+
+**仓库与改动文件**：
+- `{repo-a}` → `{path/to/file1}`（{改动说明}）
+- `{repo-b}` → `{path/to/file2}`（{改动说明}）
+
+**功能配置**：
+- 系统参数：{无 / 参数名=默认值}
+- 页面参数：{无 / 参数名=默认值}
+
+**发布链路**：
+- master `{commit}` → merge `{release-*}` (`{mergeCommit}`) → tag `{release-x.y.z}`
+- （如有冲突解决）{冲突文件}：{解决方式}
+
+**验证提示**：{界面操作步骤 / 预期结果}
+```
+
+> 字段规则：
+> - **Tag**：每个有改动且参与发布的子仓库一行；仅 push master 不参与发布的（`onelink-web-cis-common`）注明「已 push master，不打 tag」
+> - **功能配置**：纯前端展示/文案改动填「无」；涉及新增/修改开关时列出参数名与默认值
+> - **发布链路**：commit / merge commit / tag 仅填实际产生的，未走的子步省略
 
 ### 10.4 cherry-pick 后格式审核（强制）
 
