@@ -17,6 +17,7 @@ onelink-web-pres-fj-common/
 .idea/
 .trae/
 .cursor/mcp.json
+.codebuddy/mcp.json
 
 # .cursor/rules、.cursor/skills 为 dev/ 的目录联接，clone 后执行 scripts/link-cursor-dev.ps1
 .cursor/rules
@@ -24,7 +25,10 @@ onelink-web-pres-fj-common/
 
 # MCP 本地密钥与依赖（源目录 dev/mcp/zoe-his-mcp/）
 dev/mcp/zoe-his-mcp/.env
+dev/mcp/zoe-his-mcp/dev-env.json
 dev/mcp/zoe-his-mcp/node_modules/
+dev/mcp/wecom-doc-mcp/mcp.json
+dev/mcp/wecom-doc-mcp/tools-schema.json
 
 # 个人草稿（可选：若需共享草稿则删除本行）
 docs/prompt临时区

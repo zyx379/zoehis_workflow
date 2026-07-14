@@ -1,0 +1,12 @@
+{
+  "deletedQuery": 1,
+  "verify": [
+    {
+      "SEQUENCE_NO": "|14|appt_way_health_show|",
+      "MENU_NO": "appt_way_health_show",
+      "STATE": "1",
+      "FUNCTION": "门诊诊病预约渠道徽标：开启后查预约渠道并显示（channel_health）"
+    }
+  ],
+  "committed": true
+}

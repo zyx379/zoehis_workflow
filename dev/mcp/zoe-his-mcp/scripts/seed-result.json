@@ -1,14 +1,50 @@
 {
+  "cardId": "123",
+  "deptCode": "1003",
+  "apptWay": "channel_health",
   "patientId": "5000017600",
-  "newId": "56813F2FF7C248FAE063D103A8C0FC59",
-  "inserted": true,
-  "verify": [
+  "patientName": "小龙虾",
+  "eventNo": "D3429113",
+  "apptAction": "update",
+  "outpApptRecordId": "56813F2FF7C248FAE063D103A8C0FC59",
+  "pageParams": [
+    {
+      "menuNo": "appt_way_health_show",
+      "action": "insert",
+      "state": "1"
+    },
+    {
+      "menuNo": "appt_way_health_query",
+      "action": "insert",
+      "state": "1"
+    }
+  ],
+  "verifyAppt": [
     {
       "OUTP_APPT_RECORD_ID": "56813F2FF7C248FAE063D103A8C0FC59",
       "PATIENT_ID": "5000017600",
+      "PATIENT_NAME": "小龙虾",
+      "DEPT_CODE": "1003",
+      "EVENT_NO": "D3429113",
       "APPT_WAY": "channel_health",
       "APPT_STATUS_CODE": "0",
-      "OPERATED_TIME": "2026-07-13T16:04:36.000Z"
+      "APPT_WAY_NAME": "健康之路"
+    }
+  ],
+  "verifyPageParams": [
+    {
+      "SEQUENCE_NO": "|14|appt_way_health_query|",
+      "MENU_NO": "appt_way_health_query",
+      "STATE": "1",
+      "FUNCTION": "门诊诊病是否调用预约渠道查询接口 apptWay/apptWayName",
+      "MENU_ID": "14"
+    },
+    {
+      "SEQUENCE_NO": "|14|appt_way_health_show|",
+      "MENU_NO": "appt_way_health_show",
+      "STATE": "1",
+      "FUNCTION": "门诊诊病读卡条是否显示预约渠道（卫健委）徽标",
+      "MENU_ID": "14"
     }
   ],
   "committed": true

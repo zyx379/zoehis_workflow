@@ -29,31 +29,32 @@
 |------|------|------|
 | onelink-web-cis-common | `components/onelinkReadCard/onelinkApptWayHealthBadge.vue` | **新增** 红色文字徽标组件，props `apptWay`/`apptWayName`，`channel_health` 时渲染，文字=apptWayName |
 | onelink-web-outp-fj-common | `pages/outpatientTreatment/main.vue` | import+注册徽标组件；`#field-onelink_infectionHistory` 插槽内用页面参数变量 `apptWayHealthShow` 门控渲染；删除旧 `.outp_appt_way_field` 样式 |
-| onelink-web-outp-fj-common | `mixins/common/patientApptWayMixin.js` | `loadPatientApptWay` 改用页面参数变量 `apptWayHealthQuery` 控制是否调接口（false 跳过并清空） |
-| onelink-web-outp-fj-common | `pages/outpatientTreatment/main.vue` `getMenuCustom()` | `borderId=14` 分支读取页面参数 `appt_way_health_show`/`appt_way_health_query`（state=1 生效）写入 `apptWayHealthShow`/`apptWayHealthQuery` |
-| onelink-web-outp-fj-common | `mixins/sysParamsConst.js` | **已删除** 原误加的 `outp_appt_way_health_show`/`outp_appt_way_health_query`（它们属页面参数，非系统参数） |
+| onelink-web-outp-fj-common | `mixins/common/patientApptWayMixin.js` | `loadPatientApptWay` 用 `apptWayHealthShow` 控制是否调接口（false 跳过并清空） |
+| onelink-web-outp-fj-common | `pages/outpatientTreatment/main.vue` `getMenuCustom()` | `borderId=14` 读取单一页面参数 `appt_way_health_show`（state=1 生效）写入 `apptWayHealthShow` |
+| onelink-web-outp-fj-common | `mixins/sysParamsConst.js` | **已删除** 原误加系统参数（本需求为页面参数） |
 
 ## 页面参数（经 `$getPageControlMap(14)`，configId=borderId=14）
 
-> 经 `zoehis-sys-param` 规则判定：本需求为**单页面（门诊诊病）行为控制** → 必须用**页面参数**，不能写系统参数。
+> 经 `zoehis-sys-param` 规则判定：本需求为**单页面（门诊诊病）行为控制** → 必须用**页面参数**，不能写系统参数。  
+> **仅维护一个 key**（不再拆 show/query）。
 
 | 参数 key（snake_case） | 默认 | 说明 |
 |--------|------|------|
-| `appt_way_health_show` | 未配置/state≠1 | 是否显示卫健委徽标，state=1 显示 |
-| `appt_way_health_query` | 未配置/state≠1 | 是否调用 `OutpApptRecord.get` 查接口，state=1 调用 |
+| `appt_way_health_show` | 未配置/state≠1 | state=1：调用 `OutpApptRecord.get` **且**显示徽标；关闭则不查不显 |
 
-- 接入点：`main.vue` `getMenuCustom()` 的 `borderId = 14` 分支（与 `register_btn_show`/`call_btn_show` 等同页页面参数并列），通过 `mapId.<key>.state == '1'` 读取。
-- 运维在 **configId=14 的页面参数**下配置这两个 key、state=1 生效；**不写 `sys_param`、不写 `*BizSysParam.jsonl`**。
+- 接入点：`main.vue` `getMenuCustom()` 的 `borderId = 14` 分支，通过 `mapId.appt_way_health_show.state == '1'` 读取。
+- 运维在 **configId=14 的页面参数**下配置该 key、state=1 生效；**不写 `sys_param`、不写 `*BizSysParam.jsonl`**。
+- 历史参数 `appt_way_health_query` 已废弃，勿再配置。
 - 默认关闭（变量初始 `false`），兼容非卫健委医院。
 
 ## 数据流
 
 ```
 读卡成功 → readCardSuccessAfter
-  → loadPatientApptWay：若页面参数 apptWayHealthQuery 为 false 直接 return（不调接口）
+  → loadPatientApptWay：若 apptWayHealthShow 为 false 直接 return（不调接口）
     → $api.OutpApptRecord.get → patientApptWay / patientApptWayName
-  → #field-onelink_infectionHistory 插槽：
-      v-if="apptWayHealthShow"（页面参数）
+  → 余额旁 #afterAvailableBalance（或历史 infectionHistory）插槽：
+      v-if="apptWayHealthShow"
       <onelink-appt-way-health-badge :appt-way :appt-way-name/>
         → channel_health 时渲染红色文字（内容=apptWayName）
 ```
@@ -87,5 +88,5 @@
 - 注意：outp 依赖 cis-common 已发布的 `release-1.0.3950`（徽标组件路径 `@zoesoft.com.cn/onelink-web-cis-common/...`）。
 
 ### 参数（页面参数）
-- 运维在 **configId=14 页面参数**下配置 `appt_way_health_show`/`appt_way_health_query`，state=1 生效（**非系统参数、非 `sys_param`、不写 jsonl**）。
-- 原实现曾误用系统参数（`OUTP_SYS_PARAMS`/`window.sysParams`），已纠正为页面参数（2026-07-14）。
+- 运维在 **configId=14 页面参数**下仅配置 `appt_way_health_show`，state=1 生效（查接口+显示一并开启；**非系统参数、非 `sys_param`、不写 jsonl**）。
+- 原实现曾误用系统参数；后又拆成 show/query 两个页面参数，已收敛为**单一** `appt_way_health_show`（2026-07-14）。

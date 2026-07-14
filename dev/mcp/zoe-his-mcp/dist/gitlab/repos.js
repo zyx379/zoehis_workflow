@@ -9,6 +9,7 @@
 import { readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { getGitLabConfig as getGitLabConfigFromDevEnv } from '../load-dev-env.js';
 
 const projectRoot = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const GITLAB_HOST = 'gitlab.zoesoft.com.cn';
@@ -32,11 +33,8 @@ export function getRepositoryConfigMeta() {
 }
 
 export function getGitLabConfig() {
-    return {
-        baseUrl: process.env.GITLAB_BASE_URL || 'http://gitlab.zoesoft.com.cn',
-        token: process.env.GITLAB_TOKEN || '',
-        defaultBranch: process.env.GITLAB_DEFAULT_BRANCH || 'master',
-    };
+    // 统一来源：dev-env.json（姓名默认等于 gitlab 用户名），回退 .env
+    return getGitLabConfigFromDevEnv();
 }
 
 /**

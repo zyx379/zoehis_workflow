@@ -17,6 +17,11 @@
       "args": ["D:\\zoe_work_space\\ima_db\\run.py"],
       "cwd": "D:\\zoe_work_space\\ima_db",
       "description": "IMA 知识库检索"
+    },
+    "企业微信文档": {
+      "type": "streamableHTTP",
+      "url": "https://qyapi.weixin.qq.com/mcp/robot-doc?apikey=lnIG-yiWkek7GbLaj8ArwelCVC6JOvhVi2A2FKhjL0Oo4JyqTn4FeuLiGus7P5EKEx5Angr-Z6ScK3XtzX1nYQ",
+      "description": "企业微信官方 API 模式机器人（文档/智能表格），无需管理员、7天授权"
     }
   }
 }
